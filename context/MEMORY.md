@@ -1,0 +1,4 @@
+- [PM Competition 개요](pm-competition-overview.md) — LG SW PM 경연대회 배경, 목적, 형식, 학습목표 (모든 요청의 기본 컨텍스트)
+- [PM 핵심 기준: PMBOK 8판](pm-competition-standard.md) — ⭐ 최우선 기준. 모든 PM 역량 측정의 기본과 기준은 PMBOK 8판
+- [PM 핵심 분석 프레임워크](pm-competition-logic-framework.md) — ⭐ Mindset→Performance Domain→AI Use Case→Future State 논리 흐름 필수. 증상 아닌 근본 원인 집중
+- [본선 수행 임무](pm-competition-final-mission.md) — 5단계 미션: Identify→Analyze→Design→Develop→Validate. Case Study 발표/데모

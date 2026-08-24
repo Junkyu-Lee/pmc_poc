@@ -1,0 +1,26 @@
+RLsk+aSIFDsiIzllKgAsrFgCUE88d7NNHBEk0KQOFZ2WceeiuoEYBchVw8eVJUMEkBy/Iv2duDMJdkqrs2RhlkCrKNisIUAIjIBRVILTKCQyuCGBzJu12n0vrbS6fqm2/VX6j5ba2V7W2k9G42X95bpLTo9OZ3/AP/Z" style="width: 400px; height: 400px; max-width: 100%; object-fit: cover; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.4);"/></div></div>
+<!-- SLIDE 10B: Problem 5 Embedded Tools (3 Tools Full) -->
+<div class="slide-card"><div class="slide-header"><h2 class="slide-title">📊 [문제 5] 디텍팅 도구 1 - Causal Relationship Map</h2><span class="slide-num">SLIDE 10-B1</span></div><div class="card">
+
+<div class="svg-container" style="background: rgba(15, 23, 42, 0.4); padding: 2rem; border-radius: 12px; border: 1px solid var(--border);">
+<svg viewbox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#8a8780"></path>
+</marker>
+<filter height="120%" id="shadow" width="120%" x="-10%" y="-10%">
+<fedropshadow dx="0" dy="4" flood-opacity="0.3" stddeviation="4"></fedropshadow>
+</filter>
+</defs>
+<!-- Edges -->
+<!-- N1 to N3 -->
+<path d="M 300 75 Q 150 75 150 190" fill="none" marker-end="url(#arrow)" stroke="#8a8780" stroke-dasharray="5,5" stroke-width="2"></path>
+<text fill="#a8a5a0" font-size="12" font-weight="500" x="180" y="110">변경 통제 없이 범위 증가</text>
+<!-- N1 to N2 -->
+<path d="M 500 75 Q 650 75 650 190" fill="none" marker-end="url(#arrow)" stroke="#8a8780" stroke-dasharray="5,5" stroke-width="2"></path>
+<text fill="#a8a5a0" font-size="12" font-weight="500" x="600" y="110">의사결정 체계 붕괴</text>
+<!-- N2 to N3 -->
+<path d="M 550 225 L 260 225" fill="none" marker-end="url(#arrow)" stroke="#dc3545" stroke-width="2.5"></path>
+<text fill="#f87171" font-size="12" font-weight="700" text-anchor="middle" x="400" y="215">품질 저하 유발</text>
+<!-- N3 to N4 -->
+<path d="M 150 250 L 150 340" fill="none" marker-end="url(#arrow)" stroke="#8a8780" 

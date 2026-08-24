@@ -1,0 +1,559 @@
+<title>{{ project.project_name }} — PM 분석 리포트</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f7f4; --surface: #fff; --surface-alt: #f0eeea;
+  --text: #1a1a1a; --text-muted: #5c5a56; --text-light: #8a8780;
+  --accent: #1e40af; --accent-light: #eff4ff;
+  --border: #e2e0db; --border-light: #eeece8;
+  --red: #dc3545; --orange: #d97706; --blue: #2563eb; --green: #16a34a; --purple: #7c3aed;
+  --yellow: #eab308;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a1e; --surface: #242428; --surface-alt: #2c2c32;
+    --text: #e8e6e3; --text-muted: #a8a5a0; --text-light: #6e6b66;
+    --accent: #60a5fa; --accent-light: #1e3a5f;
+    --border: #3a3a40; --border-light: #2e2e34;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1a1a1e; --surface: #242428; --surface-alt: #2c2c32;
+  --text: #e8e6e3; --text-muted: #a8a5a0; --text-light: #6e6b66;
+  --accent: #60a5fa; --accent-light: #1e3a5f;
+  --border: #3a3a40; --border-light: #2e2e34;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.7; padding: 2rem 1rem;
+}
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+h2 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); color: var(--accent); }
+h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.2rem; }
+.stage-label { display: inline-block; background: var(--accent-light); color: var(--accent); padding: 0.2rem 0.7rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; margin-bottom: 1.5rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 1rem; }
+th, td { padding: 0.55rem 0.7rem; border: 1px solid var(--border-light); text-align: left; }
+th { background: var(--surface-alt); font-weight: 600; white-space: nowrap; }
+.overflow-x { overflow-x: auto; }
+.badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 500; }
+.badge-red { background: #fde8e8; color: var(--red); }
+.badge-orange { background: #fef3cd; color: var(--orange); }
+.badge-green { background: #d1fae5; color: var(--green); }
+.badge-blue { background: #dbeafe; color: var(--blue); }
+.badge-purple { background: #ede9fe; color: var(--purple); }
+.status-at-risk { color: var(--red); font-weight: 600; }
+.status-on-track { color: var(--green); font-weight: 600; }
+.status-delayed { color: var(--orange); font-weight: 600; }
+.highlight-box { background: var(--accent-light); border-left: 3px solid var(--accent); padding: 0.8rem 1rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 0.8rem 0; font-size: 0.9rem; }
+.problem-number { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--accent); color: #fff; border-radius: 50%; font-weight: 700; font-size: 0.85rem; margin-right: 0.5rem; }
+.severity-high { border-left: 4px solid var(--red); }
+.severity-medium { border-left: 4px solid var(--orange); }
+.severity-low { border-left: 4px solid var(--yellow); }
+.domain-tag { display: inline-block; background: var(--surface-alt); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin: 0.15rem; }
+.five-whys ol { padding-left: 1.5rem; font-size: 0.88rem; }
+.five-whys li { margin-bottom: 0.3rem; }
+.conflict-cell { background: #fde8e8; color: var(--red); font-weight: 600; }
+.grade-red { background: #fde8e8; color: var(--red); font-weight: 700; }
+.grade-orange { background: #fef3cd; color: var(--orange); font-weight: 700; }
+.grade-yellow { background: #fefce8; color: #92400e; font-weight: 600; }
+.grade-green { background: #d1fae5; color: var(--green); font-weight: 600; }
+.gap-high { background: #fde8e8; }
+.gap-medium { background: #fef3cd; }
+.fishbone-category { font-weight: 600; color: var(--accent); margin-top: 0.8rem; }
+.fishbone-causes { padding-left: 1.5rem; font-size: 0.88rem; color: var(--text-muted); }
+.annotation { font-size: 0.82rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
+pre.causal { background: var(--surface-alt); padding: 1rem; border-radius: var(--radius); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; white-space: pre-wrap; overflow-x: auto; }
+.root-highlight { background: var(--accent-light); border: 1px solid var(--accent); padding: 0.5rem 0.8rem; border-radius: var(--radius); margin-top: 0.8rem; font-weight: 600; }
+svg.chart { width: 100%; max-width: 700px; height: auto; display: block; margin: 1rem auto; }
+.appendix-list { columns: 2; font-size: 0.85rem; }
+.appendix-list li { margin-bottom: 0.3rem; }
+@media (max-width: 700px) {
+  body { padding: 1rem 0.5rem; }
+  .appendix-list { columns: 1; }
+}
+</style>
+
+<div class="container">
+
+<!-- ===== HEADER ===== -->
+<header style="margin-bottom: 2rem;">
+  <h1>{{ project.project_name }}</h1>
+  <p class="subtitle">이상징후 식별 &amp; 근본원인 분석</p>
+  <span class="stage-label">Stage ① Identify &amp; Stage ② Analyze</span>
+</header>
+
+<!-- ===== 1. PROJECT OVERVIEW ===== -->
+<section>
+  <h2>1. 프로젝트 개요</h2>
+  <div class="card">
+    <table>
+      <tr><th>프로젝트명</th><td>{{ project.project_name }}</td></tr>
+      <tr><th>프로젝트 목표</th><td>{{ project.project_goal }}</td></tr>
+      <tr><th>기간</th><td>{{ project.duration }}</td></tr>
+      <tr><th>착수일</th><td>{{ project.launch_date }}</td></tr>
+      <tr><th>방법론</th><td>{{ project.methodology }}</td></tr>
+      <tr><th>참여 조직</th><td>{{ project.partners }}</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 2. SUCCESS CRITERIA GAP ===== -->
+<section>
+  <h2>2. 성공기준 갭 분석</h2>
+  <div class="card overflow-x">
+    <table>
+      <thead><tr><th>KPI</th><th>목표</th><th>실적</th><th>상태</th></tr></thead>
+      <tbody>
+      {% for sc in success_criteria %}
+        <tr>
+          <td>{{ sc.kpi }}</td>
+          <td>{{ sc.target }}</td>
+          <td>{{ sc.actual }}</td>
+          <td>
+            {% if sc.status == 'At Risk' or sc.status == '위험' %}
+              <span class="status-at-risk">⚠ {{ sc.status }}</span>
+            {% elif sc.status == 'Delayed' or sc.status == '지연' %}
+              <span class="status-delayed">△ {{ sc.status }}</span>
+            {% else %}
+              <span class="status-on-track">● {{ sc.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 3. RACI MATRIX ===== -->
+<section>
+  <h2>3. RACI 매트릭스</h2>
+  <div class="card overflow-x">
+    <table>
+      <thead>
+        <tr>
+          <th>활동</th>
+          {% for role in raci.roles %}
+          <th>{{ role }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+      {% for i in range(raci.activities | length) %}
+        <tr>
+          <td>{{ raci.activities[i] }}</td>
+          {% for j in range(raci.roles | length) %}
+            {% set cell = raci.matrix[i][j] %}
+            {% set is_conflict = false %}
+            {% for c in raci.conflicts %}
+              {% if c.activity == raci.activities[i] and c.role == raci.roles[j] %}
+                {% set is_conflict = true %}
+              {% endif %}
+            {% endfor %}
+            <td{% if is_conflict %} class="conflict-cell"{% endif %}>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% if raci.conflicts %}
+    <p class="annotation">⚠ 충돌 사항:</p>
+    <ul style="font-size:0.85rem; color:var(--red); padding-left:1.2rem;">
+      {% for c in raci.conflicts %}
+      <li>{{ c.activity }} — {{ c.role }}: {{ c.description | default('역할 충돌') }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== 4. RISK P-I MATRIX ===== -->
+<section>
+  <h2>4. 리스크 P-I 매트릭스</h2>
+  <div class="card overflow-x">
+    <table>
+      <thead><tr><th>ID</th><th>리스크</th><th>확률(P)</th><th>영향(I)</th><th>점수</th><th>등급</th><th>대응</th></tr></thead>
+      <tbody>
+      {% for r in risks %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.name }}</td>
+          <td>{{ r.probability }}</td>
+          <td>{{ r.impact }}</td>
+          <td>{{ r.score }}</td>
+          <td class="{% if r.score >= 16 %}grade-red{% elif r.score >= 10 %}grade-orange{% elif r.score >= 5 %}grade-yellow{% else %}grade-green{% endif %}">{{ r.grade }}</td>
+          <td>{{ r.response }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 5. SYMPTOMS ===== -->
+<section>
+  <h2>5. 이상징후 (Requirements/Symptoms)</h2>
+
+  {% set areas = [('scope', '범위'), ('schedule', '일정'), ('stakeholder', '이해관계자'), ('risk_quality', '리스크/품질'), ('governance', '거버넌스')] %}
+  {% for key, label in areas %}
+  <h3>5.{{ loop.index }} {{ label }}</h3>
+  <div class="card overflow-x">
+    <table>
+      <thead><tr><th>ID</th><th>징후</th><th>근거</th></tr></thead>
+      <tbody>
+      {% for s in symptoms[key] %}
+        <tr><td>{{ s.id }}</td><td>{{ s.symptom }}</td><td>{{ s.evidence }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+</section>
+
+<!-- ===== 6. TOP 5 PROBLEMS ===== -->
+<section>
+  <h2>6. Top 5 문제 분석</h2>
+
+  {% for p in top5_problems %}
+  <div class="card {% if p.severity == 'High' or p.severity == '상' %}severity-high{% elif p.severity == 'Medium' or p.severity == '중' %}severity-medium{% else %}severity-low{% endif %}">
+    <h3>
+      <span class="problem-number">{{ p.rank }}</span>
+      {{ p.title }}
+      <span class="badge {% if p.severity == 'High' or p.severity == '상' %}badge-red{% elif p.severity == 'Medium' or p.severity == '중' %}badge-orange{% else %}badge-green{% endif %}">{{ p.severity }}</span>
+    </h3>
+
+    {% if p.mindset %}
+    <p style="margin:0.5rem 0; font-size:0.88rem;"><strong>마인드셋:</strong> {{ p.mindset }}</p>
+    {% endif %}
+    {% if p.mindset_analysis %}
+    <p style="font-size:0.85rem; color:var(--text-muted);">{{ p.mindset_analysis }}</p>
+    {% endif %}
+
+    {% if p.five_whys %}
+    <div class="five-whys" style="margin-top:0.8rem;">
+      <strong style="font-size:0.85rem;">5 Whys:</strong>
+      <ol>
+      {% for why in p.five_whys %}
+        <li>{{ why }}</li>
+      {% endfor %}
+      </ol>
+    </div>
+    {% endif %}
+
+    {% if p.root_cause_conclusion %}
+    <div class="highlight-box">
+      <strong>근본원인:</strong> {{ p.root_cause_conclusion }}
+    </div>
+    {% endif %}
+
+    {% if p.domains %}
+    <div style="margin-top:0.5rem;">
+      {% for d in p.domains %}
+      <span class="domain-tag">{{ d }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if p.ai_usecases %}
+    <div style="margin-top:0.5rem; font-size:0.83rem;">
+      <strong>AI 활용:</strong>
+      {% for u in p.ai_usecases %}
+      <span class="badge badge-purple">{{ u }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+
+<!-- ===== 7. STAKEHOLDER ENGAGEMENT ===== -->
+<section>
+  <h2>7. 이해관계자 참여도</h2>
+  <div class="card overflow-x">
+    <table>
+      <thead><tr><th>이름</th><th>역할</th><th>현재 수준</th><th>목표 수준</th><th>Gap</th></tr></thead>
+      <tbody>
+      {% for s in stakeholders %}
+        <tr>
+          <td>{{ s.name }}</td>
+          <td>{{ s.role }}</td>
+          <td>{{ s.current_level }}</td>
+          <td>{{ s.desired_level }}</td>
+          <td class="{% if s.gap >= 2 %}gap-high{% elif s.gap >= 1 %}gap-medium{% endif %}">{{ s.gap }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 8. FISHBONE ===== -->
+<section>
+  <h2>8. 피쉬본 다이어그램</h2>
+  <div class="card">
+    <p><strong>Effect:</strong> {{ fishbone.effect }}</p>
+    {% for cat in fishbone.categories %}
+    <p class="fishbone-category">{{ cat.name }}</p>
+    <ul class="fishbone-causes">
+      {% for cause in cat.causes %}
+      <li>{{ cause }}</li>
+      {% endfor %}
+    </ul>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ===== 9. EVM ===== -->
+<section>
+  <h2>9. EVM (Earned Value Management)</h2>
+  <div class="card">
+    <div class="overflow-x">
+      <table>
+        <thead><tr><th>Sprint</th><th>PV</th><th>EV</th><th>AC</th><th>SPI</th><th>CPI</th></tr></thead>
+        <tbody>
+        {% for sp in evm.sprints %}
+          <tr>
+            <td>{{ sp.name }}</td>
+            <td>{{ sp.pv }}</td>
+            <td>{{ sp.ev }}</td>
+            <td>{{ sp.ac }}</td>
+            <td class="{% if sp.spi < 1.0 %}status-at-risk{% else %}status-on-track{% endif %}">{{ "%.2f" | format(sp.spi) }}</td>
+            <td class="{% if sp.cpi < 1.0 %}status-at-risk{% else %}status-on-track{% endif %}">{{ "%.2f" | format(sp.cpi) }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="annotation">BAC: {{ evm.bac }} | EAC: {{ evm.eac }}</p>
+
+    <!-- EVM Bar Chart SVG -->
+    {% set bar_w = 40 %}
+    {% set group_gap = 20 %}
+    {% set chart_h = 200 %}
+    {% set n = evm.sprints | length %}
+    {% set max_val = evm.sprints | map(attribute='ac') | list | max %}
+    {% set max_pv = evm.sprints | map(attribute='pv') | list | max %}
+    {% if max_pv > max_val %}{% set max_val = max_pv %}{% endif %}
+    {% set svg_w = n * (bar_w * 3 + group_gap) + 60 %}
+    <svg class="chart" viewBox="0 0 {{ svg_w }} {{ chart_h + 40 }}" xmlns="http://www.w3.org/2000/svg">
+      {% for sp in evm.sprints %}
+        {% set x_base = 40 + loop.index0 * (bar_w * 3 + group_gap) %}
+        {% set pv_h = (sp.pv / max_val * chart_h) if max_val > 0 else 0 %}
+        {% set ev_h = (sp.ev / max_val * chart_h) if max_val > 0 else 0 %}
+        {% set ac_h = (sp.ac / max_val * chart_h) if max_val > 0 else 0 %}
+        <rect x="{{ x_base }}" y="{{ chart_h - pv_h }}" width="{{ bar_w - 2 }}" height="{{ pv_h }}" fill="var(--blue)" opacity="0.7"/>
+        <rect x="{{ x_base + bar_w }}" y="{{ chart_h - ev_h }}" width="{{ bar_w - 2 }}" height="{{ ev_h }}" fill="var(--green)" opacity="0.7"/>
+        <rect x="{{ x_base + bar_w * 2 }}" y="{{ chart_h - ac_h }}" width="{{ bar_w - 2 }}" height="{{ ac_h }}" fill="var(--red)" opacity="0.7"/>
+        <text x="{{ x_base + bar_w * 1.5 }}" y="{{ chart_h + 15 }}" text-anchor="middle" font-size="10" fill="var(--text-muted)">{{ sp.name }}</text>
+      {% endfor %}
+      <!-- Legend -->
+      <rect x="5" y="5" width="10" height="10" fill="var(--blue)" opacity="0.7"/><text x="18" y="14" font-size="9" fill="var(--text-muted)">PV</text>
+      <rect x="5" y="20" width="10" height="10" fill="var(--green)" opacity="0.7"/><text x="18" y="29" font-size="9" fill="var(--text-muted)">EV</text>
+      <rect x="5" y="35" width="10" height="10" fill="var(--red)" opacity="0.7"/><text x="18" y="44" font-size="9" fill="var(--text-muted)">AC</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ===== 10. CONTROL CHART ===== -->
+<section>
+  <h2>10. 관리도 (Control Chart)</h2>
+  <div class="card">
+    <p><strong>지표:</strong> {{ control_chart.metric_name }}</p>
+    <div class="overflow-x">
+      <table>
+        <thead><tr><th>Week</th><th>Value</th><th>상태</th></tr></thead>
+        <tbody>
+        {% for d in control_chart.data %}
+          <tr>
+            <td>{{ d.week }}</td>
+            <td>{{ d.value }}</td>
+            <td>{% if d.value > control_chart.ucl or d.value < control_chart.lcl %}<span class="status-at-risk">OOC</span>{% else %}●{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Control Chart SVG -->
+    {% set cc_w = 600 %}
+    {% set cc_h = 180 %}
+    {% set cc_n = control_chart.data | length %}
+    {% set cc_max = control_chart.ucl * 1.1 %}
+    {% set cc_min = control_chart.lcl * 0.9 if control_chart.lcl > 0 else 0 %}
+    {% set cc_range = cc_max - cc_min if cc_max != cc_min else 1 %}
+    <svg class="chart" viewBox="0 0 {{ cc_w }} {{ cc_h + 20 }}" xmlns="http://www.w3.org/2000/svg">
+      <!-- UCL line -->
+      <line x1="40" y1="{{ cc_h - ((control_chart.ucl - cc_min) / cc_range * cc_h) }}" x2="{{ cc_w - 10 }}" y2="{{ cc_h - ((control_chart.ucl - cc_min) / cc_range * cc_h) }}" stroke="var(--red)" stroke-dasharray="4" stroke-width="1"/>
+      <!-- Target line -->
+      <line x1="40" y1="{{ cc_h - ((control_chart.target - cc_min) / cc_range * cc_h) }}" x2="{{ cc_w - 10 }}" y2="{{ cc_h - ((control_chart.target - cc_min) / cc_range * cc_h) }}" stroke="var(--green)" stroke-width="1"/>
+      <!-- LCL line -->
+      <line x1="40" y1="{{ cc_h - ((control_chart.lcl - cc_min) / cc_range * cc_h) }}" x2="{{ cc_w - 10 }}" y2="{{ cc_h - ((control_chart.lcl - cc_min) / cc_range * cc_h) }}" stroke="var(--red)" stroke-dasharray="4" stroke-width="1"/>
+      <!-- Data points -->
+      {% for d in control_chart.data %}
+        {% set cx = 40 + (loop.index0 * ((cc_w - 50) / (cc_n - 1 if cc_n > 1 else 1))) %}
+        {% set cy = cc_h - ((d.value - cc_min) / cc_range * cc_h) %}
+        <circle cx="{{ cx }}" cy="{{ cy }}" r="4" fill="{% if d.value > control_chart.ucl or d.value < control_chart.lcl %}var(--red){% else %}var(--blue){% endif %}"/>
+        {% if not loop.first %}
+          {% set prev = control_chart.data[loop.index0 - 1] %}
+          {% set px = 40 + ((loop.index0 - 1) * ((cc_w - 50) / (cc_n - 1 if cc_n > 1 else 1))) %}
+          {% set py = cc_h - ((prev.value - cc_min) / cc_range * cc_h) %}
+          <line x1="{{ px }}" y1="{{ py }}" x2="{{ cx }}" y2="{{ cy }}" stroke="var(--blue)" stroke-width="1" opacity="0.5"/>
+        {% endif %}
+      {% endfor %}
+      <text x="{{ cc_w - 8 }}" y="{{ cc_h - ((control_chart.ucl - cc_min) / cc_range * cc_h) - 3 }}" font-size="9" fill="var(--red)" text-anchor="end">UCL</text>
+      <text x="{{ cc_w - 8 }}" y="{{ cc_h - ((control_chart.lcl - cc_min) / cc_range * cc_h) + 12 }}" font-size="9" fill="var(--red)" text-anchor="end">LCL</text>
+    </svg>
+    <p class="annotation">Rule of Seven 위반 여부를 확인하세요 (연속 7개 이상 포인트가 중심선 한 쪽에 위치).</p>
+  </div>
+</section>
+
+<!-- ===== 11. BURNDOWN ===== -->
+<section>
+  <h2>11. 번다운 차트</h2>
+  <div class="card">
+    <p><strong>Sprint:</strong> {{ burndown.sprint_name }} | Total SP: {{ burndown.total_sp }}</p>
+    <div class="overflow-x">
+      <table>
+        <thead><tr><th>Day</th><th>Ideal</th><th>Actual</th></tr></thead>
+        <tbody>
+        {% for i in range(burndown.ideal | length) %}
+          <tr>
+            <td>Day {{ i + 1 }}</td>
+            <td>{{ burndown.ideal[i] }}</td>
+            <td>{{ burndown.actual[i] if i < burndown.actual | length else '-' }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if burndown.scope_change_day %}
+    <p class="annotation">⚠ Day {{ burndown.scope_change_day }}: {{ burndown.scope_change_desc }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== 12. PARETO ===== -->
+<section>
+  <h2>12. 파레토 분석</h2>
+  <div class="card">
+    <div class="overflow-x">
+      <table>
+        <thead><tr><th>카테고리</th><th>건수</th><th>누적 %</th><th>분포</th></tr></thead>
+        <tbody>
+        {% set max_count = pareto.categories[0].count if pareto.categories else 1 %}
+        {% for cat in pareto.categories %}
+          <tr>
+            <td>{{ cat.name }}</td>
+            <td>{{ cat.count }}</td>
+            <td>{{ "%.0f" | format(cat.cumulative_pct) }}%</td>
+            <td style="min-width:120px;">
+              <div style="background:var(--border-light);border-radius:3px;height:16px;position:relative;">
+                <div style="background:{% if cat.cumulative_pct <= 80 %}var(--blue){% else %}var(--text-light){% endif %};height:100%;width:{{ (cat.count / max_count * 100) | int }}%;border-radius:3px;"></div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="annotation">80% 라인: 상위 항목들이 전체 문제의 80%를 차지합니다.</p>
+  </div>
+</section>
+
+<!-- ===== 13. VARIANCE ANALYSIS ===== -->
+<section>
+  <h2>13. 차이 분석 (Variance)</h2>
+  <div class="card overflow-x">
+    <table>
+      <thead><tr><th>KPI</th><th>계획</th><th>실적</th><th>차이</th><th>차이(%)</th><th>상태</th></tr></thead>
+      <tbody>
+      {% for v in variance %}
+        <tr>
+          <td>{{ v.kpi }}</td>
+          <td>{{ v.planned }}</td>
+          <td>{{ v.actual }}</td>
+          <td>{{ v.variance }}</td>
+          <td>{{ v.variance_pct }}%</td>
+          <td>
+            {% if v.status == 'Critical' or v.status == '심각' %}
+              <span class="badge badge-red">{{ v.status }}</span>
+            {% elif v.status == 'Warning' or v.status == '주의' %}
+              <span class="badge badge-orange">{{ v.status }}</span>
+            {% else %}
+              <span class="badge badge-green">{{ v.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ===== 14. TREND ===== -->
+<section>
+  <h2>14. 추세 분석 (Trend)</h2>
+  <div class="card">
+    {% for metric in trend.metrics %}
+    <h3>{{ metric.name }} ({{ metric.unit }}) — 목표: {{ metric.target }} | 방향: {{ metric.direction }}</h3>
+    <div class="overflow-x">
+      <table>
+        <thead><tr><th>Week</th>{% for d in metric.data %}<th>{{ d.week }}</th>{% endfor %}</tr></thead>
+        <tbody><tr><td>Value</td>{% for d in metric.data %}<td class="{% if metric.direction == 'up' and d.value < metric.target %}status-at-risk{% elif metric.direction == 'down' and d.value > metric.target %}status-at-risk{% endif %}">{{ d.value }}</td>{% endfor %}</tr></tbody>
+      </table>
+    </div>
+    {% endfor %}
+    <p class="annotation">Gate 시점의 예측값을 기반으로 조기 경보를 확인합니다.</p>
+  </div>
+</section>
+
+<!-- ===== 15. CAUSAL MAP ===== -->
+<section>
+  <h2>15. 인과 지도 (Causal Map)</h2>
+  <div class="card">
+    <pre class="causal">{{ causal_map.description }}</pre>
+    {% if causal_map.root_of_roots %}
+    <div class="root-highlight">근본 중의 근본 (Root of Roots): {{ causal_map.root_of_roots }}</div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ===== 16. APPENDIX ===== -->
+<section>
+  <h2>부록: 분석 도구 목록 (20종)</h2>
+  <div class="card">
+    <ol class="appendix-list">
+      <li>RACI 매트릭스</li>
+      <li>리스크 P-I 매트릭스</li>
+      <li>이해관계자 참여도 평가</li>
+      <li>피쉬본 다이어그램 (Ishikawa)</li>
+      <li>5 Whys 분석</li>
+      <li>파레토 분석</li>
+      <li>EVM (Earned Value Management)</li>
+      <li>관리도 (Control Chart)</li>
+      <li>번다운 차트</li>
+      <li>추세 분석 (Trend Analysis)</li>
+      <li>차이 분석 (Variance Analysis)</li>
+      <li>인과 지도 (Causal Map)</li>
+      <li>마인드셋 분석</li>
+      <li>성공기준 갭 분석</li>
+      <li>요구사항 추적 매트릭스 (RTM)</li>
+      <li>의사결정 로그</li>
+      <li>변경 요청 분석</li>
+      <li>커뮤니케이션 매트릭스</li>
+      <li>품질 메트릭스</li>
+      <li>교훈 (Lessons Learned)</li>
+    </ol>
+  </div>
+</section>
+
+</div>

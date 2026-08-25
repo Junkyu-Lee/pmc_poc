@@ -1,0 +1,15 @@
+Tool 1: ▪ [문제 1] 디텍팅 도구 1 - Vendor SLA & Dependency Matrix
+Tool 2: ▪ [문제 1] 디텍팅 도구 2 - Risk Escalation Trigger Protocol
+Tool 3: ▪ [문제 1] 디텍팅 도구 3 - 5 Whys 근본 원인 분석
+Tool 4: ▪ [문제 2] 디텍팅 도구 1 - 요구사항 의존성 그래프 (RTM)
+Tool 5: ▪ [문제 2] 디텍팅 도구 2 - CCB Impact Rating & Risk Index
+Tool 6: ▪ [문제 2] 디텍팅 도구 3 - Mindset Alignment Matrix
+Tool 7: ▪ [문제 3] 디텍팅 도구 1 - Cold Boot Performance Control Chart
+Tool 8: ▪ [문제 3] 디텍팅 도구 2 - CI Test Pass Rate & Flakiness Breakdown
+Tool 9: ▪ [문제 3] 디텍팅 도구 3 - Ishikawa (Fishbone) Diagram
+Tool 10: ▪ [문제 4] 디텍팅 도구 1 - RACI Matrix & Governance Protocol
+Tool 11: ▪ [문제 4] 디텍팅 도구 2 - Communication Information Flow Map
+Tool 12: ▪ [문제 4] 디텍팅 도구 3 - Team Psychological Safety Barometer
+Tool 13: ▪ [문제 5] 디텍팅 도구 1 - Gate Health & Compliance Audit Radar
+Tool 14: ▪ [문제 5] 디텍팅 도구 2 - Causal Relationship Map (HTML5 SVG)
+Tool 15: ▪ [문제 5] 디텍팅 도구 3 - Technical Debt Pareto Analysis

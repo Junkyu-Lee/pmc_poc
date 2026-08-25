@@ -191,8 +191,8 @@
   <text x="750" y="85" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">ACT</text>
   <text x="750" y="115" fill="#dcfce7" font-size="14" text-anchor="middle">실행</text>
   
-  <path d="M 750 140 Q 750 210 430 210 Q 90 210 90 140" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6,6" marker-end="url(#arrowHead)" />
-  <text x="430" y="195" fill="#64748b" font-weight="bold" text-anchor="middle">↻ 다시 SEE로 — 루프는 멈추지 않는다</text>
+  
+  
 </svg>
 </div>
 
@@ -292,25 +292,36 @@
 
 <div class="svg-container">
 <!-- Replace the clunky conflict boxes with an integrated SVG flow -->
-<svg width="850" height="250" viewBox="0 0 850 250" xmlns="http://www.w3.org/2000/svg">
+<svg width="850" height="300" viewBox="0 0 850 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow-clash" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+    </marker>
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+    </marker>
+  </defs>
+
   <g transform="translate(180, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#f97316" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">일정 사수</text><text x="0" y="18" fill="#ffedd5" font-size="10" text-anchor="middle">Schedule Sentinel</text></g>
   <g transform="translate(420, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#14b8a6" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">범위 보존</text><text x="0" y="18" fill="#ccfbf1" font-size="10" text-anchor="middle">Change Guardian</text></g>
   <g transform="translate(660, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#ec4899" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">관계 유지</text><text x="0" y="18" fill="#fce7f3" font-size="10" text-anchor="middle">Stakeholder Pulse</text></g>
   
-  <text x="420" y="95" fill="#ef4444" font-size="16" font-weight="bold" text-anchor="middle">▼ 상충</text>
   
-  <path d="M 180 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
-  <path d="M 420 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
-  <path d="M 660 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
   
-  <rect x="220" y="120" width="400" height="60" rx="8" fill="#0f2743" />
-  <text x="420" y="145" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">Signal Forge — 종합 판단</text>
-  <text x="420" y="165" fill="#cbd5e1" font-size="12" text-anchor="middle">① Mindset·6원칙 → ② 프로젝트 가치서열(North Star) 중재</text>
+  <text x="420" y="125" fill="#ef4444" font-size="16" font-weight="bold" text-anchor="middle">⚡ 상충 발생 및 신호 취합 ⚡</text>
   
-  <text x="420" y="200" fill="#64748b" font-weight="bold" text-anchor="middle">▼</text>
+  <path d="M 180 70 L 380 135" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-clash)" />
+  <path d="M 420 70 L 420 105" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-clash)" />
+  <path d="M 660 70 L 460 135" stroke="#ef4444" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-clash)" />
   
-  <rect x="220" y="210" width="400" height="40" rx="8" fill="#16a34a" />
-  <text x="420" y="235" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">하나의 통합 결단 + 하위가치 안전장치 · 실행은 PM 승인</text>
+  <rect x="180" y="150" width="480" height="70" rx="8" fill="#0f2743" />
+  <text x="420" y="175" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">Signal Forge — 종합 판단 (갈등 조정)</text>
+  <text x="420" y="195" fill="#cbd5e1" font-size="13" text-anchor="middle">① 6원칙 기준 검토 → ② 프로젝트의 North Star(가치서열)로 최종 결단</text>
+  
+  <path d="M 420 220 L 420 240" stroke="#64748b" stroke-width="3" marker-end="url(#arrow-down)" />
+  
+  <rect x="145" y="250" width="550" height="40" rx="8" fill="#16a34a" />
+  <text x="420" y="275" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">하나의 통합 최적안 도출 + 하위가치 보완책 마련 (실행 전 PM 승인)</text>
 </svg>
 </div>
 
@@ -352,18 +363,19 @@
   <thead>
     <tr>
       <th style="width: 25%;">기능 (화면)</th>
+      <th style="width: 15%;">단계</th>
       <th>역할</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td><strong>홈 대시보드</strong></td><td>7개 에이전트 감지 종합 브리핑 · 프로젝트 건강도 · 우선 조치</td></tr>
-    <tr><td><strong>PM Note</strong></td><td>메일 · 전화 · 메모 · 회의 등 비정형 신호 입력 (HEAR)</td></tr>
-    <tr><td><strong>일정</strong></td><td>마일스톤 · 게이트 · 스프린트 진행 현황</td></tr>
-    <tr><td><strong>이슈 &amp; 리스크</strong></td><td>감지 신호 등재 · AI 대응안 생성 · 실제 Jira 티켓 발행 (THINK→ACT)</td></tr>
-    <tr><td><strong>예산 &amp; 자원</strong></td><td>예산 집행 · 예비비 · 자원 배분 모니터링</td></tr>
-    <tr><td><strong>커뮤니케이션</strong></td><td>이해관계자 소통 · 알림/메일 초안</td></tr>
-    <tr><td><strong>리포트</strong></td><td>주간 · 스프린트 리포트 자동 생성</td></tr>
-    <tr><td><strong>PM 문서</strong></td><td>요구사항 · TRM · CR · 이슈 · 리스크 등 단일 원본(SSOT) — 대시보드와 미러링</td></tr>
+    <tr><td><strong>홈 대시보드</strong></td><td>SEE</td><td>7개 에이전트 감지 종합 브리핑 · 건강도 · 우선 조치</td></tr>
+    <tr><td><strong>PM Note</strong></td><td>HEAR</td><td>메일·전화·메모·회의 등 비정형 신호 입력</td></tr>
+    <tr><td><strong>일정</strong></td><td>SEE</td><td>마일스톤·게이트·스프린트 진행 현황</td></tr>
+    <tr><td><strong>이슈 &amp; 리스크</strong></td><td>THINK·ACT</td><td>감지 신호 등재 · AI 대응안 생성 · 실제 Jira 티켓 발행</td></tr>
+    <tr><td><strong>예산 &amp; 자원</strong></td><td>SEE</td><td>예산 집행·예비비·자원 배분 모니터링</td></tr>
+    <tr><td><strong>커뮤니케이션</strong></td><td>ACT</td><td>이해관계자 소통 · 알림/메일 초안</td></tr>
+    <tr><td><strong>리포트</strong></td><td>ACT</td><td>주간·스프린트 리포트 자동 생성</td></tr>
+    <tr><td><strong>PM 문서</strong></td><td>SEE</td><td>요구사항·TRM·CR·이슈·리스크 단일 원본(SSOT) — 대시보드와 미러링</td></tr>
   </tbody>
 </table>
 </div>

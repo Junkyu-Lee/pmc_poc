@@ -1,6 +1,6 @@
 ---
 name: generate-competition-report
-description: Run the PMC final competition pipeline. Analyzes a given markdown project situation, generates v3 tool data (inventing raw data), and builds the polished v4 HTML report based on established logic.
+description: Run the PMC final competition pipeline. Analyzes a given markdown project situation, generates v3 tool data, builds the v4 HTML report, and finally appends poc_ppt.html to create the integrated v5 HTML report.
 ---
 
 # Instructions
@@ -17,7 +17,7 @@ When the user asks you to analyze a new project situation (usually provided as a
 
 2. **Generate `[ProjectName]_stage1_stage2_analysis_v3.html` (Detailed Tool Data):**
    - Create the detailed `[ProjectName]_stage1_stage2_analysis_v3.html` using the previously established formatting standards.
-   - You must create **15 tools total** (3 tools per core problem).
+   - You must create **all 20 PMBOK problem detecting & analysis tools** (e.g., 4 tools per core problem).
    - **CRITICAL:** The situation file will likely lack specific numbers. You MUST invent realistic raw data (metrics, dates, stakeholder quotes, variance numbers) to fill in the tools (e.g., RACI matrix, Control Charts, Burndown) to make them look authentic.
 
 3. **Generate `[ProjectName]_stage1_stage2_analysis_v4.html` (Final Polished Report):**
@@ -32,6 +32,11 @@ When the user asks you to analyze a new project situation (usually provided as a
    - **Negative Constraints (CRITICAL):** Do NOT use the words "본선", "본선 과제", "PMBOK", "PMBOK 8th", or "PMBOK 8판" anywhere in the generated text. Replace them with generic terms like "프로젝트", "수행 임무", "Global Standard", or "글로벌 표준 프레임워크".
    - Output the final HTML file with all CSS, SVGs, and base64 embedded images properly formatted and visually stunning (Dynamic Tech style).
 
-4. **Review & Handover:**
-   - Write a Walkthrough artifact highlighting what was generated and asking the user to review the final `[ProjectName]_stage1_stage2_analysis_v4.html`.
+4. **Generate `[ProjectName]_stage1_stage2_analysis_v5.html` (Integrated POC Report):**
+   - After creating the v4 file, read the contents of `poc_ppt.html`.
+   - Append the contents of `poc_ppt.html` to the end of the v4 HTML structure (properly integrating the sections).
+   - Save this combined file as `[ProjectName]_stage1_stage2_analysis_v5.html`.
+
+5. **Review & Handover:**
+   - Write a Walkthrough artifact highlighting what was generated and asking the user to review the final `[ProjectName]_stage1_stage2_analysis_v5.html`.
    - Do NOT attempt to build the PPTX unless explicitly requested by the user.

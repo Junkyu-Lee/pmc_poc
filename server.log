@@ -1,0 +1,16 @@
+[2026-07-29 19:45:50,269] INFO: ==================================================
+[2026-07-29 19:45:50,269] INFO: Starting Code Review MCP Server
+[2026-07-29 19:45:50,269] INFO: Current directory: /home/worker/zun/doc
+[2026-07-29 19:45:50,269] INFO: xray path: /bee_shared/makana/codexray/24.04/bin/xray
+[2026-07-29 19:45:50,269] INFO: Checking git repository... (folder=/home/worker/zun/doc)
+[2026-07-29 19:45:50,269] INFO: Current dir has .git: False
+[2026-07-29 19:45:50,269] INFO: Parent dir has .git: False
+[2026-07-29 19:45:50,269] INFO: Git repo present: False
+[2026-07-29 19:45:50,270] INFO: xray available: False
+[2026-07-29 19:45:50,270] WARNING: Java version detection error: name 'detect_java_version' is not defined
+[2026-07-29 19:45:50,270] WARNING: Node.js version detection error: name 'detect_node_version' is not defined
+[2026-07-29 19:45:50,270] INFO: Starting in stdio mode...
+[2026-07-29 19:45:50,270] INFO: ==================================================
+[2026-07-29 19:45:50,292] INFO: Processing request of type ListToolsRequest
+[2026-07-29 19:45:50,297] INFO: Processing request of type ListResourcesRequest
+[2026-07-29 19:45:50,298] INFO: Processing request of type ListResourceTemplatesRequest

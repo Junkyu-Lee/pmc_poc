@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<title>NovaHome Connect — Stage 1 & 2 Detailed Tool Data (v3)</title>
+<style>
+  body { font-family: 'Inter', sans-serif; padding: 2rem; background: #f8f9fa; color: #1e293b; }
+  .tool-section { background: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  h1 { color: #0f2743; }
+  h2 { color: #0284c7; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+  h3 { color: #0369a1; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.75rem; text-align: left; }
+  th { background: #f1f5f9; }
+</style>
+</head>
+<body>
+<h1>NovaHome Connect — PMBOK Tool Data (v3)</h1>
+<p>Detailed analysis tools for 5 core problems identified in the NovaHome Connect project.</p>
+
+<!-- Problem 1 -->
+<div class="tool-section" id="prob1">
+  <h2>1. 독단적 범위 결정 및 협의 부재 (Scope Creep/Cut)</h2>
+  
+  <h3>Tool 1-A: Stakeholder Register (이해관계자 등록부)</h3>
+  <table>
+    <tr><th>이해관계자</th><th>영향력/관심도</th><th>주요 기대사항</th><th>이슈</th></tr>
+    <tr><td>이현수 (Sponsor)</td><td>High / High</td><td>11/15 글로벌 론칭, 비즈니스 가치 창출</td><td>소셜 로그인 제외 결정 미보고로 인한 분노</td></tr>
+    <tr><td>최서린 (PO)</td><td>High / High</td><td>캠페인 연계를 위한 소셜 로그인(REQ-017) 포함</td><td>PM의 일방적 제외 통보로 인한 마찰</td></tr>
+  </table>
+
+  <h3>Tool 1-B: Change Log (변경 기록부)</h3>
+  <table>
+    <tr><th>CR ID</th><th>변경 항목</th><th>요청자</th><th>상태</th><th>비고</th></tr>
+    <tr><td>CR-012</td><td>소셜 로그인(REQ-017) 베타 제외</td><td>이도윤 PM</td><td>Rejected/Bypassed</td><td>CCB 미승인 상태로 PM 임의 결정</td></tr>
+  </table>
+
+  <h3>Tool 1-C: Requirements Traceability Matrix (요구사항 추적 매트릭스)</h3>
+  <table>
+    <tr><th>Req ID</th><th>요구사항 설명</th><th>비즈니스 목표</th><th>현재 상태</th></tr>
+    <tr><td>REQ-017</td><td>소셜 로그인 추가</td><td>분기 캠페인 핵심 메시지, 사용자 유입</td><td>내부 데모만 허용 (외부 미노출)</td></tr>
+  </table>
+
+  <h3>Tool 1-D: Responsibility Assignment Matrix (RACI)</h3>
+  <table>
+    <tr><th>Activity</th><th>PM</th><th>PO</th><th>Sponsor</th></tr>
+    <tr><td>베타 기능 범위 확정</td><td>R, A (문제발생점)</td><td>C (무시됨)</td><td>I (누락됨)</td></tr>
+  </table>
+</div>
+
+<!-- Problem 2 -->
+<div class="tool-section" id="prob2">
+  <h2>2. 외부 벤더 의존성 관리 실패 (Vendor Dependency)</h2>
+  
+  <h3>Tool 2-A: Critical Path Method (CPM)</h3>
+  <table>
+    <tr><th>Activity</th><th>Duration</th><th>Predecessors</th><th>Slack</th></tr>
+    <tr><td>Nebula SDK 2.4 Upgrade</td><td>2d (10/5-6)</td><td>-</td><td>0 (Critical)</td></tr>
+    <tr><td>Geo-IP Allowlist Request</td><td>7d</td><td>SDK Upgrade</td><td>-5d (Delayed)</td></tr>
+  </table>
+
+  <h3>Tool 2-B: Vendor SLA Tracking</h3>
+  <table>
+    <tr><th>Vendor</th><th>Metric</th><th>Target</th><th>Current</th></tr>
+    <tr><td>NebulaWorks</td><td>SDK Support Response</td><td>&lt; 24h</td><td>Compliant</td></tr>
+    <tr><td>NebulaWorks</td><td>Geo-IP Lead Time</td><td>5-7 days</td><td>Warning (Past experience: 14 days)</td></tr>
+  </table>
+
+  <h3>Tool 2-C: Milestone Chart</h3>
+  <table>
+    <tr><th>Milestone</th><th>Planned Date</th><th>Actual/Forecast</th><th>Status</th></tr>
+    <tr><td>Integration Test (Vendor)</td><td>10/07 - 10/12</td><td>Not scheduled</td><td>Blocked</td></tr>
+  </table>
+
+  <h3>Tool 2-D: Risk Register (Vendor)</h3>
+  <table>
+    <tr><th>Risk ID</th><th>Description</th><th>Probability</th><th>Impact</th></tr>
+    <tr><td>RSK-008</td><td>Geo-IP enforcement (11/01) blocks EU users</td><td>High (80%)</td><td>Critical (Launch Failure)</td></tr>
+  </table>
+</div>
+
+<!-- Problem 3 -->
+<div class="tool-section" id="prob3">
+  <h2>3. 변경 통제 부재로 인한 품질 불안정 (Quality/CR)</h2>
+  
+  <h3>Tool 3-A: Control Chart (성능 지표)</h3>
+  <table>
+    <tr><th>Metric</th><th>UCL (Upper Control Limit)</th><th>Average</th><th>Latest Point</th></tr>
+    <tr><td>/me/devices Response p95</td><td>300ms</td><td>220ms</td><td>410ms (Out of Control)</td></tr>
+  </table>
+
+  <h3>Tool 3-B: Defect Density & CI Metrics</h3>
+  <table>
+    <tr><th>Metric</th><th>Target</th><th>Current</th></tr>
+    <tr><td>CI Build Success Rate</td><td>&gt;= 85%</td><td>78%</td></tr>
+    <tr><td>RTM Reconnect Failures</td><td>0%</td><td>5.2% (Intermittent)</td></tr>
+  </table>
+
+  <h3>Tool 3-C: Root Cause Analysis (Fishbone output)</h3>
+  <ul>
+    <li>Method: Environment -&gt; Code Cache Policy change without CR -&gt; Test cases invalidated.</li>
+  </ul>
+
+  <h3>Tool 3-D: Quality Metrics Status</h3>
+  <table>
+    <tr><th>Req ID</th><th>Feature</th><th>Error Rate Goal</th><th>Current Error Rate</th></tr>
+    <tr><td>REQ-003</td><td>Device Registration</td><td>&lt;= 0.2%</td><td>0.35% (Blocked by Cache)</td></tr>
+  </table>
+</div>
+
+<!-- Problem 4 -->
+<div class="tool-section" id="prob4">
+  <h2>4. 보안 및 규제 요구사항 식별 지연 (Compliance)</h2>
+  
+  <h3>Tool 4-A: Compliance Checklist</h3>
+  <table>
+    <tr><th>Item</th><th>Requirement</th><th>Status</th></tr>
+    <tr><td>EU Privacy Mode</td><td>Keepalive interval adjustment</td><td>Pending Action</td></tr>
+    <tr><td>RTM Consent Terms</td><td>Update user terms</td><td>Draft Missing (CRB Delayed)</td></tr>
+  </table>
+
+  <h3>Tool 4-B: Issue Log</h3>
+  <table>
+    <tr><th>Issue ID</th><th>Description</th><th>Owner</th><th>Due Date</th></tr>
+    <tr><td>ISS-014</td><td>Security terms lacking RTM wording</td><td>윤세라 (Security)</td><td>10/10 (Draft)</td></tr>
+  </table>
+
+  <h3>Tool 4-C: Prompt List (Risk Categories)</h3>
+  <ul>
+    <li>Legal/Regulatory: Potential penalty for EU GDPR violation if RTM consent is missed.</li>
+  </ul>
+
+  <h3>Tool 4-D: Probability and Impact Matrix</h3>
+  <table>
+    <tr><th>Risk</th><th>P</th><th>I</th><th>Score</th></tr>
+    <tr><td>CRB Rejection of Terms</td><td>Medium (3)</td><td>High (5)</td><td>15 (Red)</td></tr>
+  </table>
+</div>
+
+<!-- Problem 5 -->
+<div class="tool-section" id="prob5">
+  <h2>5. 문서화 지연에 따른 도메인 파급효과 (Team/Schema)</h2>
+  
+  <h3>Tool 5-A: Resource Histogram</h3>
+  <table>
+    <tr><th>Role</th><th>Planned Allocation</th><th>Actual (Due to rework)</th></tr>
+    <tr><td>QA (문해인)</td><td>100%</td><td>140% (Overloaded)</td></tr>
+    <tr><td>FE (강민재)</td><td>100%</td><td>130% (Overloaded)</td></tr>
+  </table>
+
+  <h3>Tool 5-B: Communications Management Plan</h3>
+  <table>
+    <tr><th>Information</th><th>Sender</th><th>Receiver</th><th>Frequency</th></tr>
+    <tr><td>Schema v3 Docs</td><td>Device Lead</td><td>FE, BE, QA</td><td>Ad-hoc (Delayed to 18:00 today)</td></tr>
+  </table>
+
+  <h3>Tool 5-C: Sprint Burndown Chart Data</h3>
+  <table>
+    <tr><th>Day</th><th>Planned Remaining (pts)</th><th>Actual Remaining</th></tr>
+    <tr><td>Day 8</td><td>40</td><td>65 (Stagnant)</td></tr>
+  </table>
+
+  <h3>Tool 5-D: Team Morale Survey (Proxy)</h3>
+  <ul>
+    <li>Blind Post Sentiment: Highly Negative (Burnout, Siloed info, Unplanned rework)</li>
+  </ul>
+</div>
+
+</body>
+</html>

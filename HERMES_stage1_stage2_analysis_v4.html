@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HERMES Project — 분석 및 AI 에이전트 적용 리포트 (v4)</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-alt: #334155;
+    --primary: #38bdf8;
+    --primary-dark: #0284c7;
+    --accent: #a855f7;
+    --red: #f43f5e;
+    --text: #f8fafc;
+    --border: #475569;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+  header h1 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+  .slide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .slide-title { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+  .slide-num { background: var(--primary-dark); color: #fff; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem;}
+  table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.95rem; }
+  th, td { border-bottom: 1px solid var(--border); padding: 0.8rem; text-align: left; }
+  th { background: var(--surface-alt); color: var(--primary); }
+  .svg-container { background: var(--surface-alt); padding: 2rem; border-radius: 12px; text-align: center; margin: 1.5rem 0;}
+  .flex-row { display: flex; gap: 2rem; align-items: stretch; }
+  .flex-col { flex: 1; }
+  .alert-box { background: rgba(244, 63, 94, 0.1); border-left: 4px solid var(--red); padding: 1rem; border-radius: 4px; margin-bottom: 1rem;}
+  .badge { display:inline-block; padding: 0.2rem 0.5rem; background: var(--surface-alt); border-radius:4px; font-size:0.85rem; margin-right: 0.5rem; color: #cbd5e1; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>HERMES 프로젝트 종합 진단 보고서</h1>
+  <div class="subtitle">글로벌 표준 프레임워크 기반의 Root Cause 분석 및 AI Agent 통제 체계 구축 방안</div>
+</header>
+
+<!-- SLIDE 01 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Executive Summary & Gap Analysis</h2>
+    <span class="slide-num">SLIDE 01</span>
+  </div>
+  <p>AI 자율주행 로봇청소기 'HERMES' 프로젝트는 상용 배포 2개월 전 시점에 예산 120% 초과, 일정 2개월 지연, 현장 성공률 58%라는 치명적 붕괴를 맞이했습니다.</p>
+  <p>제공된 18종의 Data Pack을 교차 검증한 결과, 본 위기는 단순한 기술 스택의 한계가 아니라 <strong>가짜 성과(Vanity Metrics) 조작, 변경 통제 실패, 리스크 방치, 현장 데이터 왜곡</strong> 등 구조적(Systemic) 원인에서 비롯되었습니다. 글로벌 표준 프레임워크 관점에서 핵심 원인을 분석하고, 향후 이러한 파국을 예방하기 위한 AI Agent 기반의 미래 통제 방안을 제시합니다.</p>
+</div>
+
+<!-- SLIDE 02 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Impact-Urgency Prioritization Matrix</h2>
+    <span class="slide-num">SLIDE 02</span>
+  </div>
+  <table>
+    <tr><th>우선순위</th><th>문제 영역</th><th>영향도(Impact)</th><th>시급성(Urgency)</th><th>Risk Level</th></tr>
+    <tr style="background:rgba(244, 63, 94, 0.1);"><td>1</td><td>무분별한 요구사항 변경 통제 실패 (Scope Creep)</td><td>High</td><td>High</td><td>Critical</td></tr>
+    <tr style="background:rgba(244, 63, 94, 0.1);"><td>2</td><td>가짜 성과(Vanity Metrics) 조작 및 지표 왜곡</td><td>High</td><td>High</td><td>Critical</td></tr>
+    <tr style="background:rgba(244, 63, 94, 0.1);"><td>3</td><td>식별된 리스크 방치 및 대응 계획 부재</td><td>High</td><td>High</td><td>Critical</td></tr>
+    <tr style="background:rgba(244, 63, 94, 0.1);"><td>4</td><td>현장 데이터 외면과 품질 테스트 왜곡</td><td>High</td><td>Medium</td><td>High</td></tr>
+    <tr style="background:rgba(244, 63, 94, 0.1);"><td>5</td><td>회고(Retrospective) 생략 및 팀 소통 파괴</td><td>Medium</td><td>High</td><td>High</td></tr>
+  </table>
+</div>
+
+<!-- SLIDE 03 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Core Problem 1: 요구사항 변경 통제 실패 (Scope Creep)</h2>
+    <span class="slide-num">SLIDE 03</span>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col" style="flex: 0 0 200px; display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 100 100" width="150" height="150">
+        <rect width="100" height="100" fill="#1e293b" rx="10"/>
+        <circle cx="50" cy="50" r="30" fill="none" stroke="#f43f5e" stroke-width="4" stroke-dasharray="10 5"/>
+        <path d="M50 20 L50 80 M20 50 L80 50" stroke="#f97316" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="flex-col">
+      <div class="alert-box"><strong>데이터 디텍팅:</strong> `05_change_requests.csv`에서 VLM 클라우드 아키텍처 변경을 수반하는 CR이 PM 승인하에 강행되었고, 직후 `07_ai_infra_cost.csv` 인프라 예산이 폭증한 인과관계를 식별.</div>
+      <p><strong>근본 원인 (Mindset):</strong> Ownership 부재. PM이 본인이 승인한 거대한 스코프 변경의 후속 파급효과(클라우드 과금)를 통제하지 않고 책임 회피.</p>
+      <p><strong>도메인 매핑:</strong> <span class="badge">Planning Domain</span> <span class="badge">Delivery Domain</span></p>
+      <p><strong>AI Use Case (Scope Predictor):</strong> CR 등록 시 아키텍처 의존성과 클라우드 API 호출량 변화를 기반으로 향후 인프라 예산 증분을 자동 시뮬레이션하여 승인권자에게 경고 창을 띄움.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 04 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Core Problem 2: 가짜 성과 조작 및 지표 왜곡</h2>
+    <span class="slide-num">SLIDE 04</span>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col" style="flex: 0 0 200px; display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 100 100" width="150" height="150">
+        <rect width="100" height="100" fill="#1e293b" rx="10"/>
+        <path d="M20 80 L40 60 L60 70 L80 20" fill="none" stroke="#22c55e" stroke-width="4"/>
+        <path d="M20 80 L80 80" fill="none" stroke="#f43f5e" stroke-width="4" stroke-dasharray="5 5"/>
+      </svg>
+    </div>
+    <div class="flex-col">
+      <div class="alert-box"><strong>데이터 디텍팅:</strong> `06_evm_weekly.csv`는 30주차까지 완벽한 Green이나, `04_jira_issues.csv`를 대조하면 완료된 Task의 평균 난이도(Story Point)가 지속 추락(3.2 → 1.5)하는 눈가림 패턴 발각.</div>
+      <p><strong>근본 원인 (Mindset):</strong> Value-driven 부재. 실질적 프로젝트 완성보다 거버넌스용 성과 지표(SPI) 달성에만 매몰됨.</p>
+      <p><strong>도메인 매핑:</strong> <span class="badge">Measurement Domain</span> <span class="badge">Stakeholder Domain</span></p>
+      <p><strong>AI Use Case (Metrics Auditor):</strong> 표면적인 진척률뿐만 아니라 완료된 이슈의 복잡도, 적체된 Core 백로그 비율을 교차 분석하여 Vanity Metric 징후 발견 시 리더십에 Red Flag 통보.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 05 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Core Problem 3: 식별된 리스크 방치</h2>
+    <span class="slide-num">SLIDE 05</span>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col" style="flex: 0 0 200px; display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 100 100" width="150" height="150">
+        <rect width="100" height="100" fill="#1e293b" rx="10"/>
+        <polygon points="50,15 85,75 15,75" fill="none" stroke="#eab308" stroke-width="4"/>
+        <circle cx="50" cy="55" r="5" fill="#eab308"/>
+        <line x1="50" y1="35" x2="50" y2="45" stroke="#eab308" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="flex-col">
+      <div class="alert-box"><strong>데이터 디텍팅:</strong> `11_risk_register.csv`에 High Impact의 클라우드 비용 리스크(RSK-06)가 5월 20일 등록되었으나, 대응 계획(Mitigation Plan)이 수개월째 '공란'인 점 발견.</div>
+      <p><strong>근본 원인 (Mindset):</strong> Proactive 부재. 리스크를 식별만 하고 후속 대응 조치와 예비비 할당을 하지 않는 치명적 수동성.</p>
+      <p><strong>도메인 매핑:</strong> <span class="badge">Risk Domain</span> <span class="badge">Project Work Domain</span></p>
+      <p><strong>AI Use Case (Risk Tracker):</strong> High 등급 리스크 등록 후 72시간 내 대응 계획이 등록되지 않으면, 슬랙/팀즈 봇이 PM 및 스폰서 채널로 지속적인 경고 및 조치 촉구 알림 발송.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 06 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Core Problem 4: 현장 데이터 외면과 품질 왜곡</h2>
+    <span class="slide-num">SLIDE 06</span>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col" style="flex: 0 0 200px; display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 100 100" width="150" height="150">
+        <rect width="100" height="100" fill="#1e293b" rx="10"/>
+        <path d="M30 30 h40 v40 h-40 z" fill="none" stroke="#38bdf8" stroke-width="4"/>
+        <circle cx="50" cy="50" r="10" fill="#f43f5e"/>
+      </svg>
+    </div>
+    <div class="flex-col">
+      <div class="alert-box"><strong>데이터 디텍팅:</strong> 랩 테스트 성공률(93%)과 현장 실사업장 성공률(58%) 간의 극단적 격차(`10_navigation_eval_vs_field.csv`). 모든 핵심 편익 지표(`02_benefit_register.csv`) 측정 포기 상태.</div>
+      <p><strong>근본 원인 (Mindset):</strong> Value-driven 부재. 고객이 겪는 실제 현장 품질(VLM 할루시네이션, 통신 단절)을 도외시함.</p>
+      <p><strong>도메인 매핑:</strong> <span class="badge">Quality Domain</span> <span class="badge">Measurement Domain</span></p>
+      <p><strong>AI Use Case (Field Insight):</strong> 실물 기기 텔레메트리 에러 로그와 CI/CD 커버리지를 실시간 매핑하여, 랩실-현장 간 괴리도 임계치 초과 시 추가 상용 배포 파이프라인 차단.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 07 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Core Problem 5: 팀 소통 파괴와 은폐</h2>
+    <span class="slide-num">SLIDE 07</span>
+  </div>
+  <div class="flex-row">
+    <div class="flex-col" style="flex: 0 0 200px; display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 100 100" width="150" height="150">
+        <rect width="100" height="100" fill="#1e293b" rx="10"/>
+        <line x1="20" y1="20" x2="80" y2="80" stroke="#f43f5e" stroke-width="6"/>
+        <line x1="80" y1="20" x2="20" y2="80" stroke="#f43f5e" stroke-width="6"/>
+      </svg>
+    </div>
+    <div class="flex-col">
+      <div class="alert-box"><strong>데이터 디텍팅:</strong> 41건의 익명 불만이 쏟아진 회고 보드가 스티어링 커미티 의사록(`15_governance_log.csv`)에 전혀 보고되지 않고 6월부터 회고 자체가 증발됨.</div>
+      <p><strong>근본 원인 (Mindset):</strong> Proactive / Ownership 동시 붕괴. 개선을 위한 피드백 루프(Agile Practice)를 끊고 위기를 조직 상부에 은폐함.</p>
+      <p><strong>도메인 매핑:</strong> <span class="badge">Team Domain</span> <span class="badge">Development Approach Domain</span></p>
+      <p><strong>AI Use Case (Voice of Team Analyzer):</strong> 익명 게시판 텍스트, 메신저 감성 분석, Jira 야근 커밋 비율 등을 종합 처리하여 프로젝트 조직 건강 지표(Burnout Index)를 자동 생성.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 08 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Causal Relationship Map (원인-결과 구조도)</h2>
+    <span class="slide-num">SLIDE 08</span>
+  </div>
+  <div class="svg-container">
+    <svg width="800" height="400" viewBox="0 0 800 400">
+      <rect width="800" height="400" fill="#1e293b" rx="12"/>
+      
+      <!-- Nodes -->
+      <g transform="translate(50, 150)"><rect width="160" height="60" rx="8" fill="#f43f5e"/><text x="130" y="185" fill="#fff" text-anchor="middle" font-size="14">통제 없는 범위 확장</text></g>
+      <g transform="translate(300, 50)"><rect width="160" height="60" rx="8" fill="#38bdf8"/><text x="380" y="85" fill="#fff" text-anchor="middle" font-size="14">아키텍처/클라우드 의존</text></g>
+      <g transform="translate(300, 250)"><rect width="160" height="60" rx="8" fill="#eab308"/><text x="380" y="285" fill="#fff" text-anchor="middle" font-size="14">성과 지표(EVM) 조작</text></g>
+      <g transform="translate(550, 50)"><rect width="160" height="60" rx="8" fill="#a855f7"/><text x="630" y="85" fill="#fff" text-anchor="middle" font-size="14">비용 폭증 / 예산 고갈</text></g>
+      <g transform="translate(550, 250)"><rect width="160" height="60" rx="8" fill="#22c55e"/><text x="630" y="285" fill="#fff" text-anchor="middle" font-size="14">품질 파괴 및 런칭 불가</text></g>
+      <g transform="translate(300, 150)"><rect width="140" height="40" rx="8" fill="#64748b"/><text x="370" y="175" fill="#fff" text-anchor="middle" font-size="12">회고/소통 단절 (가속화)</text></g>
+
+      <!-- Edges -->
+      <path d="M 210 180 L 300 80" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 210 180 L 300 280" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 460 80 L 550 80" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 460 280 L 550 280" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+      <path d="M 370 190 L 380 250" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5" marker-end="url(#arrow)"/>
+
+      <!-- Marker -->
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+
+<!-- SLIDE 09 -->
+<div class="slide-card">
+  <div class="slide-header">
+    <h2 class="slide-title">Mindset Synthesis (미래 지향적 해결 방안)</h2>
+    <span class="slide-num">SLIDE 09</span>
+  </div>
+  <table>
+    <tr><th>Mindset Dimension</th><th>Current State (As-Is)</th><th>Future State with AI Agent (To-Be)</th></tr>
+    <tr>
+      <td><strong>Proactive (선제적)</strong></td>
+      <td>리스크를 문서(대장)에 기록만 해두고 문제가 터질 때까지 방치함</td>
+      <td><strong>Risk Tracker</strong>를 통해 Mitigation 공백 시 봇이 선제적으로 에스컬레이션하여 사전 차단</td>
+    </tr>
+    <tr>
+      <td><strong>Ownership (소유권)</strong></td>
+      <td>PM이 통제 밖의 일이라 책임 전가 / 팀원 간 책임을 미루는 사일로 형성</td>
+      <td><strong>Scope Predictor</strong>가 요구사항 변경 시 파생되는 전체 비용과 구조를 가시화, 승인자의 결정 소유권 명확화</td>
+    </tr>
+    <tr>
+      <td><strong>Value-Driven (가치 중심)</strong></td>
+      <td>거짓된 진척도(SPI 1.0)를 맞추기 위한 태스크 체리피킹. 고객 현장 지표 외면</td>
+      <td><strong>Field Insight & Metrics Auditor</strong>로 현장 데이터 기반 실질적 가치 측정체계를 강제 연동</td>
+    </tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>

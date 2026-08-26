@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HERMES Project - PMBOK 8판 퍼포먼스 도메인 진단 리포트</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface-alt: #334155;
+    --primary: #38bdf8;
+    --primary-dark: #0284c7;
+    --accent: #a855f7;
+    --red: #f43f5e;
+    --green: #22c55e;
+    --orange: #f97316;
+    --text: #f8fafc;
+    --text-muted: #cbd5e1;
+    --border: #475569;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  h1 { color: var(--primary); font-size: 2.2rem; font-weight: 800; border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+  h2 { margin-top: 3rem; font-size: 1.5rem; color: #fff; background: var(--surface-alt); padding: 1rem 1.5rem; border-radius: 8px; border-left: 5px solid var(--primary); }
+  .section-red h2 { border-left-color: var(--red); }
+  .section-orange h2 { border-left-color: var(--orange); }
+  .section-green h2 { border-left-color: var(--green); }
+  
+  .domain-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  .domain-title { font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .badge { padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; }
+  .badge.red { background: rgba(244, 63, 94, 0.2); color: var(--red); }
+  .badge.orange { background: rgba(249, 115, 22, 0.2); color: var(--orange); }
+  .badge.green { background: rgba(34, 197, 94, 0.2); color: var(--green); }
+  
+  ul { padding-left: 1.5rem; color: var(--text-muted); }
+  li { margin-bottom: 0.8rem; }
+  strong { color: var(--text); }
+  .description { margin-bottom: 1.5rem; font-size: 1.05rem; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>프로젝트 HERMES 퍼포먼스 도메인 심층 진단 리포트 (PMBOK 8판 기준)</h1>
+  <p class="description">본 문서는 PMBOK 8판의 8대 퍼포먼스 도메인(Performance Domains)을 기준으로 프로젝트 HERMES의 현황을 분석한 결과입니다. 위기의 근본 원인(Root Cause)이 된 도메인부터, 표면적으로는 문제처럼 보이나 실제로는 기계적으로 정상 작동했던(함정) 도메인까지 우선순위에 따라 분류했습니다.</p>
+
+  <div class="section-red">
+    <h2>🚨 [우선순위 1] 치명적 붕괴 영역 (Critical Failures)</h2>
+    
+    <div class="domain-card">
+      <div class="domain-title">
+        1. Measurement (측정 도메인) <span class="badge red">1순위 문제</span>
+      </div>
+      <p class="description">프로젝트 전체의 방향을 잃게 만든 가장 치명적인 근본 원인입니다. 진정한 가치 대신 '보고용 가짜 지표'에 매몰되었습니다.</p>
+      <ul>
+        <li><strong>가짜 성과(Vanity Metrics) 조작:</strong> PM은 SPI/CPI 1.0 유지를 압박했고, 개발팀은 Story Point 난이도를 지속 하락(3.2 ➔ 1.5)시키며 쉬운 일거리만 골라 처리하여 지표를 왜곡했습니다.</li>
+        <li><strong>비즈니스 가치 방치:</strong> 프로젝트의 목표인 편익 관리대장의 핵심 편익(BEN-01~05) 측정값이 전부 '공란'이었습니다.</li>
+        <li><strong>현장 데이터 은폐:</strong> 파일럿 현장에서의 '무개입 완주율(6.1%)' 지표는 AI 대시보드에서 의도적으로 배제되었습니다.</li>
+      </ul>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        2. Uncertainty (불확실성 도메인) <span class="badge red">2순위 문제</span>
+      </div>
+      <p class="description">리스크를 식별만 해두고, 실제 대응 조치를 취하지 않아 불확실성을 위기로 증폭시켰습니다.</p>
+      <ul>
+        <li><strong>대응 계획(Mitigation Plan) 공백:</strong> 클라우드 비용 폭증(RSK-06), EU 기계류규정 대응(RSK-04), 안전 인증 심사(RSK-08) 등 High Impact 리스크가 등록되었으나, 수개월간 대응 계획이 빈칸이었습니다.</li>
+        <li><strong>선제적 대응 부재:</strong> 리스크 관리의 기본인 Proactive 마인드셋이 결여되어 사건이 터질 때까지 방치했습니다.</li>
+      </ul>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        3. Delivery (인도물 도메인) <span class="badge red">3순위 문제</span>
+      </div>
+      <p class="description">무분별한 변경으로 인해 최종적으로 인도되는 결과물의 아키텍처와 품질, 컴플라이언스가 파괴되었습니다.</p>
+      <ul>
+        <li><strong>안전 규제(Safety)의 파편화:</strong> 미학습 상황에서의 '안전 폴백 동작'을 한국과 미국 팀이 서로 다르게 구현(DEC-07). 이는 글로벌 단일 안전 인증(ISO 13482) 획득을 불가능하게 만듭니다.</li>
+        <li><strong>법무 컴플라이언스 블로킹:</strong> 영상 국외 이전 처리 등 핵심 요구사항(REQ-061)이 법무 검토 대기로 블로킹되어 실질적인 런칭이 불가능합니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-orange">
+    <h2>⚠️ [우선순위 2] 주요 실패 및 경고 영역 (Major Failures & Warnings)</h2>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        4. Planning (계획 도메인) <span class="badge orange">주요 실패</span>
+      </div>
+      <ul>
+        <li><strong>Scope Creep 통제 실패:</strong> PO가 VLM 등 거대한 아키텍처 변경을 요구했을 때, PM은 인프라 예산 파급효과 계산 없이 무비판적으로 승인(CR-001, 002)하여 예산 붕괴를 초래했습니다.</li>
+      </ul>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        5. Team (팀 도메인) <span class="badge orange">주요 실패</span>
+      </div>
+      <ul>
+        <li><strong>소통 채널 및 심리적 안전감 붕괴:</strong> 6월부터 스프린트 회고가 생략되었습니다. 익명 보드에 쏟아진 41건의 치명적 징후가 거버넌스 회의에 단 한 건도 보고되지 않고 은폐되었습니다.</li>
+        <li><strong>리전 간 사일로:</strong> 안전 규제와 관련된 이메일 경고에도 해외팀은 묵묵부답으로 독자 개발을 강행했습니다.</li>
+      </ul>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        6. Stakeholders (이해관계자 도메인) <span class="badge orange">경고</span>
+      </div>
+      <ul>
+        <li><strong>정보 비대칭과 기만:</strong> PM은 스티어링 커미티(CTO)와 AI 어시스턴트에게 유리한 지표(CI 89% 등)만 선별 제공하여, 스폰서가 파국 직전까지 위기를 인지하지 못하게 만들었습니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-green">
+    <h2>🟢 [우선순위 3] 기계적으로 정상이었던 함정 도메인 (Misleadingly Healthy)</h2>
+    <p class="description">이 영역은 겉으로는 문제가 있어 보일 수 있으나, 데이터상 시스템(프레임워크) 자체는 돌아가고 있었습니다. 실패의 '근본 원인'으로 지적하면 감점될 수 있는 함정입니다.</p>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        7. Development Approach & Life Cycle (개발 접근법 및 생명주기 도메인) <span class="badge green">정상 작동 (함정)</span>
+      </div>
+      <ul>
+        <li><strong>판단 근거:</strong> "스프린트는 2주 단위로 잘 돌아갔고, 매일 데일리 스크럼도 했습니다"라는 증언에서 보듯, 애자일 프레임워크 자체의 도입과 사이클 유지는 이루어졌습니다. <strong>애자일 방식 자체가 잘못된 것이 아니라, 그 껍데기 안에서 지표를 조작한 리더십의 문제</strong>입니다.</li>
+      </ul>
+    </div>
+
+    <div class="domain-card">
+      <div class="domain-title">
+        8. Project Work (프로젝트 작업 도메인) <span class="badge green">정상 작동 (함정)</span>
+      </div>
+      <ul>
+        <li><strong>판단 근거:</strong> 개발자들은 놀지 않았습니다. 월별 완료 태스크 수(45개 ➔ 60개 ➔ 58개)와 속도(Velocity)는 일정하게 유지되었습니다. 잘못된 우선순위(어려운 VLM 최적화 대신 가벼운 UI 수정)가 문제였을 뿐, 실무자들의 '프로젝트 작업(Work)' 그 자체는 멈추지 않고 수행되었습니다.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

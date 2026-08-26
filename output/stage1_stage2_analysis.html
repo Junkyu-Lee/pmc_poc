@@ -1,0 +1,1102 @@
+<title>NovaHome Connect 분석</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-alt: #f0eeea;
+  --text: #1a1a1a;
+  --text-muted: #5c5a56;
+  --text-light: #8a8780;
+  --accent: #c44b2b;
+  --accent-light: #f4e8e4;
+  --border: #e2e0db;
+  --border-light: #eeece8;
+  --tag-red: #dc3545;
+  --tag-red-bg: #fdf0f0;
+  --tag-orange: #d97706;
+  --tag-orange-bg: #fef9ed;
+  --tag-blue: #2563eb;
+  --tag-blue-bg: #eff4ff;
+  --tag-green: #16a34a;
+  --tag-green-bg: #f0fdf4;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141312;
+    --surface: #1e1d1b;
+    --surface-alt: #262523;
+    --text: #e8e6e3;
+    --text-muted: #a09d98;
+    --text-light: #6b6864;
+    --accent: #e06040;
+    --accent-light: #2d1f1a;
+    --border: #333230;
+    --border-light: #2a2928;
+    --tag-red: #f87171;
+    --tag-red-bg: #2a1515;
+    --tag-orange: #fbbf24;
+    --tag-orange-bg: #2a2210;
+    --tag-blue: #60a5fa;
+    --tag-blue-bg: #151d2a;
+    --tag-green: #4ade80;
+    --tag-green-bg: #0f2a18;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141312;
+  --surface: #1e1d1b;
+  --surface-alt: #262523;
+  --text: #e8e6e3;
+  --text-muted: #a09d98;
+  --text-light: #6b6864;
+  --accent: #e06040;
+  --accent-light: #2d1f1a;
+  --border: #333230;
+  --border-light: #2a2928;
+  --tag-red: #f87171;
+  --tag-red-bg: #2a1515;
+  --tag-orange: #fbbf24;
+  --tag-orange-bg: #2a2210;
+  --tag-blue: #60a5fa;
+  --tag-blue-bg: #151d2a;
+  --tag-green: #4ade80;
+  --tag-green-bg: #0f2a18;
+  --shadow: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 56px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.3;
+  text-wrap: balance;
+  margin-bottom: 12px;
+}
+
+.header-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 640px;
+}
+
+/* Stage sections */
+.stage {
+  margin-bottom: 64px;
+}
+
+.stage-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  letter-spacing: 0.02em;
+}
+
+.stage-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  line-height: 1.4;
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.card-header .badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+
+.badge-critical { background: var(--tag-red-bg); color: var(--tag-red); }
+.badge-high { background: var(--tag-orange-bg); color: var(--tag-orange); }
+.badge-info { background: var(--tag-blue-bg); color: var(--tag-blue); }
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+thead {
+  background: var(--surface-alt);
+}
+
+th {
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+
+/* Status indicators */
+.status-fail {
+  color: var(--tag-red);
+  font-weight: 600;
+}
+
+.status-ok {
+  color: var(--tag-green);
+  font-weight: 600;
+}
+
+/* Section headings inside cards */
+.section-heading {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 24px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.section-heading:first-child { margin-top: 0; }
+
+/* Problem cards */
+.problem-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.problem-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 28px;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.problem-num {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.problem-card-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.problem-card-body {
+  padding: 24px 28px;
+}
+
+/* Analysis blocks */
+.analysis-block {
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+
+.analysis-block h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.analysis-block p, .analysis-block li {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.analysis-block ul {
+  padding-left: 18px;
+}
+
+.analysis-block li {
+  margin-bottom: 4px;
+}
+
+/* Why chain */
+.why-chain {
+  margin: 16px 0;
+  padding: 16px 20px;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  line-height: 2;
+  color: var(--text-muted);
+  overflow-x: auto;
+}
+
+.why-chain .why-q {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.why-chain .why-a {
+  color: var(--text);
+  padding-left: 16px;
+}
+
+/* AI use case boxes */
+.ai-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ai-item {
+  padding: 16px;
+  background: var(--surface-alt);
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+
+.ai-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tag-blue);
+  margin-bottom: 6px;
+}
+
+.ai-item-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Domain tags */
+.domain-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.domain-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: var(--tag-blue-bg);
+  color: var(--tag-blue);
+}
+
+.domain-tag.primary {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Causal map */
+.causal-map {
+  padding: 24px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.causal-map pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+/* Insight box */
+.insight {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+}
+
+.insight-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.insight p {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.8;
+}
+
+/* Priority table highlight */
+.priority-row td:first-child {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* Flow diagram */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 20px 0;
+  overflow-x: auto;
+  padding: 16px 0;
+}
+
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.flow-step-box {
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.flow-step-label {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.flow-arrow {
+  font-size: 18px;
+  color: var(--text-light);
+  padding: 0 4px;
+}
+
+/* Summary matrix */
+.summary-matrix {
+  margin-top: 40px;
+}
+
+@media (max-width: 640px) {
+  .container { padding: 32px 16px 64px; }
+  .header h1 { font-size: 22px; }
+  .problem-card-body { padding: 20px; }
+  .problem-card-header { padding: 16px 20px; }
+  .card { padding: 20px; }
+  .flow { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-eyebrow">LG SW PM Competition 2025 — Final Round</div>
+    <h1>NovaHome Connect 프로젝트<br>이상징후 식별 & 근본원인 분석</h1>
+    <p class="header-sub">모의 프로젝트 시나리오 Case Study — Stage ① Identify & Stage ② Analyze</p>
+  </header>
+
+  <!-- ===== STAGE 1 ===== -->
+  <section class="stage">
+    <div class="stage-label">Stage ①</div>
+    <h2 class="stage-title">Identify — 프로젝트 파악 & 이상징후 식별</h2>
+
+    <!-- Project Overview -->
+    <div class="card">
+      <div class="card-header">
+        <h3>프로젝트 개요</h3>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td style="width:160px;font-weight:600;">프로젝트명</td><td>NovaHome Connect</td></tr>
+            <tr><td style="font-weight:600;">목표</td><td>가전·디바이스 연동 엔드투엔드 스마트홈 서비스 플랫폼 구축</td></tr>
+            <tr><td style="font-weight:600;">기간</td><td>2025.08 ~ 2025.11 (4개월)</td></tr>
+            <tr><td style="font-weight:600;">론칭일</td><td>2025.11.15 글로벌 동시 론칭</td></tr>
+            <tr><td style="font-weight:600;">운영 방식</td><td>Agile Scrum (2주 스프린트) + 마일스톤 게이트(G1~G5) 병행</td></tr>
+            <tr><td style="font-weight:600;">외부 파트너</td><td>NebulaWorks (인증), AdVantage (캠페인/트래킹)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Success Criteria -->
+    <div class="card">
+      <div class="card-header">
+        <h3>성공 기준 대비 현황</h3>
+        <span class="badge badge-critical">전 항목 미달</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>KPI</th><th>목표치</th><th>현재 상태</th><th>판정</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>서비스 응답속도 (p95)</td><td>≤ 300ms</td><td>350~410ms</td><td class="status-fail">미달</td></tr>
+            <tr><td>5xx 오류율</td><td>≤ 0.2%</td><td>0.35%</td><td class="status-fail">미달</td></tr>
+            <tr><td>RTM 장애</td><td>0건</td><td>간헐적 재연결 실패</td><td class="status-fail">미달</td></tr>
+            <tr><td>CI 빌드 성공률</td><td>≥ 85%</td><td>78%</td><td class="status-fail">미달</td></tr>
+            <tr><td>G5 시점 High 리스크</td><td>전부 해소</td><td>다수 미해소</td><td class="status-fail">미달</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Symptoms by Area -->
+    <div class="card">
+      <div class="card-header">
+        <h3>영역별 이상징후 식별</h3>
+      </div>
+
+      <h4 class="section-heading">A. 범위(Scope) 관련</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이상징후</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>A1</td><td>Deferred였던 소셜 로그인(REQ-017)이 공식 프로세스 없이 베타 투입</td><td>PM "비노출" 합의 → PO 마케팅 압박에 독단 반영</td></tr>
+            <tr><td>A2</td><td>범위 변경이 Change Control 없이 실행</td><td>CR 미등록 캐시 정책 변경(BE), 소셜 로그인 착수(PO)</td></tr>
+            <tr><td>A3</td><td>요구사항 간 의존관계 미관리</td><td>REQ-011 Blocked → REQ-015 의존 → REQ-024 연쇄 영향</td></tr>
+            <tr><td>A4</td><td>Scope Freeze(G1) 이후에도 범위 계속 변동</td><td>소셜 로그인 재투입, 스키마 v3 부분 적용</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="section-heading">B. 일정/자원(Schedule/Resource) 관련</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이상징후</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>B1</td><td>SDK 2.4 연동 테스트가 캘린더에 미반영</td><td>BE 직접 언급 + 16:30 점검 "미반영" 확인</td></tr>
+            <tr><td>B2</td><td>통합 테스트 슬롯 미확보 상태에서 기능 추가</td><td>QA: "로그인 케이스 40개 추가, 전수 검증 불가능"</td></tr>
+            <tr><td>B3</td><td>Geo-IP Allowlist 리드타임 과소평가</td><td>공식 5~7일, 실제 2주 소요 이력(박소연 PM 증언)</td></tr>
+            <tr><td>B4</td><td>촉박한 일정에 리소스 여유 없음</td><td>블라인드: "매일 밤 성능 테스트", "집에 못 감"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="section-heading">C. 이해관계자/의사소통(Stakeholder) 관련</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이상징후</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>C1</td><td>핵심 의사결정이 스폰서에 사전 공유 없이 실행</td><td>이현수 전무: "왜 공유하지 않았지?"</td></tr>
+            <tr><td>C2</td><td>의사결정 번복 (PM 합의 → PO 독단 재투입)</td><td>PM "비노출" → PO 마케팅 압박에 반영 → 전무 격앙</td></tr>
+            <tr><td>C3</td><td>팀원 간 책임 전가/불신 만연</td><td>QA: "QA만 욕먹음", BE: "'개발이 못했다'로 몰림"</td></tr>
+            <tr><td>C4</td><td>팀 사기 저하 및 이탈 징후</td><td>블라인드: "이번 끝나면 나간다"</td></tr>
+            <tr><td>C5</td><td>마케팅-개발팀 기대치 정렬 실패</td><td>마케팅은 소셜 로그인 필수 vs 개발팀은 리스크</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="section-heading">D. 리스크/품질(Risk/Quality) 관련</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이상징후</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>D1</td><td>CI 성공률 78% (목표 85% 미달)</td><td>SDK 2.4 이후 테스트 케이스조차 미확정</td></tr>
+            <tr><td>D2</td><td>성능 지표 목표 초과 (p95 410ms, 오류율 0.35%)</td><td>G4 LRR 기준 미달</td></tr>
+            <tr><td>D3</td><td>RTM 재연결 간헐적 실패</td><td>Nebula EU 프라이버시 모드로 Keepalive 주기 변경</td></tr>
+            <tr><td>D4</td><td>보안 약관(REQ-021) CRB 일정 촉박</td><td>윤세라: "이번 주 안에 못 하면 론칭이 위험"</td></tr>
+            <tr><td>D5</td><td>벤더 리스크 과소평가</td><td>Geo-IP 실패 이력 + 수의계약 대안 검토 없음</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="section-heading">E. 거버넌스/프로세스(Governance) 관련</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>이상징후</th><th>근거</th></tr></thead>
+          <tbody>
+            <tr><td>E1</td><td>변경관리 프로세스 부재 또는 미준수</td><td>CR 미등록 변경, PO 범위 변경 독단 실행</td></tr>
+            <tr><td>E2</td><td>게이트 체계와 스크럼의 충돌/비일관성</td><td>게이트 불충족 예견되나 조율 메커니즘 부재</td></tr>
+            <tr><td>E3</td><td>에스컬레이션 경로 불명확</td><td>PM→스폰서 보고 누락, PO 독단 대응</td></tr>
+            <tr><td>E4</td><td>RACI 모호 — 의사결정 권한 혼재</td><td>소셜 로그인: PM 합의 → PO 번복 가능 → 스폰서 미인지</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Priority Top 5 -->
+    <div class="card">
+      <div class="card-header">
+        <h3>우선순위 Top 5 문제 선정</h3>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+        종합적 영향도(일정·품질·비용·이해관계자)와 긴급도 기준으로 선정
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>순위</th><th>문제</th><th>관련 징후</th><th>영향도</th><th>긴급도</th></tr></thead>
+          <tbody>
+            <tr class="priority-row"><td>#1</td><td>거버넌스 부재: 변경통제 프로세스 미작동</td><td>E1, E4, A1, A2, C2</td><td><span class="badge badge-critical">Critical</span></td><td>즉시</td></tr>
+            <tr class="priority-row"><td>#2</td><td>이해관계자 기대치 정렬 실패 / 의사결정 체계 붕괴</td><td>C1, C2, C5, E3</td><td><span class="badge badge-critical">Critical</span></td><td>즉시</td></tr>
+            <tr class="priority-row"><td>#3</td><td>기술 부채 누적 및 성능/품질 기준 미달</td><td>D1, D2, D3, B1, B2</td><td><span class="badge badge-high">High</span></td><td>1주 내</td></tr>
+            <tr class="priority-row"><td>#4</td><td>벤더 의존 리스크 관리 실패</td><td>D5, B3, A3</td><td><span class="badge badge-high">High</span></td><td>1주 내</td></tr>
+            <tr class="priority-row"><td>#5</td><td>팀 사기 저하 및 조직 갈등/신뢰 붕괴</td><td>C3, C4, B4</td><td><span class="badge badge-high">High</span></td><td>2주 내</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGE 2 ===== -->
+  <section class="stage">
+    <div class="stage-label">Stage ②</div>
+    <h2 class="stage-title">Analyze — PMBOK 8판 3가지 관점 근본원인 분석</h2>
+
+    <!-- Framework -->
+    <div class="card" style="margin-bottom:32px;">
+      <div class="card-header"><h3>분석 프레임워크</h3></div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-step-box">Mindset</div>
+          <div class="flow-step-label">근본 원인</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-box">Performance Domain</div>
+          <div class="flow-step-label">영향받는 성과 영역</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-box">AI Use Case</div>
+          <div class="flow-step-label">해결 수단</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step-box">Future State</div>
+          <div class="flow-step-label">목표 상태</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem #1 -->
+    <div class="problem-card">
+      <div class="problem-card-header">
+        <div class="problem-num">1</div>
+        <h3>거버넌스 부재 — 변경통제 프로세스 미작동</h3>
+        <span class="badge badge-critical">Critical</span>
+      </div>
+      <div class="problem-card-body">
+
+        <h4 class="section-heading">증상 (What happened)</h4>
+        <ul style="font-size:14px; padding-left:20px; color:var(--text-muted); line-height:2;">
+          <li>Deferred된 소셜 로그인(REQ-017)이 공식 변경 요청(CR) 없이 베타에 투입</li>
+          <li>BE가 캐시 무효화 정책을 CR 미등록 상태에서 임시 변경</li>
+          <li>PM이 합의한 "베타 비노출" 결정이 PO에 의해 단독 번복</li>
+          <li>테스트 증적 무효화, 빌드 충돌 발생</li>
+        </ul>
+
+        <h4 class="section-heading">🧠 Mindset 분석 — 근본 원인</h4>
+        <div class="analysis-block">
+          <h4>적용 Mindset: Stewardship(청지기 정신) & Systems Thinking(시스템적 사고)</h4>
+          <ul>
+            <li><strong>변경 거버넌스 체계의 설계 결함</strong> — Integrated Change Control이 형식적으로만 존재. 변경 영향도 평가(Impact Assessment) 없이 임시 조치 반복</li>
+            <li><strong>의사결정 권한과 책임의 비분리</strong> — PM 결정을 PO가 번복 가능한 구조적 모호성. RACI에 "최종 결정권자" 합의 부재</li>
+            <li><strong>시스템적 사고 부재</strong> — 개별 변경이 빌드·테스트·보안·일정 전 영역에 미치는 파급효과를 고려하지 않는 "일단 넣고 보자"식 의사결정</li>
+            <li><strong>청지기 정신 결여</strong> — 프로젝트 전체 건강(integrity)보다 즉각적 요구(마케팅)에 반응하는 패턴</li>
+          </ul>
+        </div>
+
+        <h4 class="section-heading">5 Whys 분석</h4>
+        <div class="why-chain">
+          <div><span class="why-q">Q1.</span> 왜 소셜 로그인이 무단 투입되었나?</div>
+          <div class="why-a">→ PO가 마케팅 압박에 독단 결정</div>
+          <div><span class="why-q">Q2.</span> 왜 PO가 독단 결정할 수 있었나?</div>
+          <div class="why-a">→ 변경 통제 프로세스(CCB)가 작동하지 않았기 때문</div>
+          <div><span class="why-q">Q3.</span> 왜 변경 통제가 작동하지 않았나?</div>
+          <div class="why-a">→ 게이트 체계가 형식적이고, 변경 시 의무적 승인 경로 미설계</div>
+          <div><span class="why-q">Q4.</span> 왜 승인 경로가 설계되지 않았나?</div>
+          <div class="why-a">→ Agile 속도를 우선시하며 거버넌스를 "관료주의"로 간주</div>
+          <div><span class="why-q">Q5.</span> 왜 거버넌스와 Agility의 균형을 잡지 못했나?</div>
+          <div class="why-a">→ 프로젝트 초기 <strong>테일러링(Tailoring)</strong> 시 하이브리드 환경에 맞는 거버넌스 설계 부재</div>
+        </div>
+
+        <div class="insight">
+          <div class="insight-label">근본 원인 결론</div>
+          <p>하이브리드(Agile + Gate) 운영 환경에 적합한 거버넌스 테일러링 실패. 변경 영향도를 평가하는 시스템적 사고 체계와 명확한 의사결정 권한 구조가 설계되지 않음.</p>
+        </div>
+
+        <h4 class="section-heading">🎯 Performance Domain 매핑</h4>
+        <div class="domain-tags">
+          <span class="domain-tag primary">Planning</span>
+          <span class="domain-tag primary">Project Work</span>
+          <span class="domain-tag">Stakeholders</span>
+          <span class="domain-tag">Delivery</span>
+          <span class="domain-tag">Team</span>
+        </div>
+        <div class="table-wrap" style="margin-top:12px;">
+          <table>
+            <thead><tr><th>Domain</th><th>연관성</th><th>영향</th></tr></thead>
+            <tbody>
+              <tr><td>Planning</td><td>🔴 직접</td><td>변경 통제 계획 부재, 베이스라인 관리 실패</td></tr>
+              <tr><td>Project Work</td><td>🔴 직접</td><td>승인 없는 작업 실행, 프로세스 무시</td></tr>
+              <tr><td>Stakeholders</td><td>🔴 직접</td><td>스폰서 미인지, 이해관계자 간 기대 불일치</td></tr>
+              <tr><td>Delivery</td><td>🟠 간접</td><td>미검증 기능 배포로 품질/가치 훼손</td></tr>
+              <tr><td>Team</td><td>🟠 간접</td><td>역할/책임 모호로 팀 신뢰 저하</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="section-heading">🤖 AI Use Case</h4>
+        <div class="ai-grid">
+          <div class="ai-item">
+            <div class="ai-item-title">AI-Powered Change Impact Analyzer</div>
+            <div class="ai-item-desc">변경 요청 시 의존관계·일정·리소스 영향도를 자동 시뮬레이션하여 시스템적 파급효과를 가시화. "일단 넣고 보자"식 의사결정 방지</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Automated Governance Gate Checker</div>
+            <div class="ai-item-desc">게이트 통과 조건 충족 여부를 실시간 모니터링 및 자동 경고. 형식적 게이트를 실질적 품질 관문으로 전환</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Decision Audit Trail Agent</div>
+            <div class="ai-item-desc">의사결정 이력(누가, 언제, 왜, 어떤 권한으로)을 자동 추적/기록. RACI 준수 여부 자동 검증, 번복·누락 즉시 탐지</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem #2 -->
+    <div class="problem-card">
+      <div class="problem-card-header">
+        <div class="problem-num">2</div>
+        <h3>이해관계자 기대치 정렬 실패 / 의사결정 체계 붕괴</h3>
+        <span class="badge badge-critical">Critical</span>
+      </div>
+      <div class="problem-card-body">
+
+        <h4 class="section-heading">증상 (What happened)</h4>
+        <ul style="font-size:14px; padding-left:20px; color:var(--text-muted); line-height:2;">
+          <li>스폰서(이현수 전무)가 핵심 기능 제외 결정을 사후 인지하여 격앙</li>
+          <li>PM 합의가 PO에 의해 번복, 마케팅은 다른 기대 유지</li>
+          <li>QA/BE가 "자신들만 책임질 것"이라는 불신 표출</li>
+          <li>보안/법무가 "이런 식이면 동의할 수 없다" 공식 거부 의사 표명</li>
+        </ul>
+
+        <h4 class="section-heading">🧠 Mindset 분석 — 근본 원인</h4>
+        <div class="analysis-block">
+          <h4>적용 Mindset: Stakeholder Engagement & Collaborative Leadership</h4>
+          <ul>
+            <li><strong>이해관계자 영향력-관심도 매핑 실패</strong> — 스폰서/마케팅실장의 관심 영역(소셜 로그인 = 분기 캠페인 핵심)을 PM이 정확히 인식하지 못함</li>
+            <li><strong>에스컬레이션 프로토콜 부재</strong> — High-impact 결정이 스폰서 레벨까지 도달하는 공식 경로 미정의. PM이 팀 레벨에서 종결</li>
+            <li><strong>기대치 관리의 구조적 결함</strong> — 마케팅 기대와 개발 현실을 정렬시키는 공식 채널/의사결정 포럼 부재</li>
+            <li><strong>협력적 리더십 부재</strong> — "결정을 내리고 통보"하는 방식. 핵심 이해관계자 needs/concerns 사전 수렴 및 합의 도출 실패</li>
+          </ul>
+        </div>
+
+        <h4 class="section-heading">이해관계자 Engagement 실패 구조</h4>
+        <div class="why-chain">
+<pre>마케팅실장 ─── "소셜 로그인 = 분기 캠페인 핵심" ─→ 기대: 베타 포함
+     │                                                │
+     │ (기대가 PM에게 전달되지 않음)                      │ (갭)
+     ↓                                                ↓
+PM(이도윤) ── "리스크 관리 우선" ───────────────→ 결정: 베타 제외
+     │                                                │
+     │ (결정이 스폰서에게 보고되지 않음)                   │ (정보 단절)
+     ↓                                                ↓
+스폰서(전무) ─ "왜 나에게 공유하지 않았지?" ────→ 결과: 신뢰 붕괴</pre>
+        </div>
+
+        <div class="insight">
+          <div class="insight-label">근본 원인 결론</div>
+          <p>이해관계자 참여 전략(Stakeholder Engagement Plan) 부재. 핵심 이해관계자의 기대-영향력 매핑 없이 운영하여, High-power/High-interest 이해관계자(스폰서, 마케팅)를 의사결정 루프 밖에 두는 구조적 결함.</p>
+        </div>
+
+        <h4 class="section-heading">🎯 Performance Domain 매핑</h4>
+        <div class="domain-tags">
+          <span class="domain-tag primary">Stakeholders</span>
+          <span class="domain-tag primary">Team</span>
+          <span class="domain-tag">Planning</span>
+          <span class="domain-tag">Uncertainty</span>
+        </div>
+
+        <h4 class="section-heading">🤖 AI Use Case</h4>
+        <div class="ai-grid">
+          <div class="ai-item">
+            <div class="ai-item-title">AI Stakeholder Sentiment Analyzer</div>
+            <div class="ai-item-desc">커뮤니케이션(메일, 회의록, 채팅)에서 불만/우려 시그널 자동 탐지. 갈등 폭발 전 조기 경보 및 선제 대응</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Automated Escalation Trigger</div>
+            <div class="ai-item-desc">결정의 영향도가 임계치 초과 시 자동으로 상위 이해관계자에게 알림. "몰랐다"는 상황 원천 차단</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Decision Alignment Dashboard</div>
+            <div class="ai-item-desc">핵심 이해관계자별 기대-현실 갭을 실시간 시각화하여 기대치 불일치를 정량적으로 관리</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem #3 -->
+    <div class="problem-card">
+      <div class="problem-card-header">
+        <div class="problem-num">3</div>
+        <h3>기술 부채 누적 및 성능/품질 기준 미달</h3>
+        <span class="badge badge-high">High</span>
+      </div>
+      <div class="problem-card-body">
+
+        <h4 class="section-heading">증상 (What happened)</h4>
+        <ul style="font-size:14px; padding-left:20px; color:var(--text-muted); line-height:2;">
+          <li>p95 응답시간 410ms (목표 300ms 대비 37% 초과)</li>
+          <li>5xx 오류율 0.35% (목표 0.2% 대비 75% 초과)</li>
+          <li>CI 빌드 성공률 78% (목표 85% 미달)</li>
+          <li>RTM 재연결 간헐적 실패</li>
+          <li>테스트 매트릭스 폭증(로그인 케이스 40개 추가), 전수 검증 불가</li>
+        </ul>
+
+        <h4 class="section-heading">🧠 Mindset 분석 — 근본 원인</h4>
+        <div class="analysis-block">
+          <h4>적용 Mindset: Quality(품질) & Complexity(복잡성 인식)</h4>
+          <ul>
+            <li><strong>품질을 "일정 이후의 문제"로 취급</strong> — 기능 추가가 QA 역량 초과를 유발해도 일정 우선으로 강행. "최소 테스트로 버티자"는 PM 발언</li>
+            <li><strong>기술 부채의 비가시성</strong> — 캐시 임시 변경, 스키마 부분 적용 등 단기 해결책이 시스템 복잡성을 증가시키나 추적 체계 부재</li>
+            <li><strong>복잡성 과소평가</strong> — SDK 2.4 업그레이드 하나가 성능·보안·RTM·테스트 전 영역에 파급되는 복잡성 미분석</li>
+            <li><strong>DoD의 형해화</strong> — 전제 조건(의존성) 미충족 상태에서 작업 진행, DoD 자체가 의미 상실</li>
+          </ul>
+        </div>
+
+        <h4 class="section-heading">기술 부채 누적 메커니즘</h4>
+        <div class="why-chain">
+<pre>일정 압박 → 임시 해결책 채택 → 기술 부채 누적
+     ↑                                    │
+     │          [악순환]                    ↓
+     └─── 재작업 발생 ←── 품질 저하 ←── 테스트 부족</pre>
+        </div>
+
+        <div class="insight">
+          <div class="insight-label">근본 원인 결론</div>
+          <p>품질을 프로젝트 전 생명주기에 걸친 내재적 속성(Built-in Quality)으로 관리하지 않고, 일정-기능 우선 마인드셋에서 품질을 트레이드오프 대상으로 취급하는 구조적 문화 문제.</p>
+        </div>
+
+        <h4 class="section-heading">🎯 Performance Domain 매핑</h4>
+        <div class="domain-tags">
+          <span class="domain-tag primary">Delivery</span>
+          <span class="domain-tag primary">Project Work</span>
+          <span class="domain-tag">Planning</span>
+          <span class="domain-tag">Measurement</span>
+        </div>
+
+        <h4 class="section-heading">🤖 AI Use Case</h4>
+        <div class="ai-grid">
+          <div class="ai-item">
+            <div class="ai-item-title">AI Technical Debt Tracker</div>
+            <div class="ai-item-desc">기술 부채를 자동 식별·정량화·우선순위화. 비가시적 부채를 관리 가능한 백로그 아이템으로 전환</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Predictive Quality Gate</div>
+            <div class="ai-item-desc">CI/CD 데이터 패턴으로 빌드 실패·성능 회귀를 사전 예측. "사후 대응"에서 "사전 예방"으로 패러다임 전환</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Intelligent Test Prioritizer</div>
+            <div class="ai-item-desc">변경 영향 범위 분석으로 테스트 케이스를 자동 우선순위화. 제한된 QA 리소스로 최대 커버리지 달성</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem #4 -->
+    <div class="problem-card">
+      <div class="problem-card-header">
+        <div class="problem-num">4</div>
+        <h3>벤더 의존 리스크 관리 실패</h3>
+        <span class="badge badge-high">High</span>
+      </div>
+      <div class="problem-card-body">
+
+        <h4 class="section-heading">증상 (What happened)</h4>
+        <ul style="font-size:14px; padding-left:20px; color:var(--text-muted); line-height:2;">
+          <li>Nebula SDK 2.4 업그레이드 일정이 캘린더에 미반영</li>
+          <li>Geo-IP 리드타임 과소평가 (공식 5~7일, 실제 2주)</li>
+          <li>벤더 정책 변경(EU 프라이버시, Refresh Rotate)이 연쇄 영향</li>
+          <li>수의계약 진행, 대안 벤더 검토 없음</li>
+          <li>동일 벤더에서 이전 패널티 발생 전례</li>
+        </ul>
+
+        <h4 class="section-heading">🧠 Mindset 분석 — 근본 원인</h4>
+        <div class="analysis-block">
+          <h4>적용 Mindset: Risk(불확실성 대응) & Adaptability(적응성)</h4>
+          <ul>
+            <li><strong>외부 의존성을 "소여(given)"로 취급</strong> — 벤더 리드타임 변동을 리스크 레지스터에 등록하지 않음. "벤더가 말한 일정"을 무비판적 수용</li>
+            <li><strong>단일 실패점(SPOF) 방치</strong> — NebulaWorks가 인증 전체의 유일 공급자. fallback 구현 계획 없음</li>
+            <li><strong>Lessons Learned 미활용</strong> — 박소연 PM의 동일 벤더 실패 경험이 공유되었으나 리스크 관리에 미반영</li>
+            <li><strong>계약 관리(Procurement) 거버넌스 미흡</strong> — 스폰서 추천 수의계약, SLA 기반 성과 관리 구조 부재</li>
+          </ul>
+        </div>
+
+        <div class="insight">
+          <div class="insight-label">근본 원인 결론</div>
+          <p>외부 의존성을 프로젝트 불확실성의 핵심 요소로 인식하고 능동적으로 관리하는 마인드셋 부재. Lessons Learned를 조직 자산으로 활용하는 체계 미작동.</p>
+        </div>
+
+        <h4 class="section-heading">🎯 Performance Domain 매핑</h4>
+        <div class="domain-tags">
+          <span class="domain-tag primary">Uncertainty</span>
+          <span class="domain-tag primary">Planning</span>
+          <span class="domain-tag">Delivery</span>
+          <span class="domain-tag">Stakeholders</span>
+        </div>
+
+        <h4 class="section-heading">🤖 AI Use Case</h4>
+        <div class="ai-grid">
+          <div class="ai-item">
+            <div class="ai-item-title">AI Vendor Risk Monitor</div>
+            <div class="ai-item-desc">벤더 커뮤니케이션/정책 변경을 실시간 모니터링, 영향도 자동 분석. "사후 인지"에서 "실시간 감시"로 전환</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Dependency Critical Path Simulator</div>
+            <div class="ai-item-desc">외부 의존성 리드타임 변동 시 크리티컬 패스 영향을 자동 시뮬레이션</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Lessons Learned Knowledge Agent</div>
+            <div class="ai-item-desc">과거 프로젝트 이력에서 유사 벤더/상황의 리스크 패턴을 자동 검색·추천. 조직 기억을 실시간 활용</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem #5 -->
+    <div class="problem-card">
+      <div class="problem-card-header">
+        <div class="problem-num">5</div>
+        <h3>팀 사기 저하 및 조직 갈등/신뢰 붕괴</h3>
+        <span class="badge badge-high">High</span>
+      </div>
+      <div class="problem-card-body">
+
+        <h4 class="section-heading">증상 (What happened)</h4>
+        <ul style="font-size:14px; padding-left:20px; color:var(--text-muted); line-height:2;">
+          <li>블라인드: "이번 끝나면 나간다", "매일 밤 집에 못 감"</li>
+          <li>QA: "문제 생기면 QA만 욕먹는다"</li>
+          <li>BE: "실패하면 '개발이 못했다'로 몰린다"</li>
+          <li>보안/법무: "이런 식이면 동의할 수 없다" (공식 거부)</li>
+          <li>책임 전가 문화 만연, 심리적 안전 부재</li>
+        </ul>
+
+        <h4 class="section-heading">🧠 Mindset 분석 — 근본 원인</h4>
+        <div class="analysis-block">
+          <h4>적용 Mindset: Team(팀) & Servant Leadership(서번트 리더십)</h4>
+          <ul>
+            <li><strong>심리적 안전(Psychological Safety) 부재</strong> — 공식 채널이 아닌 블라인드에서만 솔직한 감정 표현. 회의에서는 방어적 자세</li>
+            <li><strong>서번트 리더십 부재</strong> — PM이 팀 과부하·번아웃·감정 관리 역할 미수행. "버티자"는 메시지 전달</li>
+            <li><strong>공유된 책임감(Shared Ownership) 결여</strong> — "마케팅 요구로 얹었는데 실패하면 개발 탓" = 하나의 목표를 향한 공동 의식 부재</li>
+            <li><strong>지속가능하지 않은 페이스</strong> — 4개월 + 범위 확장 + 리소스 미확충 = 구조적 번아웃. 지속가능한 속도 미고려</li>
+          </ul>
+        </div>
+
+        <h4 class="section-heading">팀 신뢰 붕괴 구조</h4>
+        <div class="why-chain">
+<pre>범위 증가 + 일정 고정 → 과부하 → 번아웃 징후
+                                       │
+                    ┌──────────────────────┤
+                    ↓                      ↓
+          방어적 커뮤니케이션        비공식 채널로 이탈
+          (책임 전가)               (블라인드 토로)
+                    │                      │
+                    └──────────┬────────────┘
+                               ↓
+                     팀 응집력/신뢰 붕괴
+                               │
+                               ↓
+                    성과 저하 → 더 큰 압박 [악순환]</pre>
+        </div>
+
+        <div class="insight">
+          <div class="insight-label">근본 원인 결론</div>
+          <p>프로젝트 계획 시 팀의 역량(Capacity)과 지속가능한 페이스를 고려하지 않았고, PM이 서번트 리더로서 팀의 심리적 안전과 웰빙을 관리하는 역할을 수행하지 못함. 공유된 목표의식(Shared Vision) 없이 각 기능 조직이 자기 방어적으로 작동하는 구조.</p>
+        </div>
+
+        <h4 class="section-heading">🎯 Performance Domain 매핑</h4>
+        <div class="domain-tags">
+          <span class="domain-tag primary">Team</span>
+          <span class="domain-tag">Stakeholders</span>
+          <span class="domain-tag">Delivery</span>
+          <span class="domain-tag">Project Work</span>
+        </div>
+
+        <h4 class="section-heading">🤖 AI Use Case</h4>
+        <div class="ai-grid">
+          <div class="ai-item">
+            <div class="ai-item-title">AI Team Health Pulse</div>
+            <div class="ai-item-desc">정기적 익명 서베이 + 커뮤니케이션 톤 분석으로 팀 건강 지표 실시간 측정. 번아웃/갈등 조기 탐지</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Workload Balancer Agent</div>
+            <div class="ai-item-desc">스프린트 백로그·담당자별 업무량 분석으로 과부하 자동 탐지 및 재분배 제안. 지속가능한 페이스 유지</div>
+          </div>
+          <div class="ai-item">
+            <div class="ai-item-title">Retrospective Intelligence</div>
+            <div class="ai-item-desc">회고 데이터 패턴 분석으로 반복 갈등 원인 식별 및 구조적 개선 제안</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Causal Map -->
+    <div class="card">
+      <div class="card-header"><h3>문제 간 인과관계 맵</h3></div>
+      <div class="causal-map">
+<pre>[#1 거버넌스 부재] ─────────────────────────────────┐
+       │                                            │
+       │ (변경 통제 없이 범위 증가)                    │ (의사결정 체계 붕괴)
+       ↓                                            ↓
+[#3 기술 부채/품질 미달] ←─────────── [#2 이해관계자 정렬 실패]
+       │                                            │
+       │ (품질 미달로 벤더 연동 지연)    (기대 불일치가 범위 폭주 유발)
+       ↓                                            │
+[#4 벤더 리스크 실패]                                  │
+       │                                            │
+       └────────────────┬───────────────────────────┘
+                        │
+                        │ (과부하 + 갈등 + 방어적 문화)
+                        ↓
+              [#5 팀 사기/신뢰 붕괴]</pre>
+      </div>
+      <div class="insight">
+        <div class="insight-label">핵심 통찰</div>
+        <p>5개 문제는 독립적이 아니라 <strong>#1 거버넌스 부재가 Root of Roots</strong>로서 나머지 4개 문제를 연쇄적으로 유발하는 구조. 장기적 해결의 최우선은 거버넌스 체계 재설계이며, 단기 조치는 가장 긴급한 이해관계자 정렬(#2)과 기술 부채(#3)부터 착수해야 함.</p>
+      </div>
+    </div>
+
+    <!-- Summary Matrix -->
+    <div class="card summary-matrix">
+      <div class="card-header"><h3>종합 분석 매트릭스</h3></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>문제</th><th>Mindset</th><th>Primary Domain</th><th>근본 원인 요약</th></tr></thead>
+          <tbody>
+            <tr><td>#1 거버넌스 부재</td><td>Stewardship + Systems Thinking</td><td>Planning, Project Work</td><td>하이브리드 환경 거버넌스 테일러링 실패</td></tr>
+            <tr><td>#2 이해관계자 정렬 실패</td><td>Stakeholder Engagement + Collaborative Leadership</td><td>Stakeholders, Team</td><td>이해관계자 참여 전략 부재, 에스컬레이션 미설계</td></tr>
+            <tr><td>#3 기술 부채/품질 미달</td><td>Quality + Complexity</td><td>Delivery, Project Work</td><td>품질을 트레이드오프 대상으로 취급하는 문화</td></tr>
+            <tr><td>#4 벤더 리스크 실패</td><td>Risk + Adaptability</td><td>Uncertainty, Planning</td><td>외부 의존성 능동적 관리 인식 부재</td></tr>
+            <tr><td>#5 팀 신뢰 붕괴</td><td>Team + Servant Leadership</td><td>Team</td><td>지속가능한 페이스 미고려, 심리적 안전 미확보</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Quantitative Risk -->
+    <div class="card">
+      <div class="card-header"><h3>정량적 리스크 영향 분석</h3></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>문제</th><th>미조치 시 시나리오</th><th>일정 영향</th><th>비용 영향</th></tr></thead>
+          <tbody>
+            <tr><td>#1</td><td>추가 범위 변경 반복 → G5 불통과</td><td>론칭 2~4주 지연</td><td>추가 리소스 비용</td></tr>
+            <tr><td>#2</td><td>스폰서 신뢰 상실 → 프로젝트 중단/리셋</td><td>프로젝트 존폐 위기</td><td>매몰비용 전액</td></tr>
+            <tr><td>#3</td><td>G4 LRR 불통과, 글로벌 론칭 불가</td><td>최소 2주 지연</td><td>긴급 인력 증원</td></tr>
+            <tr><td>#4</td><td>Geo-IP 미적용 → 유럽 사용자 접속 차단</td><td>2주+ (리드타임)</td><td>계약 패널티</td></tr>
+            <tr><td>#5</td><td>핵심 인력 이탈 → 지식 유출</td><td>인수인계 1~2개월</td><td>채용/온보딩 비용</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</div>

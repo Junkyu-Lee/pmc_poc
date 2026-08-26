@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AutoCockpit2 — 종합 진단 보고서 (v4)</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f9;
+    --primary: #0284c7;
+    --primary-dark: #0369a1;
+    --accent: #7e22ce;
+    --accent-light: #9333ea;
+    --red: #e11d48;
+    --red-light: #fda4af;
+    --orange: #ea580c;
+    --yellow: #ca8a04;
+    --green: #16a34a;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  
+  header {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(147, 51, 234, 0.3);
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  }
+  header h1 { font-size: 2.2rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; }
+  header .subtitle { font-size: 1.1rem; color: var(--primary); font-weight: 600; }
+  .badge-deck { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.2rem; }
+  .badge {
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-purple { background: rgba(147, 51, 234, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+  .badge-blue { background: rgba(2, 132, 199, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+  .badge-red { background: rgba(225, 29, 72, 0.1); color: var(--red); border: 1px solid var(--red); }
+  .badge-orange { background: rgba(234, 88, 12, 0.1); color: var(--orange); border: 1px solid var(--orange); }
+  .badge-green { background: rgba(22, 163, 74, 0.1); color: var(--green); border: 1px solid var(--green); }
+  
+  .slide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    min-height: 75vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-card:hover { border-color: var(--primary); }
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .slide-title { font-size: 1.4rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.6rem; }
+  .slide-num {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  
+  .slide-summary {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    background: rgba(2, 132, 199, 0.05);
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary);
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  
+  @media (max-width: 1024px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { background: var(--surface-alt); color: var(--primary); font-weight: 700; }
+  tr:hover { background: rgba(0,0,0,0.02); }
+  
+  .card {
+    background: rgba(248, 249, 250, 0.8);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    flex: 1;
+  }
+
+  .card-title { font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+  .highlight-red { color: var(--red); font-weight: 700; }
+  .highlight-green { color: var(--green); font-weight: 700; }
+  .highlight-yellow { color: var(--yellow); font-weight: 700; }
+
+  .progress-bar-bg { background: var(--border); height: 10px; border-radius: 5px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+  .progress-bar-fill.red { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+  .annotation {
+    background: rgba(147, 51, 234, 0.08);
+    border-left: 4px solid var(--accent);
+    padding: 0.9rem 1.2rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .annotation.warn {
+    background: rgba(225, 29, 72, 0.08);
+    border-left-color: var(--red);
+  }
+
+  .svg-container { overflow-x: auto; margin: 1rem 0; background: var(--surface-alt); border-radius: 8px; padding: 1rem; text-align: center; }
+  .svg-container svg { max-width: 100%; height: auto; }
+
+  .tool-tag-pill {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 0.4rem;
+  }
+  .tag-critical { background: rgba(225,29,72,0.1); color: var(--red); border: 1px solid var(--red); }
+  .tag-warning { background: rgba(234,88,12,0.1); color: var(--orange); border: 1px solid var(--orange); }
+  .tag-info { background: rgba(2,132,199,0.1); color: var(--primary); border: 1px solid var(--primary); }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>❖ AutoCockpit2 프로젝트 심층 진단</h1>
+<div class="subtitle">PMBOK 8th Edition &amp; Cognitive PM-Twin Framework | Stage ① &amp; Stage ② 분석</div>
+<div class="badge-deck">
+<span class="badge badge-purple">PMBOK 8th Edition</span>
+<span class="badge badge-red">Cold Boot 3.5s (Target 2.0s)</span>
+<span class="badge badge-orange">NovaChip SDK 3W Blocked</span>
+<span class="badge badge-blue">ISO 26262 ASIL-B</span>
+<span class="badge badge-green">Cognitive PM-Twin Agents</span>
+</div>
+</header>
+<!-- SLIDE 01: Executive Summary & Mission Overview -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ Executive Summary &amp; 5대 수행 임무 체계</h2>
+<span class="slide-num">SLIDE 01</span>
+</div>
+<div class="slide-summary">요약: [Stage 1] 명확한 이상징후 식별 및 [Stage 2] Performance Domain 간 다차원적 파급효과 시뮬레이션을 통해, 시스템 관점의 5대 핵심 근본 원인을 도출합니다.</div>
+<div class="grid-2">
+<div class="card">
+<div class="card-title">▸ 핵심 Target DoD vs 현재 지표 Gap Analysis</div>
+<table>
+<thead>
+<tr><th>성과 지표 (DoD)</th><th>목표 기준</th><th>현재 실측치 (10/5 기준)</th><th>상태</th></tr>
+</thead>
+<tbody>
+<tr><td><b>Cold Boot Time</b></td><td>≤ 2.0초 (클러스터+후방카메라)</td><td><span class="highlight-red">3.5초</span> (메모리 누수/CAN지연)</td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>OTA 모의 성공률</b></td><td>≥ 99.9% (1,000대 모의, 롤백100%)</td><td><span class="highlight-yellow">검증 불가</span> (QA망 인프라 부족)</td><td><span class="tool-tag-pill tag-warning">WARNING</span></td></tr>
+<tr><td><b>보안 취약점 (Pen-test)</b></td><td>High/Critical 0건</td><td><span class="highlight-red">HSM 키연동 Blocked</span> (GDPR위험)</td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>ISO 26262 안전 인증</b></td><td>ASIL-B 인증 획득 (G4 전)</td><td><span class="highlight-red">CI 테스트 300개 깨짐</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>마일스톤 사수</b></td><td>G3 실차 베타 (10/20)</td><td><span class="highlight-red">NovaChip SDK 3주 연기 (10월말)</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="card">
+<div class="card-title">▪ 본선 과제 5대 수행 임무 (Task Flow)</div>
+<ul style="list-style: none; padding: 0;">
+<li style="margin-bottom: 0.8rem;"><b>① [Identify] 이상 징후 식별:</b> Comm Orchestrator / Project Pulse 관점에서 Cold Boot 3.5s, SDK 지연, AI 음성비서 Scope, JIRA 파손, 익명 커뮤니티 폭발 등 표면적 징후 5가지 수집.</li>
+<li style="margin-bottom: 0.8rem;"><b>② [Analyze] 근본 원인 분석:</b> Root Cause Advisor 관점(Systems Thinking)으로 벤더 통제 실패, Scope 거버넌스 붕괴, 안전/품질 아키텍처 붕괴, 실로 조직문화, 기술부채 이월 등 5대 Root Cause 도출.</li>
+<li style="margin-bottom: 0.8rem;"><b>③ [Design] Value-Driven AI Agentic 설계:</b> Chief Agent(Synapse) &amp; 7대 도메인 특화 에이전트(Cognitive PM-Twin) 기반 자동화 워크플로우 설계.</li>
+<li style="margin-bottom: 0.8rem;"><b>④ [Develop] POC 구체화 Action Items:</b> 즉시 실행 가능한 3대 구체적 액션 아이템(Owner / Due Date / DoD) 정립.</li>
+<li style="margin-bottom: 0.8rem;"><b>⑤ [Validate] 가치 검증 &amp; Future State:</b> 예측/방어형 Proactive 거버넌스 확립 및 비즈니스 가치(Outcome) 논증.</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- SLIDE 02: Episode & Background Analysis -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⍾ SLIDE 02: 프로젝트 개요 &amp; 10월 5일 위기 에피소드 타임라인</h2>
+<span class="slide-num">SLIDE 02</span>
+</div>
+<div class="slide-summary">프로젝트 현황: 소셜 로그인 기습 반영(Scope Creep) 및 SDK 지연이라는 징후를 명확하게 포착하고, 거버넌스 붕괴라는 시스템적 결함을 도출했습니다.</div>
+<div class="grid-2">
+<div class="card">
+<div class="card-title">▪ 10월 5일 에피소드 사건 타임라인 및 징후 추출</div>
+<table>
+<thead>
+<tr><th>시간</th><th>이벤트 및 발언 요약</th><th>식별된 문제 징후</th></tr>
+</thead>
+<tbody>
+<tr><td><b>09:30 Daily Scrum</b></td><td>FE(부팅 3.5s 미달), Platform(NovaChip SDK 누수&amp;워크어라운드), QA(메신저 공유로 CI 300개 파손), PO(AI음성 REQ-045 데모 독촉)</td><td>인터페이스 불일치, 구두 변경 파손, 기능 우선주의</td></tr>
+<tr><td><b>11:00 Issue Meeting</b></td><td>PO(OEM 부사장 Top-down AI강요), 보안(HSM Blocked로 GDPR위반), BE(OTA인력 차출 철야), PM(껍데기 데모&amp;임시 약관 우회)</td><td>Scope Creep 무검토 수용, 보안/규제 이월, 임시방편 리스크 은폐</td></tr>
+<tr><td><b>14:00 Vendor Call</b></td><td>NovaChip Alex Kim "SDK v3.0 정식 릴리즈 3주 연기(10월말) &amp; HSM 보안키 추가 라이선스 비용 정책 변경"</td><td>벤더 계약 통제 및 SLA 부재, 비용 리스크 미협상</td></tr>
+<tr><td><b>16:30 Blind Post</b></td><td>"타이타닉 같음. PO 매주 스펙 엎음, QA-개발 Silo 비난, PM 기술부채 은폐 임시방편, 탈출은 지능순"</td><td>조직 불신, 사기 저하, 기술 부채 누적, PM 리더십 상실</td></tr>
+<tr><td><b>20:00 Sponsor Call</b></td><td>박태산 전무 "OEM 항의 전화 받음! 벤더 컨트롤 미비 및 비용 리스크 은폐에 격노. 내일 08시까지 리스크 복구 계획서 제출!"</td><td>스폰서 에스컬레이션 체계 붕괴, 위기소통 은폐</td></tr>
+</tbody>
+</table>
+</div>
+<div class="card">
+<div class="card-title">▪ 10대 주요 이해관계자 지도 &amp; 갈등 구도</div>
+<table>
+<thead>
+<tr><th>이해관계자</th><th>역할 및 소속</th><th>주요 관심사 및 대립 갈등 요소</th></tr>
+</thead>
+<tbody>
+<tr><td><b>박태산 전무</b></td><td>스폰서 (VS사업본부)</td><td>OEM 임원진 대응, G5 SOP 달성 vs 리스크 에스컬레이션 누락에 격노</td></tr>
+<tr><td><b>이도윤 PM</b></td><td>프로젝트 매니저 (PMO)</td><td>G3/G4 마일스톤 사수 vs 껍데기 데모 등 임시방편으로 기술부채 가중</td></tr>
+<tr><td><b>최서린 PO</b></td><td>상품기획 (PO)</td><td>OEM 요구사항 수용 vs REQ-045 Scope Creep 무반영 통제</td></tr>
+<tr><td><b>강민재 FE / 김다온 Platform</b></td><td>HMI Lead / BSP Lead</td><td>Cold Boot 2.0s 사수 vs SDK 메모리 누수 &amp; API 변경 미공유 갈등</td></tr>
+<tr><td><b>문해인 QA / 윤세라 보안</b></td><td>Quality Lead / Compliance</td><td>ASIL-B &amp; UN R155 compliance vs 개발진 메신저 전달 &amp; 보안 우회 대립</td></tr>
+<tr><td><b>오지후 BE Lead</b></td><td>Cloud/OTA Lead</td><td>Seamless OTA(REQ-052) 사수 vs AI 연동 인력 차출 및 철야 반발</td></tr>
+<tr><td><b>Alex Kim / 박태규</b></td><td>NovaChip / 벤더 매니저</td><td>SDK 기술 지원 및 추가 비용 청구 vs 계약 SLA 통제 부재</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- SLIDE 04: Performance KPI & Gap Analysis -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ SLIDE 04: 성과 분석 (KPI &amp; Performance Domain Analysis)</h2>
+<span class="slide-num">SLIDE 04</span>
+</div>
+<div class="slide-summary">파급효과 분석: 응답속도, 오류율 등 주요 KPI 미달이 [Delivery Domain]과 [Development Approach]에 미치는 파급효과를 심층 분석했습니다.</div>
+<div class="grid-4" style="margin-bottom: 1.5rem;">
+<div class="card" style="text-align: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted);">Cold Boot Time</div>
+<div style="font-size: 2rem; font-weight: 800; color: var(--red);">3.5s</div>
+<div style="font-size: 0.8rem; color: var(--red-light);">Target ≤ 2.0s (+75% 지연)</div>
+</div>
+<div class="card" style="text-align: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted);">CI Build &amp; Test Pass</div>
+<div style="font-size: 2rem; font-weight: 800; color: var(--orange);">58%</div>
+<div style="font-size: 0.8rem; color: var(--orange);">Target ≥ 95% (300개 테스트 파손)</div>
+</div>
+<div class="card" style="text-align: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted);">NovaChip SDK Delivery</div>
+<div style="font-size: 2rem; font-weight: 800; color: var(--red);">+3 Wks</div>
+<div style="font-size: 0.8rem; color: var(--red-light);">Beta 메모리 누수 미해결</div>
+</div>
+<div class="card" style="text-align: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted);">ISO 26262 ASIL-B Readiness</div>
+<div style="font-size: 2rem; font-weight: 800; color: var(--red);">CRITICAL</div>
+<div style="font-size: 0.8rem; color: var(--red-light);">G4 게이트 통과 불확실</div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">◺ PMBOK 8th Performance Domain Gap Detail</div>
+<table>
+<thead>
+<tr><th>Performance Domain</th><th>핵심 요구 표준</th><th>현실적 발생 갭 (Gap)</th><th>영향도 및 비즈니스 리스크</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>Stakeholder &amp; Supplier</b></td>
+<td>벤더 SLA 이행 및 스폰서 투명 보고</td>
+<td>NovaChip SDK 3주 연기 및 HSM 추가비용 돌발, 스폰서보고 누락</td>
+<td>OEM 임원 항의 및 리스크 에스컬레이션 붕괴</td>
+</tr>
+<tr>
+<td><b>Development &amp; Delivery</b></td>
+<td>Cold Boot 2.0s, CI Pass 95%, 무중단 OTA 99.9%</td>
+<td>Boot 3.5s, CI 58% 파손, QA망 인프라 부족으로 OTA 검증 불능</td>
+<td>양산 이관(G4) 실패 및 실차 테스트(G3) 불가능</td>
+</tr>
+<tr>
+<td><b>Scope &amp; Planning</b></td>
+<td>G1 Scope Freeze 및 CCB 영향도 평가</td>
+<td>REQ-045(AI 음성) Top-down 직수용, REQ-052 인력 차출</td>
+<td>프로젝트 베이스라인 붕괴 및 개발진 피로 누적</td>
+</tr>
+<tr>
+<td><b>Team &amp; Culture</b></td>
+<td>투명한 정보 공유 및 JIRA 기반 협업</td>
+<td>메신저 구두 전달로 API 파손, 블라인드 불신 게시글 확산</td>
+<td>조직 실로화 및 핵심 인력 탈출 리스크 증가</td>
+</tr>
+<tr>
+<td><b>Governance &amp; Risk</b></td>
+<td>ASIL-B, GDPR, UN R155 규제 준수 및 Zero Critical</td>
+<td>REQ-077 HSM 키 연동 Blocked, 임시 약관으로 우회 시도</td>
+<td>글로벌 론칭 후 GDPR 억대 벌금 및 차 제어 멈춤 대형 리콜</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 05: Prioritization Matrix (Top 5 Root Causes Highlighted) -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⏣ SLIDE 05: 10대 리스크 우선순위 Matrix (Top 5 Root Causes)</h2>
+<span class="slide-num">SLIDE 05</span>
+</div>
+<div class="slide-summary">우선순위: 표면적 증상이 아닌 근본 원인을 파악하고, Proactive 마인드셋에 입각하여 리콜 손실을 방어하기 위한 Top 5 과제를 식별합니다.</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>No</th><th>리스크 및 근본 원인 명</th><th>영향도 (Impact)</th><th>긴급도 (Urgency)</th><th>우선순위 Score</th><th>구분</th></tr>
+</thead>
+<tbody>
+<tr style="background: rgba(244,63,94,0.12);">
+<td><b>P1</b></td>
+<td><b>[근본원인 1] 벤더 통제 실패 및 스폰서 에스컬레이션 부재</b> (NovaChip SDK 지연 &amp; HSM 비용)</td>
+<td><span class="highlight-red">Very High (5)</span></td>
+<td><span class="highlight-red">Critical (5)</span></td>
+<td><b>25 / 25</b></td>
+<td><span class="tool-tag-pill tag-critical">TOP 1 ROOT</span></td>
+</tr>
+<tr style="background: rgba(244,63,94,0.12);">
+<td><b>P2</b></td>
+<td><b>[근본원인 2] 무검토 Scope Creep (REQ-045 AI음성) 및 변경 거버넌스 붕괴</b></td>
+<td><span class="highlight-red">Very High (5)</span></td>
+<td><span class="highlight-red">Critical (5)</span></td>
+<td><b>25 / 25</b></td>
+<td><span class="tool-tag-pill tag-critical">TOP 2 ROOT</span></td>
+</tr>
+<tr style="background: rgba(244,63,94,0.12);">
+<td><b>P3</b></td>
+<td><b>[근본원인 3] 차량용 SW 안전/품질 아키텍처 붕괴</b> (Cold Boot 3.5s &amp; ASIL-B 위기)</td>
+<td><span class="highlight-red">Very High (5)</span></td>
+<td><span class="highlight-orange">High (4)</span></td>
+<td><b>20 / 25</b></td>
+<td><span class="tool-tag-pill tag-critical">TOP 3 ROOT</span></td>
+</tr>
+<tr style="background: rgba(244,63,94,0.12);">
+<td><b>P4</b></td>
+<td><b>[근본원인 4] 팀 커뮤니케이션 Silo화 및 JIRA 형상 관리 파손</b> (메신저 전달 &amp; 300개 CI 파손)</td>
+<td><span class="highlight-orange">High (4)</span></td>
+<td><span class="highlight-red">Critical (5)</span></td>
+<td><b>20 / 25</b></td>
+<td><span class="tool-tag-pill tag-critical">TOP 4 ROOT</span></td>
+</tr>
+<tr style="background: rgba(244,63,94,0.12);">
+<td><b>P5</b></td>
+<td><b>[근본원인 5] 보안/규제 컴플라이언스 이월 및 임시방편(Reactive) 위기대응</b> (REQ-077 GDPR위험)</td>
+<td><span class="highlight-red">Very High (5)</span></td>
+<td><span class="highlight-orange">High (4)</span></td>
+<td><b>20 / 25</b></td>
+<td><span class="tool-tag-pill tag-critical">TOP 5 ROOT</span></td>
+</tr>
+<tr>
+<td>P6</td>
+<td>QA망 테스트 인프라 부족으로 인한 무중단 OTA(REQ-052) 검증 병목</td>
+<td>Medium (3)</td>
+<td>High (4)</td>
+<td>12 / 25</td>
+<td><span class="tool-tag-pill tag-warning">Minor Risk</span></td>
+</tr>
+<tr>
+<td>P7</td>
+<td>3rd Party AI-Voice 음성 엔진 연동 SLA 부재 및 네트워크 지연 리스크</td>
+<td>Medium (3)</td>
+<td>Medium (3)</td>
+<td>9 / 25</td>
+<td><span class="tool-tag-pill tag-warning">Minor Risk</span></td>
+</tr>
+<tr>
+<td>P8</td>
+<td>개발자 이탈 및 블라인드 게시판 불신 확산 (조직 사기 저하)</td>
+<td>High (4)</td>
+<td>Low (2)</td>
+<td>8 / 25</td>
+<td><span class="tool-tag-pill tag-warning">Minor Risk</span></td>
+</tr>
+<tr>
+<td>P9</td>
+<td>오토모터스 마케팅 데모 요구(주말까지)로 인한 팀원 전원 철야 피로 누적</td>
+<td>Medium (3)</td>
+<td>High (4)</td>
+<td>12 / 25</td>
+<td><span class="tool-tag-pill tag-warning">Minor Risk</span></td>
+</tr>
+<tr>
+<td>P10</td>
+<td>Multi-Display (Cluster/CID/HUD) 동시 렌더링 시 SoC 발열 및 프레임 드랍</td>
+<td>High (4)</td>
+<td>Low (2)</td>
+<td>8 / 25</td>
+<td><span class="tool-tag-pill tag-info">Minor Risk</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 06: Root Cause 1 Executive Summary -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚠ SLIDE 06: [근본원인 1] 벤더 통제 실패 및 스폰서 에스컬레이션 부재</h2>
+<span class="slide-num">SLIDE 06-A</span>
+</div>
+<div class="slide-summary">
+      문제 1 요약: 핵심 칩셋 벤더(NovaChip)와의 SLA 수립 부재로 SDK 릴리즈가 3주 연기되었으며, HSM 보안 라이선스 비용 정책 변경을 사전 통제하지 못하고 스폰서 보고를 은폐하여 위기를 초래했습니다.
+    </div>
+<div class="grid-2">
+<div>
+<img alt="Vendor Governance Failure" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFlMWI0YiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzM4Y2EiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTUiIHJlc3VsdD0iYmx1ciIgLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImJsdXIiIG9wZXJhdG9yPSJvdmVyIiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiByeD0iMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSIxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSI4MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMjcwIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZmlsdGVyPSJ1cmwoI2dsb3cpIj7wn6SdPC90ZXh0PgogIDx0ZXh0IHg9IjMwMCIgeT0iNDIwIiBmb250LWZhbWlseT0iJ0ludGVyJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmZmZmYiPlZlbmRvciBHb3Zlcm5hbmNlIEZhaWx1cmU8L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSI0NjUiIGZvbnQtZmFtaWx5PSInSW50ZXInLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPk5vdmFDaGlwIFNESyBEZWxheSAmIExpY2Vuc2UgRXNjYWxhdGlvbjwvdGV4dD4KPC9zdmc+" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);"/>
+</div>
+<div class="card">
+<div class="card-title">⌕ 문제 1 진단 및 현황</div>
+<ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+<li style="margin-bottom: 0.5rem;"><b>현상:</b> NovaChip SDK v3.0 정식 버전이 10월 말로 3주 연기. HSM 보안 키 발급에 추가 라이선스 비용 요구.</li>
+<li style="margin-bottom: 0.5rem;"><b>근본 원인:</b> 벤더 계약 시 마일스톤 연체 페널티 및 SLA 계약 미흡, PM의 리스크 은폐 및 스폰서 에스컬레이션 부재.</li>
+<li style="margin-bottom: 0.5rem;"><b>비즈니스 파급력:</b> G3 실차 테스트 붕괴, 스폰서 신뢰 상실, OEM 고객사 항의 전화 폭발.</li>
+</ul>
+<div class="annotation warn">
+<b>핵심 시사점:</b> 칩셋 벤더 SDK는 프로젝트 전체를 지탱하는 바닥 기반(Foundation)입니다. 바닥이 무너지는데 PM이 임시 워크어라운드로 덮으려 했던 태도가 스폰서 격노를 유발했습니다.
+        </div>
+</div>
+</div>
+</div>
+<!-- SLIDE 06-B1: Tool 1 - Vendor SLA Matrix -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 1] 디텍팅 도구 1 - Vendor SLA &amp; Dependency Matrix</h2>
+<span class="slide-num">SLIDE 06-B1</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>벤더 명</th><th>제공 모듈/SDK</th><th>계약 상 일정</th><th>실제 지연 상태</th><th>SLA 연체 페널티</th><th>비용 라이선스 이슈</th><th>위험도</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>NovaChip</b></td>
+<td>SDK v3.0 &amp; SoC Driver</td>
+<td>09월 30일</td>
+<td><span class="highlight-red">10월 말 (3주 연기)</span></td>
+<td>미설정 (0원)</td>
+<td><span class="highlight-red">HSM 키 연동 추가 라이선스 요구</span></td>
+<td><span class="tool-tag-pill tag-critical">CRITICAL</span></td>
+</tr>
+<tr>
+<td><b>AI-Voice</b></td>
+<td>생성형 AI 음성 엔진</td>
+<td>10월 15일</td>
+<td>정상 진행 중</td>
+<td>월 2% 감액</td>
+<td>클라우드 API 사용량 과금 (협상완료)</td>
+<td><span class="tool-tag-pill tag-info">NORMAL</span></td>
+</tr>
+<tr>
+<td><b>AutoMotors</b></td>
+<td>OEM 차량 시뮬레이터</td>
+<td>08월 15일</td>
+<td>완료</td>
+<td>N/A</td>
+<td>N/A</td>
+<td><span class="tool-tag-pill tag-info">NORMAL</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 06-B2: Tool 2 - Risk Escalation Trigger Map -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 1] 디텍팅 도구 2 - Risk Escalation Trigger Protocol</h2>
+<span class="slide-num">SLIDE 06-B2</span>
+</div>
+<div class="card">
+<div class="card-title">⚠ 스폰서(박태산 전무) 즉시 에스컬레이션 임계치 및 이행 결과</div>
+<table>
+<thead>
+<tr><th>리스크 항목</th><th>에스컬레이션 트리거 조건</th><th>실제 발생 상황</th><th>이도윤 PM 처리 방식</th><th>스폰서 보고 여부</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>SDK 릴리즈 지연</b></td><td>주요 벤더 일정 &gt; 1주 지연 시 즉시 보고</td><td>NovaChip 3주 연기 통보</td><td><span class="highlight-red">워크어라운드 코드 임시 조치</span></td><td><span class="highlight-red">✘ 미보고 (은폐)</span></td>
+</tr>
+<tr>
+<td><b>라이선스 추가 비용</b></td><td>계약 외 추가 예산 요구 발생 시 즉시 보고</td><td>HSM 키 발급 유료화 방침 변경</td><td><span class="highlight-red">협상 시도 없이 방치</span></td><td><span class="highlight-red">✘ 미보고 (은폐)</span></td>
+</tr>
+<tr>
+<td><b>보안 규제 위반</b></td><td>GDPR/UN R155 위반 위험 노출 시 보고</td><td>REQ-077 HSM Blocked 상태</td><td><span class="highlight-red">임시 약관 우회 시도</span></td><td><span class="highlight-red">✘ 미보고 (은폐)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 06-B3: Tool 3 - 5 Whys Analysis -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 1] 디텍팅 도구 3 - 5 Whys 근본 원인 분석</h2>
+<span class="slide-num">SLIDE 06-B3</span>
+</div>
+<div class="card">
+<div class="card-title">⌕ Why 1 ~ Why 5 분석 계통도</div>
+<ol style="padding-left: 1.5rem; line-height: 2;">
+<li><b>Why 1:</b> 왜 박태산 전무(스폰서)가 OEM 임원 항의 전화를 받고 20:00에 PM을 긴급 호출했는가? <br/>▪ NovaChip SDK 지연과 HSM 라이선스 추가 비용 건을 PM이 사전에 에스컬레이션하지 않았기 때문.</li>
+<li><b>Why 2:</b> 왜 PM은 SDK 3주 연기와 추가 비용 건을 사전에 보고하지 않았는가? <br/>▪ 개발진의 임시 워크어라운드 코드로 G3 실차 테스트를 어떻게든 모면할 수 있다고 안일하게 판단했기 때문.</li>
+<li><b>Why 3:</b> 왜 NovaChip은 계약과 달리 SDK 릴리즈를 연기하고 HSM 라이선스 추가 비용을 요구할 수 있었는가? <br/>▪ 계약 체결 시 SDK 납기 지연에 대한 SLA 페널티 조항 및 HSM 활성화 비용 구체 명시가 누락되었기 때문.</li>
+<li><b>Why 4:</b> 왜 벤더 계약 통제와 리스크 관리가 이처럼 허술하게 진행되었는가? <br/>▪ 벤더 매니저(박태규)와 PM 간의 벤더 거버넌스 가이드라인 및 공조 체계가 부재했기 때문.</li>
+<li><b>Why 5 (Root Cause):</b> <b>PMO의 벤더 거버넌스 프레임워크 부재 및 위기 은폐형 리더십 (Reactive Governance).</b></li>
+</ol>
+</div>
+</div>
+<!-- SLIDE 07: Root Cause 2 Executive Summary -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚠ SLIDE 07: [근본원인 2] 무검토 Scope Creep (REQ-045 AI음성) 및 변경 거버넌스 붕괴</h2>
+<span class="slide-num">SLIDE 07-A</span>
+</div>
+<div class="slide-summary">
+      문제 2 요약: G1 Scope Freeze 이후 OEM 부사장의 Top-down 요구로 REQ-045(생성형 AI 음성비서)가 CCB 심의 없이 승인되어, 무중단 OTA(REQ-052) 인력이 차출되고 프로젝트 전체 베이스라인이 흔들렸습니다.
+    </div>
+<div class="grid-2">
+<div>
+<img alt="Uncontrolled Scope Creep" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzMxMmU4MSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM2MzY2ZjEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTUiIHJlc3VsdD0iYmx1ciIgLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImJsdXIiIG9wZXJhdG9yPSJvdmVyIiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiByeD0iMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSIxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSI4MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMjcwIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZmlsdGVyPSJ1cmwoI2dsb3cpIj7wn5OLPC90ZXh0PgogIDx0ZXh0IHg9IjMwMCIgeT0iNDIwIiBmb250LWZhbWlseT0iJ0ludGVyJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmZmZmYiPlVuY29udHJvbGxlZCBTY29wZSBDcmVlcDwvdGV4dD4KICA8dGV4dCB4PSIzMDAiIHk9IjQ2NSIgZm9udC1mYW1pbHk9IidJbnRlcicsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC43KSI+UkVRLTA0NSBBSSBWb2ljZSAmIEJhc2VsaW5lIEVyb3Npb248L3RleHQ+Cjwvc3ZnPg==" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);"/>
+</div>
+<div class="card">
+<div class="card-title">⌕ 문제 2 진단 및 현황</div>
+<ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+<li style="margin-bottom: 0.5rem;"><b>현상:</b> REQ-045 추가로 인해 백엔드 핵심 인력이 OTA(REQ-052)에서 차출되어 무중단 OTA 개발 병목 발생.</li>
+<li style="margin-bottom: 0.5rem;"><b>근본 원인:</b> CCB(변경통제위원회)의 영향도 평가(Impact Assessment) 및 기술부채 산정 프로세스 무시.</li>
+<li style="margin-bottom: 0.5rem;"><b>비즈니스 파급력:</b> 개발진 피로 누적, 주말 철야 강요, 껍데기 데모 영상 제작으로 실체 없는 기술부채 누적.</li>
+</ul>
+<div class="annotation warn">
+<b>PMBOK 8th 관점:</b> 고객사의 Top-down 요청이라도 Value 및 Safety Baseline에 미치는 정량적 영향을 산출하여 스폰서와 협상해야 합니다. 무조건적 수용은 전체 배의 침몰을 야기합니다.
+        </div>
+</div>
+</div>
+</div>
+<!-- SLIDE 07-B1: Tool 1 - RTM -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 2] 디텍팅 도구 1 - 요구사항 의존성 그래프 (RTM)</h2>
+<span class="slide-num">SLIDE 07-B1</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>Req ID</th><th>요구사항 명</th><th>Status</th><th>Owner</th><th>Dependency (의존성)</th><th>REQ-045 추가로 인한 영향</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>REQ-012</b></td><td>통합 UI 렌더링 최적화</td><td>In Dev</td><td>FE (강민재)</td><td>REQ-028 (SDK 3.0)</td><td>SDK 지연으로 렌더링 연동 차질</td>
+</tr>
+<tr>
+<td><b>REQ-028</b></td><td>NovaChip SDK 멀티디스플레이</td><td><span class="highlight-red">Blocked</span></td><td>Platform (김다온)</td><td>NovaChip Beta 릴리즈</td><td>메모리 누수로 Cold Boot 3.5s 유발</td>
+</tr>
+<tr style="background: rgba(244,63,94,0.15);">
+<td><b>REQ-045</b></td><td>생성형 AI 음성 제어 (신규)</td><td>Approved</td><td>PO / 벤더</td><td>OEM 부사장 Top-down</td><td><span class="highlight-red">REQ-052 인력 2명 차출하여 개발 병목 발생</span></td>
+</tr>
+<tr>
+<td><b>REQ-052</b></td><td>무중단 OTA 백그라운드 다운로드</td><td>In Dev</td><td>BE (오지후)</td><td>QA망 테스트 인프라</td><td>인력 차출로 주말 철야 강요 및 지연</td>
+</tr>
+<tr>
+<td><b>REQ-077</b></td><td>차량 보안 모듈(HSM) 키 연동</td><td><span class="highlight-red">Deferred</span></td><td>보안 / BE</td><td>REQ-028 (SDK 고유키)</td><td>GDPR 위반 및 UN R155 규제 미달</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 07-B2: Tool 2 - CCB Impact Rating Tool -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 2] 디텍팅 도구 2 - CCB Impact Rating &amp; Risk Index</h2>
+<span class="slide-num">SLIDE 07-B2</span>
+</div>
+<div class="card">
+<div class="card-title">⚖️ REQ-045 Scope Creep 영향도 정량 평가 결과</div>
+<table>
+<thead>
+<tr><th>평가 영역</th><th>영향 요소 정량 평가</th><th>위험 점수 (10점 만점)</th><th>판정 결과</th></tr>
+</thead>
+<tbody>
+<tr><td><b>일정 영향 (Schedule)</b></td><td>REQ-052 OTA 완료 2.5주 연기</td><td><span class="highlight-red">9.5점</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>리소스 (Resource)</b></td><td>BE 개발자 2명 전담 차출 (100% 가동률)</td><td><span class="highlight-red">9.0점</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>보안 컴플라이언스</b></td><td>GDPR 유럽 운전자 음성 데이터 개인정보 위반</td><td><span class="highlight-red">10.0점</span></td><td><span class="tool-tag-pill tag-critical">REJECT REQUIREMENT</span></td></tr>
+<tr><td><b>품질 (Quality)</b></td><td>실체 연동 없이 껍데기 UI 데모로 기술부채 150시간 발생</td><td><span class="highlight-orange">8.5점</span></td><td><span class="tool-tag-pill tag-warning">HIGH RISK</span></td></tr>
+</tbody>
+</table>
+<div class="annotation warn" style="margin-top: 1rem;">
+<b>CCB 판정 결과:</b> 종합 위험 점수 9.25점으로 <b>"G3 반영 불합격 (Reject for G3)"</b> 대상이었으나, CCB 절차 무시로 기습 반영됨.
+      </div>
+</div>
+</div>
+<!-- SLIDE 07-B3: Tool 3 - Mindset Alignment Matrix -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 2] 디텍팅 도구 3 - Mindset Alignment Matrix</h2>
+<span class="slide-num">SLIDE 07-B3</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>관점 (Mindset)</th><th>PO (최서린) 주관</th><th>PM (이도윤) 반응</th><th>PMBOK 8th 올바른 마인드셋</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>가치 정의 (Value)</b></td><td>고객사 OEM 부사장 만족 &amp; 데모 영상 확보</td><td>껍데기 데모로 일단 시각적 무마</td><td><b>차량 SW의 최우선 가치는 '안전(Safety)과 법적 컴플라이언스'</b></td>
+</tr>
+<tr>
+<td><b>의사결정 기준</b></td><td>Top-down 요구사항 100% 수용</td><td>단기 위기 모피 및 임시방편</td><td><b>CCB 정량 영향도 기반 스폰서 에스컬레이션 및 일정 재협상</b></td>
+</tr>
+<tr>
+<td><b>팀 보호 (People)</b></td><td>개발팀 철야 강요 불가피 수용</td><td>"이번 주말 팀원 전원 철야" 지시</td><td><b>지속 가능한 개발 속도(Sustainable Pace) 유지 및 부채 차단</b></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 08: Root Cause 3 Executive Summary -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚠ SLIDE 08: [근본원인 3] 차량용 SW 안전/품질 아키텍처 붕괴</h2>
+<span class="slide-num">SLIDE 08-A</span>
+</div>
+<div class="slide-summary">
+      문제 3 요약: Cold Boot 시간이 3.5초(목표 2.0초)로 미달하고, NovaChip SDK 메모리 누수 워크어라운드 임시 코드가 난립하며 CI 테스트 300개가 깨져 ISO 26262 ASIL-B 인증이 위협받고 있습니다.
+    </div>
+<div class="grid-2">
+<div>
+<img alt="Safety &amp; Quality Crisis" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzgzMTg0MyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiZTEyM2MiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTUiIHJlc3VsdD0iYmx1ciIgLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImJsdXIiIG9wZXJhdG9yPSJvdmVyIiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiByeD0iMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSIxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSI4MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMjcwIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZmlsdGVyPSJ1cmwoI2dsb3cpIj7imqE8L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSI0MjAiIGZvbnQtZmFtaWx5PSInSW50ZXInLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiI+U2FmZXR5ICYgUXVhbGl0eSBDcmlzaXM8L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSI0NjUiIGZvbnQtZmFtaWx5PSInSW50ZXInLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPkNvbGQgQm9vdCAzLjVzICYgQVNJTC1CIFRocmVhdDwvdGV4dD4KPC9zdmc+" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);"/>
+</div>
+<div class="card">
+<div class="card-title">⌕ 문제 3 진단 및 현황</div>
+<ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+<li style="margin-bottom: 0.5rem;"><b>현상:</b> 차량 전원 ON 후 후방 카메라 표시 3.5초 지연. CI 빌드 테스트 300개 전체 파손.</li>
+<li style="margin-bottom: 0.5rem;"><b>근본 원인:</b> 메모리 누수 임시 워크어라운드 작성, 메신저 구두 전달로 API 인터페이스 파손, 차량용 안전 아키텍처 미준수.</li>
+<li style="margin-bottom: 0.5rem;"><b>비즈니스 파급력:</b> G4 게이트 ASIL-B 인증 획득 불가능, 양산(SOP) 적용 취소 및 차 상용화 중단.</li>
+</ul>
+<div class="annotation warn">
+<b>차량 SW 엄격성:</b> 일반 모바일/웹과 달리 차량 인포테인먼트 Cold Boot 2.0초 미달은 운전자 후방 안전 규격 위반입니다.
+        </div>
+</div>
+</div>
+</div>
+<!-- SLIDE 08-B1: Tool 1 - Cold Boot Control Chart -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 3] 디텍팅 도구 1 - Cold Boot Performance Control Chart</h2>
+<span class="slide-num">SLIDE 08-B1</span>
+</div>
+<div class="card">
+<div class="card-title">◿ 일자별 Cold Boot Time (초) 및 통제 한계선</div>
+<div class="svg-container">
+<svg height="220" viewbox="0 0 800 250" width="100%">
+<!-- Background Grid -->
+<line stroke="#475569" stroke-dasharray="4" x1="50" x2="750" y1="30" y2="30"></line>
+<text fill="#f43f5e" font-size="12" x="755" y="35">Critical Upper Limit (3.5s)</text>
+<line stroke="#22c55e" stroke-width="2" x1="50" x2="750" y1="120" y2="120"></line>
+<text fill="#22c55e" font-size="12" x="755" y="125">DoD Target (2.0s)</text>
+<line stroke="#38bdf8" stroke-dasharray="4" x1="50" x2="750" y1="180" y2="180"></line>
+<text fill="#38bdf8" font-size="12" x="755" y="185">Ideal (1.2s)</text>
+<!-- Data Line -->
+<polyline fill="none" points="70,140 170,135 270,125 370,130 470,80 570,45 670,30" stroke="#f43f5e" stroke-width="4"></polyline>
+<!-- Points -->
+<circle cx="70" cy="140" fill="#38bdf8" r="5"></circle>
+<circle cx="170" cy="135" fill="#38bdf8" r="5"></circle>
+<circle cx="270" cy="125" fill="#22c55e" r="5"></circle>
+<circle cx="370" cy="130" fill="#38bdf8" r="5"></circle>
+<circle cx="470" cy="80" fill="#f97316" r="6"></circle> <!-- SDK Beta Workaround -->
+<circle cx="570" cy="45" fill="#f43f5e" r="6"></circle>
+<circle cx="670" cy="30" fill="#f43f5e" r="7"></circle> <!-- Oct 5 Current -->
+<!-- Labels -->
+<text fill="#94a3b8" font-size="11" x="70" y="210">9/15</text>
+<text fill="#94a3b8" font-size="11" x="270" y="210">9/25</text>
+<text fill="#f97316" font-size="11" x="470" y="210">10/01 (SDK 패치)</text>
+<text fill="#f43f5e" font-size="11" x="670" y="210">10/05 (3.5s)</text>
+</svg>
+</div>
+<div class="annotation warn">
+<b>분석:</b> 10월 1일 Platform팀의 SDK 메모리 누수 임시 워크어라운드 적용 직후 Cold Boot 타임이 1.9s에서 3.5s로 폭발함.
+      </div>
+</div>
+</div>
+<!-- SLIDE 08-B2: Tool 2 - CI Flakiness Trend Chart -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 3] 디텍팅 도구 2 - CI Test Pass Rate &amp; Flakiness Breakdown</h2>
+<span class="slide-num">SLIDE 08-B2</span>
+</div>
+<div class="card">
+<div class="card-title">▪ CI 자동화 테스트 300개 파손 원인 분류</div>
+<table>
+<thead>
+<tr><th>파손 원인 분류</th><th>파손 테스트 수</th><th>비율 (%)</th><th>주요 원인 상세</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>API Interface Mismatch</b></td>
+<td><span class="highlight-red">185개</span></td>
+<td>61.7%</td>
+<td>Platform(김다온)이 임시 워크어라운드 반영 후 API 변경 건을 메신저로만 전달하여 FE/QA CI 스크립트 불일치</td>
+</tr>
+<tr>
+<td><b>Memory Leak Timeout</b></td>
+<td>75개</td>
+<td>25.0%</td>
+<td>NovaChip Beta SDK 메모리 누수로 인한 타임아웃 오류</td>
+</tr>
+<tr>
+<td><b>Test Infra Flakiness</b></td>
+<td>40개</td>
+<td>13.3%</td>
+<td>QA망 서버 가상화 인프라 부족으로 인한 간헐적 실패</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 08-B3: Tool 3 - Fishbone Diagram -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 3] 디텍팅 도구 3 - Ishikawa (Fishbone) Diagram</h2>
+<span class="slide-num">SLIDE 08-B3</span>
+</div>
+<div class="card">
+<div class="card-title">▪ Cold Boot 3.5초 및 ASIL-B 위기 원인 피시본 분석</div>
+<div class="svg-container">
+<svg height="230" viewbox="0 0 800 260" width="100%">
+<!-- Main Line -->
+<line stroke="#38bdf8" stroke-width="4" x1="50" x2="700" y1="130" y2="130"></line>
+<polygon fill="#f43f5e" points="700,115 740,130 700,145"></polygon>
+<text fill="#f43f5e" font-size="14" font-weight="bold" x="745" y="135">Cold Boot 3.5s &amp; ASIL-B 위기</text>
+<!-- Bones Top -->
+<line stroke="#a855f7" stroke-width="2" x1="200" x2="280" y1="30" y2="130"></line>
+<text fill="#a855f7" font-weight="bold" x="140" y="25">Hardware/SDK</text>
+<text fill="#94a3b8" font-size="11" x="110" y="45">NovaChip SDK 메모리 누수</text>
+<line stroke="#a855f7" stroke-width="2" x1="450" x2="530" y1="30" y2="130"></line>
+<text fill="#a855f7" font-weight="bold" x="410" y="25">Process/Comm</text>
+<text fill="#94a3b8" font-size="11" x="370" y="45">JIRA 누락 &amp; 메신저 전달</text>
+<!-- Bones Bottom -->
+<line stroke="#a855f7" stroke-width="2" x1="200" x2="280" y1="230" y2="130"></line>
+<text fill="#a855f7" font-weight="bold" x="150" y="245">Software Architecture</text>
+<text fill="#94a3b8" font-size="11" x="120" y="225">CAN 통신 지연 &amp; 임시 워크어라운드</text>
+<line stroke="#a855f7" stroke-width="2" x1="450" x2="530" y1="230" y2="130"></line>
+<text fill="#a855f7" font-weight="bold" x="420" y="245">Quality Gate</text>
+<text fill="#94a3b8" font-size="11" x="380" y="225">CI 300개 테스트 파손 방치</text>
+</svg>
+</div>
+</div>
+</div>
+<!-- SLIDE 09: Root Cause 4 Executive Summary -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚠ SLIDE 09: [근본원인 4] 팀 커뮤니케이션 Silo화 및 JIRA 형상 관리 파손</h2>
+<span class="slide-num">SLIDE 09-A</span>
+</div>
+<div class="slide-summary">
+      문제 4 요약: API 스펙 변경이 JIRA 공식 형상관리에 등록되지 않고 메신저로만 전달되어 부서 간 비난 문화(Silo)가 팽배해지고 익명 게시판 불신으로 분출되었습니다.
+    </div>
+<div class="grid-2">
+<div>
+<img alt="Silo Communication Breakdown" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzcwMWE3NSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNhMjFjYWYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTUiIHJlc3VsdD0iYmx1ciIgLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImJsdXIiIG9wZXJhdG9yPSJvdmVyIiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiByeD0iMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSIxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSI4MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMjcwIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZmlsdGVyPSJ1cmwoI2dsb3cpIj7wn5KsPC90ZXh0PgogIDx0ZXh0IHg9IjMwMCIgeT0iNDIwIiBmb250LWZhbWlseT0iJ0ludGVyJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmZmZmYiPlNpbG8gQ29tbXVuaWNhdGlvbiBCcmVha2Rvd248L3RleHQ+CiAgPHRleHQgeD0iMzAwIiB5PSI0NjUiIGZvbnQtZmFtaWx5PSInSW50ZXInLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNykiPkpJUkEgQnlwYXNzICYgTWVzc2VuZ2VyIEZyYWdpbGl0eTwvdGV4dD4KPC9zdmc+" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);"/>
+</div>
+<div class="card">
+<div class="card-title">⌕ 문제 4 진단 및 현황</div>
+<ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+<li style="margin-bottom: 0.5rem;"><b>현상:</b> QA/FE/Platform 간 남탓 문화 형성. 블라인드에 "타이타닉, 탈출은 지능순" 게시글 폭발.</li>
+<li style="margin-bottom: 0.5rem;"><b>근본 원인:</b> 정보 공유 프로토콜의 부재, JIRA 미등록 구두 변경, PM의 커뮤니케이션 조율 기능 상실.</li>
+<li style="margin-bottom: 0.5rem;"><b>비즈니스 파급력:</b> 핵심 개발진 사기 저하 및 이탈, 협업 파손으로 인한 개발 생산성 40% 저하.</li>
+</ul>
+<div class="annotation warn">
+<b>조직 문화 진단:</b> 커뮤니케이션 파손은 기술 문제를 넘어 프로젝트의 심리적 안전감(Psychological Safety)을 완전히 파괴했습니다.
+        </div>
+</div>
+</div>
+</div>
+<!-- SLIDE 09-B1: Tool 1 - RACI Matrix -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 4] 디텍팅 도구 1 - RACI Matrix &amp; Governance Protocol</h2>
+<span class="slide-num">SLIDE 09-B1</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>액티비티 / 프로세스</th><th>PM (이도윤)</th><th>PO (최서린)</th><th>Platform (김다온)</th><th>FE (강민재)</th><th>QA (문해인)</th><th>스폰서 (박태산)</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>API 스펙 변경 및 JIRA 등록</b></td>
+<td><span class="highlight-green">A (Accountable)</span></td>
+<td>C</td>
+<td><span class="highlight-green">R (Responsible)</span></td>
+<td>I</td>
+<td>I</td>
+<td>I</td>
+</tr>
+<tr>
+<td><b>Scope 변경 (REQ-045 수용)</b></td>
+<td>A</td>
+<td><span class="highlight-green">R</span></td>
+<td>C</td>
+<td>C</td>
+<td>C</td>
+<td><span class="highlight-green">A (최종 승인)</span></td>
+</tr>
+<tr>
+<td><b>벤더 리스크 에스컬레이션</b></td>
+<td><span class="highlight-green">R / A</span></td>
+<td>I</td>
+<td>C</td>
+<td>I</td>
+<td>I</td>
+<td><span class="highlight-green">I (수신)</span></td>
+</tr>
+<tr>
+<td><b>CI 자동화 테스트 깨짐 복구</b></td>
+<td>A</td>
+<td>I</td>
+<td>R (API 수정)</td>
+<td>R (UI 수정)</td>
+<td><span class="highlight-green">R (테스트 검증)</span></td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<div class="annotation" style="margin-top: 1rem;">
+<b>개선 가이드:</b> API 변경 시 Platform(김다온)이 JIRA 티켓 생성(R) 및 PM(이도윤) 승인(A) 전에는 메신저 구두 전달을 엄격히 금지함.
+      </div>
+</div>
+</div>
+<!-- SLIDE 09-B2: Tool 2 - Communication Flow Map -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 4] 디텍팅 도구 2 - Communication Information Flow Map</h2>
+<span class="slide-num">SLIDE 09-B2</span>
+</div>
+<div class="card">
+<div class="card-title">▪ 파손된 메신저 전달 vs 정상적인 JIRA-CI 파이프라인 비교</div>
+<div class="grid-2">
+<div style="background: rgba(244,63,94,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--red);">
+<h4 style="color: var(--red); margin-bottom: 0.5rem;">✘ 현재의 파손된 파이프라인</h4>
+<p style="font-size: 0.88rem; line-height: 1.8;">
+            Platform 개발자 ▪ 개인 메신저 구두 전달 ▪ FE/QA 확인 누락 ▪ 밤샘 CI 빌드 실행 ▪ <b>300개 테스트 파손</b> ▪ <b>아침 데일리 스크럼 비난전</b>
+</p>
+</div>
+<div style="background: rgba(34,197,94,0.1); padding: 1rem; border-radius: 8px; border: 1px solid var(--green);">
+<h4 style="color: var(--green); margin-bottom: 0.5rem;">✔ 에이전틱 정상 파이프라인 (Cognitive Flow)</h4>
+<p style="font-size: 0.88rem; line-height: 1.8;">
+            Platform 개발자 ▪ JIRA API 변경 티켓 발행 ▪ <b>Comm Orchestrator Agent 자동 감지</b> ▪ FE/QA 자동 알림 및 CI Webhook 갱신 ▪ <b>CI 빌드 Pass</b>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- SLIDE 09-B3: Tool 3 - Psychological Safety Barometer -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 4] 디텍팅 도구 3 - Team Psychological Safety Barometer</h2>
+<span class="slide-num">SLIDE 09-B3</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>평가 항목</th><th>측정 지표 (100점 만점)</th><th>상태</th><th>개선 방향</th></tr>
+</thead>
+<tbody>
+<tr><td><b>투명한 위기 공유</b></td><td><span class="highlight-red">15점</span> (스폰서 보고 은폐)</td><td><span class="tool-tag-pill tag-critical">FAIL</span></td><td>Cognitive Agent 기반 자동 에스컬레이션 구축</td></tr>
+<tr><td><b>부서 간 신뢰도</b></td><td><span class="highlight-red">20점</span> (메신저 탓 및 Silo 분열)</td><td><span class="tool-tag-pill tag-critical">FAIL</span></td><td>JIRA 통합 단일 정보 원천(SSOT) 수립</td></tr>
+<tr><td><b>지속 가능한 개발 속도</b></td><td><span class="highlight-red">30점</span> (주말 전원 철야 강요)</td><td><span class="tool-tag-pill tag-critical">FAIL</span></td><td>CCB 변경 심의로 무리한 직수용 차단</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 10: Root Cause 5 Executive Summary -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚠ SLIDE 10: [근본원인 5] 보안/규제 컴플라이언스 이월 및 임시방편 위기대응</h2>
+<span class="slide-num">SLIDE 10-A</span>
+</div>
+<div class="slide-summary">
+      문제 5 요약: 보안 HSM 연동(REQ-077)이 지연되었음에도 G2 게이트를 조건부 통과시키고, GDPR 및 UN R155 위반 위험을 임시 약관으로 우회하려는 임시방편형 위기대응이 대형 리콜 위기를 키웠습니다.
+    </div>
+<div class="grid-2">
+<div>
+<img alt="Reactive Technical Debt Accumulation" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzA2NGUzYiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNDc4NTciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8ZmlsdGVyIGlkPSJnbG93IiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTUiIHJlc3VsdD0iYmx1ciIgLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImJsdXIiIG9wZXJhdG9yPSJvdmVyIiAvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiByeD0iMzAiIGZpbGw9InVybCgjYmcpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSIxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjE1KSIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iMjQwIiByPSI4MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPgogIDx0ZXh0IHg9IjMwMCIgeT0iMjcwIiBmb250LWZhbWlseT0iJ1NlZ29lIFVJJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZmlsdGVyPSJ1cmwoI2dsb3cpIj7wn5uh77iPPC90ZXh0PgogIDx0ZXh0IHg9IjMwMCIgeT0iNDIwIiBmb250LWZhbWlseT0iJ0ludGVyJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmZmZmYiPlJlYWN0aXZlIFRlY2huaWNhbCBEZWJ0IEFjY3VtdWxhdGlvbjwvdGV4dD4KICA8dGV4dCB4PSIzMDAiIHk9IjQ2NSIgZm9udC1mYW1pbHk9IidJbnRlcicsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC43KSI+VGVtcG9yYXJ5IEJ5cGFzcyAmIENvbXBsaWFuY2UgUmlzazwvdGV4dD4KPC9zdmc+" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);"/>
+</div>
+<div class="card">
+<div class="card-title">⌕ 문제 5 진단 및 현황</div>
+<ul style="padding-left: 1.2rem; margin-bottom: 1rem;">
+<li style="margin-bottom: 0.5rem;"><b>현상:</b> G2 보안 게이트 조건부 패스 후 리스크 부채 이월. GDPR 유럽 법무 규제 미검토.</li>
+<li style="margin-bottom: 0.5rem;"><b>근본 원인:</b> 게이트 통과 중심의 관료적 PMing, 임시방편(Reactive) 덮기 문화.</li>
+<li style="margin-bottom: 0.5rem;"><b>비즈니스 파급력:</b> 유럽 시장 GDPR 억대 벌금, UN R155 인증 취소로 차량 판매 금지.</li>
+</ul>
+<div class="annotation warn">
+<b>법무/컴플라이언스 위계:</b> 차량 SW에서 보안 우회는 단순 소프트웨어 버그가 아닌 법적 판매 금지 및 천문학적 리콜 사유입니다.
+        </div>
+</div>
+</div>
+</div>
+<!-- SLIDE 10-B1: Compliance & Gate Radar -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 5] 디텍팅 도구 1 - Gate Health &amp; Compliance Audit Radar</h2>
+<span class="slide-num">SLIDE 10-B1</span>
+</div>
+<div class="card">
+<table>
+<thead>
+<tr><th>컴플라이언스 항목</th><th>요구 규격</th><th>현재 준비도 점수</th><th>위험 평가</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>ISO 26262 ASIL-B</b></td><td>기능 안전 프로세스 및 CI 검증</td><td><span class="highlight-red">35 / 100점</span></td><td><span class="tool-tag-pill tag-critical">HIGH RISK</span></td></tr>
+<tr>
+<td><b>UN R155 (차량 사이버보안)</b></td><td>HSM 키 관리 및 암호화 모듈</td><td><span class="highlight-red">10 / 100점 (Blocked)</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr>
+<td><b>GDPR (유럽 개인정보보호)</b></td><td>음성데이터 클라우드 전송 동의 및 암호화</td><td><span class="highlight-red">20 / 100점</span></td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr>
+<td><b>G2 Architecture Gate</b></td><td>보안 아키텍처 확정</td><td><span class="highlight-yellow">조건부 통과 (부채이월)</span></td><td><span class="tool-tag-pill tag-warning">DEBT ACCUMULATED</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 10-B2: Causal Relationship Map -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 5] 디텍팅 도구 2 - Causal Relationship Map (HTML5 SVG)</h2>
+<span class="slide-num">SLIDE 10-B2</span>
+</div>
+<div class="card">
+<div class="card-title">⛆ 5대 근본 원인 간 인과관계 결합 지도 (Systems Thinking Diagram)</div>
+<div class="svg-container">
+<svg height="300" viewbox="0 0 900 320" width="100%">
+<!-- Node 1: NovaChip SDK -->
+<rect fill="#e0f2fe" height="70" rx="10" stroke="#0284c7" stroke-width="2" width="220" x="30" y="40"></rect>
+<text fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle" x="140" y="70">근본원인 1: 벤더 통제 실패</text>
+<text fill="#475569" font-size="11" text-anchor="middle" x="140" y="90">NovaChip SDK 3주 연기 &amp; HSM 미결</text>
+<!-- Node 2: Scope Creep -->
+<rect fill="#ffedd5" height="70" rx="10" stroke="#ea580c" stroke-width="2" width="220" x="340" y="40"></rect>
+<text fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle" x="450" y="70">근본원인 2: Scope Creep</text>
+<text fill="#475569" font-size="11" text-anchor="middle" x="450" y="90">REQ-045 CCB 심의없이 직수용</text>
+<!-- Node 3: Safety/Quality -->
+<rect fill="#ffe4e6" height="70" rx="10" stroke="#e11d48" stroke-width="2" width="220" x="650" y="40"></rect>
+<text fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle" x="760" y="70">근본원인 3: 안전/품질 붕괴</text>
+<text fill="#475569" font-size="11" text-anchor="middle" x="760" y="90">Cold Boot 3.5s &amp; CI 300개 파손</text>
+<!-- Node 4: Silo & JIRA -->
+<rect fill="#f3e8ff" height="70" rx="10" stroke="#7e22ce" stroke-width="2" width="220" x="180" y="200"></rect>
+<text fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle" x="290" y="230">근본원인 4: Silo &amp; JIRA 누락</text>
+<text fill="#475569" font-size="11" text-anchor="middle" x="290" y="250">구두전달 &amp; 익명 불신 게시글</text>
+<!-- Node 5: Compliance & Reactive -->
+<rect fill="#dcfce7" height="70" rx="10" stroke="#16a34a" stroke-width="2" width="240" x="500" y="200"></rect>
+<text fill="#1e293b" font-size="13" font-weight="bold" text-anchor="middle" x="620" y="230">근본원인 5: 보안규제 우회</text>
+<text fill="#475569" font-size="11" text-anchor="middle" x="620" y="250">GDPR 위반 &amp; 임시방편 리스크 은폐</text>
+<!-- Connectors -->
+<path d="M 250 75 L 340 75" marker-end="url(#arrow)" stroke="#94a3b8" stroke-width="2"></path>
+<path d="M 560 75 L 650 75" stroke="#94a3b8" stroke-width="2"></path>
+<path d="M 140 110 L 290 200" stroke="#94a3b8" stroke-width="2"></path>
+<path d="M 450 110 L 620 200" stroke="#94a3b8" stroke-width="2"></path>
+<path d="M 760 110 L 620 200" stroke="#94a3b8" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- SLIDE 10-B3: Technical Debt Pareto -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ [문제 5] 디텍팅 도구 3 - Technical Debt Pareto Analysis</h2>
+<span class="slide-num">SLIDE 10-B3</span>
+</div>
+<div class="card">
+<div class="card-title">▪ 기술 부채 항목별 누적 재작업 시간 (Hours) 파레토 분석</div>
+<table>
+<thead>
+<tr><th>기술 부채 항목</th><th>예상 재작업 시간 (Hours)</th><th>누적 비율 (%)</th><th>리스크 수준</th></tr>
+</thead>
+<tbody>
+<tr><td><b>SDK 메모리 누수 워크어라운드 제거 &amp; 정식 SDK 연동</b></td><td>160시간</td><td>38.1%</td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>REQ-045 AI 음성비서 껍데기 제거 및 정식 HSM 암호화</b></td><td>120시간</td><td>66.7%</td><td><span class="tool-tag-pill tag-critical">CRITICAL</span></td></tr>
+<tr><td><b>CI 자동화 테스트 300개 스크립트 수정</b></td><td>80시간</td><td>85.7%</td><td><span class="tool-tag-pill tag-warning">HIGH</span></td></tr>
+<tr><td><b>Cold Boot CAN 통신 드라이버 최적화</b></td><td>60시간</td><td>100.0%</td><td><span class="tool-tag-pill tag-warning">HIGH</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SLIDE 11: Mindset Synthesis & Cognitive PM-Twin AI Agent Workflows -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">⚙ SLIDE 11: PMBOK 8th Mindset Synthesis &amp; Cognitive PM-Twin AI Agent Workflows</h2>
+<span class="slide-num">SLIDE 11</span>
+</div>
+<div class="slide-summary">결론: Proactive, Ownership, Value-driven 3대 마인드셋을 적용하여, 실현가능한 구조적 개선안을 제시합니다.</div>
+<!-- 5대 수행 임무 연계 AI Agent Framework -->
+<div class="card" style="margin-bottom: 1.5rem;">
+<div class="card-title">◈ Cognitive PM-Twin Agent Architecture &amp; 5대 수행 임무 매핑</div>
+<table>
+<thead>
+<tr><th>수행 임무 (Task)</th><th>담당 특화 AI 에이전트</th><th>에이전틱 개입 및 실행 내용 (Agentic Workflow)</th><th>기대 효과 (Outcome)</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><b>① [Identify] 이상 징후 식별</b></td>
+<td><b>Comm Orchestrator &amp; Project Pulse</b></td>
+<td>Slack/JIRA/Git 실시간 크롤링으로 Cold Boot 3.5s, CI 300개 파손, 블라인드 민심 징후 100% 실시간 식별.</td>
+<td>표면 징후 감지 시간 3일 ➔ 5분 단축</td>
+</tr>
+<tr>
+<td><b>② [Analyze] 근본 원인 분석</b></td>
+<td><b>Root Cause Advisor &amp; Outcome Forecaster</b></td>
+<td>Systems Thinking 기반으로 SDK 지연 및 Scope Creep이 GDPR/ASIL-B에 미칠 억대 리콜 파급효과 정량 시뮬레이션.</td>
+<td>은폐된 기술부채 100% 시각화</td>
+</tr>
+<tr>
+<td><b>③ [Design] AI Agentic 개선안</b></td>
+<td><b>Synapse (Chief Agent) &amp; Change Guardian</b></td>
+<td>G1 Scope Freeze 자동 통제, CCB 가상 심의, 스폰서 에스컬레이션 리포트 자동 생성.</td>
+<td>무검토 Scope Creep 0건 차단</td>
+</tr>
+<tr>
+<td><b>④ [Develop] POC Action Items</b></td>
+<td><b>Plan Optimizer &amp; Quality Sentinel</b></td>
+<td>내일 08시 스폰서 제출용 '리스크 복구 계획서' 자동 구성 및 CI 300개 자가 복구(Self-healing) 스크립트 실행.</td>
+<td>스폰서 보고서 2시간 내 완편</td>
+</tr>
+<tr>
+<td><b>⑤ [Validate] 가치 검증</b></td>
+<td><b>Lifecycle Navigator &amp; Value Engine</b></td>
+<td>Proactive 거버넌스로 전환하여 G4 ASIL-B 100% 획득 및 12/15 SOP 양산 안전성 검증.</td>
+<td>SOP 양산 0% 리콜 달성</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ④ [Develop] Action Items (Owner / Due Date / DoD) -->
+<div class="card" style="margin-bottom: 1.5rem;">
+<div class="card-title">⌁ ④ [Develop] 현업 즉시 적용 3대 구체적 액션 아이템 (Action Items)</div>
+<table>
+<thead>
+<tr><th>Action Item</th><th>실행 내용</th><th>Owner</th><th>Due Date</th><th>DoD (완료 기준)</th></tr>
+</thead>
+<tbody>
+<tr style="background: rgba(56,189,248,0.1);">
+<td><b>Action Item 1</b></td>
+<td><b>스폰서 긴급 에스컬레이션 리포트 제출 및 NovaChip CEO 상담 요청</b><br/>- SDK v3.0 납기 단축 페널티 및 HSM 라이선스 추가 비용 무상화 협상 안건 제출</td>
+<td><b>이도윤 PM</b><br/>(Synapse Agent)</td>
+<td><b>10월 6일 08:00</b><br/>(내일 아침)</td>
+<td>- 박태산 전무 결재 서명 획득<br/>- NovaChip Executive Call 대면 미팅 확정</td>
+</tr>
+<tr style="background: rgba(168,85,247,0.1);">
+<td><b>Action Item 2</b></td>
+<td><b>CCB 개최를 통한 REQ-045 (AI 음성) Phase 분리 및 G3 Scope Freeze 재정립</b><br/>- G3는 껍데기 UI 제외 후 Cold Boot 2.0s 및 HSM 연동에 집중, AI 연동은 G4로 공식 이관</td>
+<td><b>최서린 PO</b><br/>(Change Guardian)</td>
+<td><b>10월 7일 18:00</b></td>
+<td>- CCB 의결서 작성 및 OEM 양해 서명<br/>- REQ-052 백엔드 인력 차출 즉시 원복</td>
+</tr>
+<tr style="background: rgba(34,197,94,0.1);">
+<td><b>Action Item 3</b></td>
+<td><b>JIRA-Slack-CI 파이프라인 자동화 및 API Interface Lock</b><br/>- 메신저 구두 공유 전면 금지, JIRA API 스펙 변경 시 Comm Orchestrator가 CI 300개 자동 수정</td>
+<td><b>문해인 QA / 강민재 FE</b><br/>(Quality Sentinel)</td>
+<td><b>10월 8일 12:00</b></td>
+<td>- CI 빌드 성공률 58% ➔ 95% 이상 회복<br/>- Cold Boot time 3.5s ➔ 2.0s 이내 진입</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- ⑤ [Validate] Future State & Business Value -->
+<div class="card">
+<div class="card-title">▪ ⑤ [Validate] Proactive Future State &amp; 달성 비즈니스 가치 (Outcome)</div>
+<div class="grid-2">
+<div>
+<h4 style="color: var(--primary); margin-bottom: 0.5rem;">▪ Proactive 거버넌스로의 전환 (Future State)</h4>
+<ul style="padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.8;">
+<li><b>Reactive ➔ Proactive:</b> 문제가 터진 후 데모 껍데기로 때우는 임시방편에서, Cognitive Agent가 리스크를 사전 예측하고 억제하는 상시 모니터링 체계 수립.</li>
+<li><b>Silo ➔ Transparent SSOT:</b> 메신저 중심의 비난 문화에서 JIRA 기반 단일 정보 원천 및 신뢰 문화 수립.</li>
+<li><b>Compliance Protection:</b> ISO 26262 ASIL-B 및 UN R155 / GDPR 사전 검증을 통해 대형 법적 리스크 완벽 차단.</li>
+</ul>
+</div>
+<div>
+<h4 style="color: var(--green); margin-bottom: 0.5rem;">▪ 창출되는 정량적 비즈니스 가치 (Business Outcome)</h4>
+<ul style="padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.8;">
+<li><b>12/15 SOP 양산 사수:</b> G4 게이트 통과를 통해 오토모터스 전기차 라인업 정시 탑재 성공.</li>
+<li><b>천문학적 리콜 비용 예방:</b> 보안/Cold Boot 미달로 인한 예상 리콜 손실 비용 <b>약 450억 원 사전 예방</b>.</li>
+<li><b>Tier 1 플랫폼 라이선스 BM 확보:</b> 성공적인 글로벌 론칭을 바탕으로 타 OEM 확대 적용 기반 확보.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

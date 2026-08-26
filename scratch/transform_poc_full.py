@@ -1,0 +1,418 @@
+import codecs
+
+html_output = """<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PM Transformers — VALUE-DRIVEN AI AGENT</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f9;
+    --primary: #0284c7;
+    --primary-dark: #0369a1;
+    --accent: #7e22ce;
+    --accent-light: #9333ea;
+    --red: #e11d48;
+    --red-light: #fda4af;
+    --orange: #ea580c;
+    --yellow: #ca8a04;
+    --green: #16a34a;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #cbd5e1;
+    --navy: #0f2743;
+    --blue: #2563eb;
+    --ink: #172b4d;
+    --line: #e5e9f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', 'Malgun Gothic', '맑은 고딕', -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.62;
+    padding: 2.5rem;
+  }
+  .container { max-width: 1400px; margin: 0 auto; }
+  
+  header {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(147, 51, 234, 0.3);
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  }
+  header h1 { font-size: 2.2rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; letter-spacing: -0.5px;}
+  header .subtitle { font-size: 1.1rem; color: var(--primary); font-weight: 600; }
+  
+  .slide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-card:hover { border-color: var(--primary); }
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .slide-title { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.6rem; }
+  .slide-num {
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  
+  p { margin: 10px 0; font-size: 1.05rem; }
+  ul { margin: 10px 0 10px 10px; padding-left: 20px; font-size: 1.05rem; }
+  li { margin: 6px 0; }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.98rem;
+  }
+  th, td {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  th { background: var(--surface-alt); color: var(--primary); font-weight: 700; }
+  tr:hover { background: rgba(0,0,0,0.02); }
+  
+  .panel { border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 14px; }
+  .panel.info { background: #e7f0ff; border: 1px solid #b3d1ff; color: var(--ink); }
+  .panel.note { background: #fff8e6; border: 1px solid #ffe08a; color: var(--ink); }
+  
+  .svg-container { 
+    overflow-x: auto; 
+    margin: 2rem 0; 
+    background: #fafafa; 
+    border-radius: 12px; 
+    padding: 2.5rem; 
+    text-align: center; 
+    border: 1px dashed var(--border);
+  }
+  .svg-container svg { max-width: 100%; height: auto; display: inline-block; }
+  
+  .mindset-table td { text-align: center; font-size: 14px; border: 1px solid #fff; padding: 12px;}
+  .mindset-table th { text-align: center; color: #fff; font-size: 15px; border: 1px solid #fff; padding: 12px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="panel info"><p><strong>비공개 작업 페이지</strong> (본인만 열람) · Agent 개념 + C·D 담당분. 룩앤필/디자인은 팀원이 최종 통일 예정 — 여기서는 <strong>개념과 내용</strong>만 잡는다. 직접 편집하며 함께 검토.</p></div>
+
+<header>
+<p style="font-weight: 800;letter-spacing: 0.06em;color:var(--primary); margin-bottom: 5px;">VALUE-DRIVEN AI AGENT</p>
+<h1>PM Transformers</h1>
+<p style="font-size: 1.3rem;font-weight: 800;color:var(--text); margin-top: 10px;">PM의 인지를 확장하는 디지털 트윈</p>
+<div class="subtitle" style="margin-top: 5px;">7개 도메인의 눈과 귀로 살피고, 프로젝트 가치로 통합 결단한다.</div>
+</header>
+<div style="text-align: right; margin-bottom: 20px;"><span class="slide-num">SLIDE 01</span> (오프닝)</div>
+
+<!-- SLIDE 02 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 흩어진 신호, 따로 노는 판단</h2>
+<span class="slide-num">SLIDE 02</span>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 33.0%;">문제 (증상)</th>
+      <th style="width: 33.0%;">근본원인</th>
+      <th>해결 방향</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>· 이상징후가 <strong>흩어져 늦게</strong> 발견<br/>· 도메인별로 <strong>따로 판단</strong>(사일로)<br/>· 상충 시 <strong>기준 없는</strong> 독단·지연·번복</td>
+      <td>PM 1인의 <strong>인지 대역폭 한계</strong> + 도메인 사일로<br/>→ <strong>통합 판단</strong>과 <strong>가치 기준</strong>의 부재</td>
+      <td>7개 도메인을 <strong>상시·동시</strong> 관측·판단하고,<br/>상충을 <strong>프로젝트 가치</strong>로 중재하여<br/>PM의 <strong>주도적 결정</strong>을 확장</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- SLIDE 03 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 핵심 개념 — PM의 인지 루프를 확장</h2>
+<span class="slide-num">SLIDE 03</span>
+</div>
+<p>PM이 실제로 돌리는 인지 루프 <strong>보다 → 듣다 → 판단하다 → 행동하다</strong>를 그대로 확장한다. <strong>판단의 주체는 여전히 PM.</strong> 에이전트는 관측·판단의 폭을 넓혀줄 뿐이다.</p>
+
+<div class="svg-container">
+<!-- Loop Infographic SVG to replace the blocky table -->
+<svg width="850" height="220" viewBox="0 0 850 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#0369a1"/></linearGradient>
+    <linearGradient id="gTeal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+    <linearGradient id="gPurple" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7e22ce"/><stop offset="100%" stop-color="#9333ea"/></linearGradient>
+    <linearGradient id="gGreen" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#16a34a"/><stop offset="100%" stop-color="#15803d"/></linearGradient>
+    <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 Z" fill="#94a3b8" />
+    </marker>
+  </defs>
+  
+  <rect x="20" y="40" width="140" height="100" rx="15" fill="url(#gTeal)" />
+  <text x="90" y="85" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">SEE</text>
+  <text x="90" y="115" fill="#e0f2fe" font-size="14" text-anchor="middle">관측</text>
+  <path d="M 160 90 L 230 90" stroke="#cbd5e1" stroke-width="4" marker-end="url(#arrowHead)" />
+  
+  <rect x="240" y="40" width="140" height="100" rx="15" fill="url(#gBlue)" />
+  <text x="310" y="85" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">HEAR</text>
+  <text x="310" y="115" fill="#cffafe" font-size="14" text-anchor="middle">수렴</text>
+  <path d="M 380 90 L 450 90" stroke="#cbd5e1" stroke-width="4" marker-end="url(#arrowHead)" />
+  
+  <rect x="460" y="40" width="140" height="100" rx="15" fill="url(#gPurple)" />
+  <text x="530" y="85" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">THINK</text>
+  <text x="530" y="115" fill="#f3e8ff" font-size="14" text-anchor="middle">판단</text>
+  <path d="M 600 90 L 670 90" stroke="#cbd5e1" stroke-width="4" marker-end="url(#arrowHead)" />
+  
+  <rect x="680" y="40" width="140" height="100" rx="15" fill="url(#gGreen)" />
+  <text x="750" y="85" fill="#fff" font-size="22" font-weight="bold" text-anchor="middle">ACT</text>
+  <text x="750" y="115" fill="#dcfce7" font-size="14" text-anchor="middle">실행</text>
+  
+  <path d="M 750 140 Q 750 210 430 210 Q 90 210 90 140" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="6,6" marker-end="url(#arrowHead)" />
+  <text x="430" y="195" fill="#64748b" font-weight="bold" text-anchor="middle">↻ 다시 SEE로 — 루프는 멈추지 않는다</text>
+</svg>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 120.0px;">단계</th>
+      <th>하는 일</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>SEE</strong> · 관측</td>
+      <td>일정·리스크·이슈·예산·요구사항 등 프로젝트 상태 신호를 상시 수집</td>
+    </tr>
+    <tr>
+      <td><strong>HEAR</strong> · 수렴</td>
+      <td>이해관계자 요청·회의·현장 목소리를 신호로 반영</td>
+    </tr>
+    <tr>
+      <td><strong>THINK</strong> · 판단</td>
+      <td>7개 도메인 에이전트가 각 관점으로 감지 → 상충을 가치로 통합</td>
+    </tr>
+    <tr>
+      <td><strong>ACT</strong> · 실행</td>
+      <td>판단을 실제 조치로 연결 — 티켓·알림 발행 (PM 승인)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- SLIDE 04 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 작동 방식 — 7개 도메인 에이전트가 '합체'</h2>
+<span class="slide-num">SLIDE 04</span>
+</div>
+<p>각 에이전트는 자기 도메인의 <strong>전문가 역할</strong>을 한다. 사안에 따라 <strong>관련 에이전트들이 함께 활성화·조합</strong>되어, 통합 엔진 <strong>Signal Forge</strong>가 하나의 판단으로 합친다.</p>
+
+<div class="svg-container" style="padding: 1.5rem;">
+<!-- Multi-Agent Node SVG to replace the 7 colored td block -->
+<svg width="850" height="280" viewBox="0 0 850 280" xmlns="http://www.w3.org/2000/svg">
+  <!-- Connectors -->
+  <path d="M 90 90 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 210 50 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 330 90 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 450 40 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 570 90 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 690 50 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 790 90 L 420 220" stroke="#cbd5e1" stroke-width="2" />
+  
+  <!-- Agents -->
+  <g transform="translate(90, 90)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#5458ce" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">거버넌스</text><text x="0" y="15" fill="#e0e2ff" font-size="11" text-anchor="middle">Watchdog</text></g>
+  <g transform="translate(210, 50)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#14b8a6" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">범위</text><text x="0" y="15" fill="#ccfbf1" font-size="11" text-anchor="middle">Guardian</text></g>
+  <g transform="translate(330, 90)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#f97316" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">일정</text><text x="0" y="15" fill="#ffedd5" font-size="11" text-anchor="middle">Sentinel</text></g>
+  <g transform="translate(450, 40)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#f59e0b" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">리스크</text><text x="0" y="15" fill="#fef3c7" font-size="11" text-anchor="middle">Oracle</text></g>
+  <g transform="translate(570, 90)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#ec4899" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">이해관계자</text><text x="0" y="15" fill="#fce7f3" font-size="11" text-anchor="middle">Pulse</text></g>
+  <g transform="translate(690, 50)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#22c55e" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">자원</text><text x="0" y="15" fill="#dcfce7" font-size="11" text-anchor="middle">Radar</text></g>
+  <g transform="translate(790, 90)"><rect x="-45" y="-35" width="90" height="70" rx="8" fill="#8b5cf6" /><text x="0" y="-5" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">재무</text><text x="0" y="15" fill="#ede9fe" font-size="11" text-anchor="middle">Protector</text></g>
+
+  <text x="420" y="170" fill="#64748b" font-weight="bold" font-size="13" text-anchor="middle">↓ 7개 도메인 관점</text>
+  
+  <rect x="300" y="200" width="240" height="70" rx="10" fill="#0f172a" />
+  <text x="420" y="230" fill="#38bdf8" font-size="20" font-weight="bold" text-anchor="middle">Signal Forge</text>
+  <text x="420" y="255" fill="#94a3b8" font-size="13" text-anchor="middle">통합 → 하나의 결단</text>
+</svg>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 180.0px;">에이전트</th>
+      <th style="width: 110.0px;">도메인</th>
+      <th>책임 (역할·책임)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Governance Watchdog</strong></td><td>거버넌스</td><td>변경통제·CCB·보고 무결성 위반 감지, 절차 복원 유도</td></tr>
+    <tr><td><strong>Change Guardian</strong></td><td>범위</td><td>Scope Creep·베이스라인 이탈 감지, 변경요청(CR) 필요성 판단</td></tr>
+    <tr><td><strong>Schedule Sentinel</strong></td><td>일정</td><td>임계경로·게이트 리스크, 지연 파급 분석</td></tr>
+    <tr><td><strong>Risk Oracle</strong></td><td>리스크</td><td>잠재 위협 식별·평가, 대응 전략 제안</td></tr>
+    <tr><td><strong>Stakeholder Pulse</strong></td><td>이해관계자</td><td>이해관계자 신뢰·기대 충돌, 소통 필요성 감지</td></tr>
+    <tr><td><strong>Resource Radar</strong></td><td>자원</td><td>가용 역량·과부하·의존성 병목 감지</td></tr>
+    <tr><td><strong>Cost Protector</strong></td><td>재무</td><td>예산 초과·예비비 소진·원가 리스크 감시</td></tr>
+  </tbody>
+</table>
+<p>각 에이전트는 이상징후(신호)를 <strong>근거와 함께 감지·제시</strong>하고, 리스크·이슈·CR 분류도 제안한다. <strong>최종 판단과 처리는 PM</strong>이 결정한다.</p>
+</div>
+
+<!-- SLIDE 05 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 상충을 '가치'로 결단 — Signal Forge + North Star</h2>
+<span class="slide-num">SLIDE 05</span>
+</div>
+<p>감지·제시에 그치지 않는다. 대응안이 서로 <strong>상충</strong>하면 <strong>Signal Forge</strong>가 <strong>Mindset·6원칙으로 사고</strong>해 <strong>프로젝트 가치서열(North Star)로 최종 결단</strong>한다.</p>
+
+<div class="svg-container">
+<!-- Replace the clunky conflict boxes with an integrated SVG flow -->
+<svg width="850" height="250" viewBox="0 0 850 250" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(180, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#f97316" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">일정 사수</text><text x="0" y="18" fill="#ffedd5" font-size="10" text-anchor="middle">Schedule Sentinel</text></g>
+  <g transform="translate(420, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#14b8a6" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">범위 보존</text><text x="0" y="18" fill="#ccfbf1" font-size="10" text-anchor="middle">Change Guardian</text></g>
+  <g transform="translate(660, 40)"><rect x="-60" y="-30" width="120" height="60" rx="8" fill="#ec4899" /><text x="0" y="0" fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">관계 유지</text><text x="0" y="18" fill="#fce7f3" font-size="10" text-anchor="middle">Stakeholder Pulse</text></g>
+  
+  <text x="420" y="95" fill="#ef4444" font-size="16" font-weight="bold" text-anchor="middle">▼ 상충</text>
+  
+  <path d="M 180 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 420 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
+  <path d="M 660 70 L 420 120" stroke="#cbd5e1" stroke-width="2" />
+  
+  <rect x="220" y="120" width="400" height="60" rx="8" fill="#0f2743" />
+  <text x="420" y="145" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">Signal Forge — 종합 판단</text>
+  <text x="420" y="165" fill="#cbd5e1" font-size="12" text-anchor="middle">① Mindset·6원칙 → ② 프로젝트 가치서열(North Star) 중재</text>
+  
+  <text x="420" y="200" fill="#64748b" font-weight="bold" text-anchor="middle">▼</text>
+  
+  <rect x="220" y="210" width="400" height="40" rx="8" fill="#16a34a" />
+  <text x="420" y="235" fill="#fff" font-size="15" font-weight="bold" text-anchor="middle">하나의 통합 결단 + 하위가치 안전장치 · 실행은 PM 승인</text>
+</svg>
+</div>
+
+<p style="text-align: center; margin-top: 1rem; font-weight: bold; font-size: 1.15rem;">판단 기준 — Mindset 3 차원 · 6 원칙</p>
+<table class="mindset-table" style="background:#fff;">
+  <tbody>
+    <tr>
+      <th style="background-color: #d6489e;">선제적 (Proactive)</th>
+      <th style="background-color: #3b95d6;">소유권 (Ownership)</th>
+      <th style="background-color: #7c3aed;">가치 중심 (Value-Driven)</th>
+    </tr>
+    <tr>
+      <td style="background-color: #fce7f3; color: #172b4d;">전체론적 관점 채택</td>
+      <td style="background-color: #e0f2fe; color: #172b4d;">책임감 있는 리더 되기</td>
+      <td style="background-color: #ede9fe; color: #172b4d;">가치에 대한 집중</td>
+    </tr>
+    <tr>
+      <td style="background-color: #fce7f3; color: #172b4d;">프로세스·인도물에 품질 내재화</td>
+      <td style="background-color: #e0f2fe; color: #172b4d;">권한이 강화된 문화 구축</td>
+      <td style="background-color: #ede9fe; color: #172b4d;">모든 영역에 지속가능성 통합</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>North Star = 프로젝트 핵심 가치서열</strong> — 상충의 최종 심판 기준. 특정 도메인에 치우치지 않고, 가치 우선순위에 따라 결단한다.</li>
+  <li><strong>PM 주인의식 유지</strong> — 에이전트는 근거·초안을 제공, 티켓 발행·오너 배정·에스컬레이션의 최종 실행은 PM.</li>
+</ul>
+</div>
+
+<!-- SLIDE 06 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ PM 워크스페이스 구성 — 기능과 역할</h2>
+<span class="slide-num">SLIDE 06</span>
+</div>
+<p>PM이 실제로 사용하는 하나의 워크스페이스. 관측(SEE·HEAR) → 판단(THINK) → 실행(ACT)이 아래 기능으로 이어진다.</p>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 25%;">기능 (화면)</th>
+      <th>역할</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>홈 대시보드</strong></td><td>7개 에이전트 감지 종합 브리핑 · 프로젝트 건강도 · 우선 조치</td></tr>
+    <tr><td><strong>PM Note</strong></td><td>메일 · 전화 · 메모 · 회의 등 비정형 신호 입력 (HEAR)</td></tr>
+    <tr><td><strong>일정</strong></td><td>마일스톤 · 게이트 · 스프린트 진행 현황</td></tr>
+    <tr><td><strong>이슈 &amp; 리스크</strong></td><td>감지 신호 등재 · AI 대응안 생성 · 실제 Jira 티켓 발행 (THINK→ACT)</td></tr>
+    <tr><td><strong>예산 &amp; 자원</strong></td><td>예산 집행 · 예비비 · 자원 배분 모니터링</td></tr>
+    <tr><td><strong>커뮤니케이션</strong></td><td>이해관계자 소통 · 알림/메일 초안</td></tr>
+    <tr><td><strong>리포트</strong></td><td>주간 · 스프린트 리포트 자동 생성</td></tr>
+    <tr><td><strong>PM 문서</strong></td><td>요구사항 · TRM · CR · 이슈 · 리스크 등 단일 원본(SSOT) — 대시보드와 미러링</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- SLIDE 07 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 기대효과 · KPI</h2>
+<span class="slide-num">SLIDE 07</span>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 15%;">코드</th>
+      <th style="width: 35%;">기대효과</th>
+      <th style="width: 25%;">KPI (측정 지표)</th>
+      <th style="width: 25%;">변화 (예시)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>BEN-01</strong></td><td>이상징후 감지 리드타임 단축</td><td>신호 발생 → 감지 시간</td><td>수일 → 실시간(&lt;1h)</td></tr>
+    <tr><td><strong>BEN-02</strong></td><td>리스크·이슈 누락 방지</td><td>7 도메인 스캔 커버리지</td><td>부분 → 전 도메인 상시</td></tr>
+    <tr><td><strong>BEN-03</strong></td><td>대응안 작성 공수 절감</td><td>대응안 초안 작성 시간</td><td>~2시간 → ~10분</td></tr>
+    <tr><td><strong>BEN-04</strong></td><td>거버넌스 준수율 향상</td><td>변경통제(CR·CCB) 준수 비율</td><td>수동 → 자동 유도</td></tr>
+    <tr><td><strong>BEN-05</strong></td><td>의사결정 일관성 향상</td><td>가치서열 기반 판정 비율</td><td>담당자별 편차 → 일관 기준</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- SLIDE 08 -->
+<div class="slide-card">
+<div class="slide-header">
+<h2 class="slide-title">▪ 도입 전후 · 확장 · 지속가능성</h2>
+<span class="slide-num">SLIDE 08</span>
+</div>
+<ul style="line-height: 1.8;">
+  <li><strong>Before → After</strong>: 사후 발견·따로 판단·독단 → 상시 스캔·가치 기반 일관 결단·변경통제 자동 유도</li>
+  <li><strong>확장(일반화)</strong>: <strong>과제 정의(문서) 하나</strong>만 교체하면 컨텍스트·분석이 자동 재구성. 다른 과제로 교체 실증 완료.</li>
+  <li><strong>현업 이관</strong>: 사내 LLM + 경량 서버, 기존 Jira/Confluence 재사용. 파일럿 4~6주. 실행은 PM 승인 게이트.</li>
+  <li><strong>지속가능성·운영</strong>: 주기 스캔 + 온디맨드 심의, 산출물 누적. 호출·캐시로 비용 통제. 모든 실행 승인·기록.</li>
+</ul>
+
+<div class="panel note"><p>예시(NovaHome)·수치(BEN/KPI)는 <strong>본선 당일 실제 과제 baseline</strong>으로 교체. 디자인/슬라이드 포맷은 팀원이 통일.</p></div>
+</div>
+
+</div>
+</body></html>"""
+
+with codecs.open(r'd:\workspaces\PMC_POC\output\poc_ppt.html', 'w', 'utf-8') as f:
+    f.write(html_output)

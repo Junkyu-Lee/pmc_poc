@@ -1,0 +1,1025 @@
+<title>AI Agent 컨셉 리뷰</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface-alt: #f0eeea;
+  --text: #1a1a1a;
+  --text-muted: #5c5a56;
+  --text-light: #8a8780;
+  --accent: #2563eb;
+  --accent-light: #eff4ff;
+  --accent-dark: #1d4ed8;
+  --border: #e2e0db;
+  --border-light: #eeece8;
+  --tag-red: #dc3545;
+  --tag-red-bg: #fdf0f0;
+  --tag-orange: #d97706;
+  --tag-orange-bg: #fef9ed;
+  --tag-blue: #2563eb;
+  --tag-blue-bg: #eff4ff;
+  --tag-green: #16a34a;
+  --tag-green-bg: #f0fdf4;
+  --tag-purple: #7c3aed;
+  --tag-purple-bg: #f5f3ff;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141312;
+    --surface: #1e1d1b;
+    --surface-alt: #262523;
+    --text: #e8e6e3;
+    --text-muted: #a09d98;
+    --text-light: #6b6864;
+    --accent: #60a5fa;
+    --accent-light: #151d2a;
+    --accent-dark: #93c5fd;
+    --border: #333230;
+    --border-light: #2a2928;
+    --tag-red: #f87171;
+    --tag-red-bg: #2a1515;
+    --tag-orange: #fbbf24;
+    --tag-orange-bg: #2a2210;
+    --tag-blue: #60a5fa;
+    --tag-blue-bg: #151d2a;
+    --tag-green: #4ade80;
+    --tag-green-bg: #0f2a18;
+    --tag-purple: #a78bfa;
+    --tag-purple-bg: #1f1635;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.3);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141312;
+  --surface: #1e1d1b;
+  --surface-alt: #262523;
+  --text: #e8e6e3;
+  --text-muted: #a09d98;
+  --text-light: #6b6864;
+  --accent: #60a5fa;
+  --accent-light: #151d2a;
+  --accent-dark: #93c5fd;
+  --border: #333230;
+  --border-light: #2a2928;
+  --tag-red: #f87171;
+  --tag-red-bg: #2a1515;
+  --tag-orange: #fbbf24;
+  --tag-orange-bg: #2a2210;
+  --tag-blue: #60a5fa;
+  --tag-blue-bg: #151d2a;
+  --tag-green: #4ade80;
+  --tag-green-bg: #0f2a18;
+  --tag-purple: #a78bfa;
+  --tag-purple-bg: #1f1635;
+  --shadow: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.header h1 {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.3;
+  text-wrap: balance;
+  margin-bottom: 10px;
+}
+
+.header-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.header-meta {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.header-meta span {
+  background: var(--surface-alt);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+}
+
+/* Section */
+.section {
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+
+/* Agent Cards */
+.agent-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.agent-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.agent-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  background: var(--surface-alt);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.agent-num {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.agent-card-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.agent-card-header .agent-role {
+  font-size: 11px;
+  color: var(--text-light);
+  font-weight: 400;
+  display: block;
+  margin-top: 2px;
+}
+
+.agent-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tag-problem { background: var(--tag-red-bg); color: var(--tag-red); }
+.tag-domain { background: var(--tag-purple-bg); color: var(--tag-purple); }
+
+.agent-card-body {
+  padding: 20px 24px;
+}
+
+/* IO Block */
+.io-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .io-grid { grid-template-columns: 1fr; }
+}
+
+.io-box {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.io-box.input {
+  background: var(--tag-blue-bg);
+}
+
+.io-box.output {
+  background: var(--tag-green-bg);
+}
+
+.io-box-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.io-box.input .io-box-label { color: var(--tag-blue); }
+.io-box.output .io-box-label { color: var(--tag-green); }
+
+.io-box ul {
+  padding-left: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* Example */
+.example-block {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent);
+}
+
+.example-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.example-input, .example-output {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.example-input strong, .example-output strong {
+  color: var(--text);
+}
+
+.example-arrow {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+  margin: 6px 0;
+}
+
+/* Flow Diagram */
+.flow-section {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 28px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow);
+}
+
+.flow-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.flow-diagram {
+  overflow-x: auto;
+  padding: 16px 0;
+}
+
+.flow-diagram pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+.flow-diagram .highlight {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* Comparison Table */
+.comparison-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.comparison-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.comparison-wrap thead {
+  background: var(--surface-alt);
+}
+
+.comparison-wrap th {
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.comparison-wrap td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.comparison-wrap tr:last-child td { border-bottom: none; }
+
+.stars {
+  color: var(--tag-orange);
+  letter-spacing: -1px;
+}
+
+/* Discussion Box */
+.discussion-box {
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 24px;
+  margin-top: 32px;
+}
+
+.discussion-box h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  margin-bottom: 12px;
+}
+
+.discussion-box ol {
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--text);
+}
+
+/* Trigger description */
+.trigger-line {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+</style>
+
+<div class="container">
+
+  <header class="header">
+    <div class="header-eyebrow">Stage ③ Design — 사전 리뷰</div>
+    <h1>AI Agent 컨셉 설계안</h1>
+    <p class="header-sub">NovaHome Connect 프로젝트의 근본 원인을 해결하기 위한 PM 보조 AI Agent 후보 12종</p>
+    <div class="header-meta">
+      <span>📌 목적: 팀 리뷰 & 방향성 합의</span>
+      <span>📊 기준: PMBOK 8판 Mindset → Domain → AI Use Case</span>
+      <span>🎯 원칙: 증상 치료가 아닌 근본 원인 타격</span>
+    </div>
+  </header>
+
+  <!-- Design Principle -->
+  <section class="section">
+    <h2 class="section-title">설계 원칙</h2>
+    <div class="flow-section">
+      <h3>왜 이 Agent들인가?</h3>
+      <p style="font-size:14px; color:var(--text-muted); line-height:1.8; margin-bottom:16px;">
+        Stage ②에서 도출한 <strong>5개 문제의 Root of Roots = #1 거버넌스 부재</strong>.
+        AI Agent는 단순 자동화가 아니라, 이 구조적 문제를 해결하여 연쇄적으로 다른 문제도 완화하는 수단으로 설계합니다.
+      </p>
+      <div style="background:var(--surface-alt); padding:16px; border-radius:8px; font-size:13px; color:var(--text-muted); line-height:1.8;">
+        <strong style="color:var(--text);">핵심 질문:</strong> "이 Agent가 있었다면, NovaHome Connect의 소셜 로그인 사태가 방지되었을까?"<br>
+        → Yes라면 근본 원인을 타격하는 Agent. No라면 증상 치료에 불과.
+      </div>
+    </div>
+  </section>
+
+  <!-- Agent Cards -->
+  <section class="section">
+    <h2 class="section-title">Agent 후보 12종 상세</h2>
+
+    <!-- Agent 1 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">01</div>
+        <h3>Change Impact Analyzer<span class="agent-role">PM 역할: 통합 변경 통제 (Integrated Change Control)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#1 거버넌스</span>
+          <span class="tag tag-domain">Planning</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 누군가 범위/일정/리소스 변경을 요청하거나 실행할 때</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>변경 요청 내용</li>
+              <li>요구사항 목록 + 의존관계 맵</li>
+              <li>마일스톤/일정 베이스라인</li>
+              <li>리소스 할당 현황</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>영향받는 요구사항 리스트 (의존 체인)</li>
+              <li>일정 영향 시뮬레이션</li>
+              <li>추가 필요 리소스</li>
+              <li>리스크 등급 판정</li>
+              <li>선행 조건 권고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> "REQ-017 소셜 로그인 베타 포함"</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"REQ-021(보안약관) 미완료로 법적 리스크 HIGH. QA 케이스 +40건으로 G3 Beta 3일 지연 예상. 스폰서 승인 필요. 선행 조건: CRB 완료 + QA 슬롯 확보 + 스폰서 승인"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 2 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">02</div>
+        <h3>Escalation & Notification Agent<span class="agent-role">PM 역할: 이해관계자 소통 관리</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#2 이해관계자</span>
+          <span class="tag tag-domain">Stakeholders</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: HIGH/CRITICAL 판정 시 · 이해관계자 관심영역 해당 결정 시 · 미응답 기한 도래 시</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>이해관계자 매트릭스 (권한-관심도-관심영역)</li>
+              <li>의사결정 내용 및 영향도</li>
+              <li>커뮤니케이션 이력</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>알림 대상자 + 이유</li>
+              <li>에스컬레이션 메시지 초안</li>
+              <li>미응답 시 리마인더 스케줄</li>
+              <li>사전 공유 없이 진행 시 경고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> "소셜 로그인 베타 제외 결정"</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"⚠️ 이현수 전무(스폰서)의 관심 영역 '핵심 기능 노출 시점'에 해당. 마케팅실장도 High-interest. 결정 전 두 이해관계자에게 사전 브리핑 필요. 브리핑 초안 생성됨."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 3 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">03</div>
+        <h3>Risk Radar Agent<span class="agent-role">PM 역할: 불확실성 관리 (Risk Management)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#4 벤더 리스크</span>
+          <span class="tag tag-domain">Uncertainty</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 주기적 스캔 · 새 정보 입력 시 · KPI 임계치 초과 시</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>리스크 레지스터</li>
+              <li>프로젝트 KPI 현황</li>
+              <li>벤더 커뮤니케이션 (메일/회의록)</li>
+              <li>과거 Lessons Learned DB</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>신규 리스크 식별 + 등록 제안</li>
+              <li>확률/영향도 재평가</li>
+              <li>유사 과거 사례 검색 결과</li>
+              <li>조기 경보 + 대응 권고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> NebulaWorks 메일 "Geo-IP 리드타임 5~7일"</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"⚠️ 과거 데이터: 실제 리드타임 평균 12일. 마감(11/01)까지 27일. 안전 마진 확보 위해 10/06까지 요청 완료 필수. 참조: 2025-Q2 동일 벤더 패널티 사례"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 4 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">04</div>
+        <h3>Dependency Tracker Agent<span class="agent-role">PM 역할: 일정 관리 (Schedule Management)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#1 #3</span>
+          <span class="tag tag-domain">Planning</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 요구사항 상태 변경 · 외부 의존 일정 변동 · 게이트 D-14/D-7 자동 점검</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>요구사항 + 상태 + 의존관계</li>
+              <li>마일스톤 일정</li>
+              <li>벤더 납기/SLA</li>
+              <li>팀별 Capacity</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>크리티컬 패스 시각화</li>
+              <li>블로커 자동 식별</li>
+              <li>게이트 통과 가능성 예측</li>
+              <li>해소 우선순위 권고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> "REQ-011 상태: Blocked (Nebula SDK 2.4 의존)"</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"크리티컬 체인: REQ-011→REQ-015→REQ-024. SDK 업그레이드 10/05-06 예정이나 연동 테스트 미등록. 10/07-12 슬롯 미확보 시 G3(10/20) 불통과 확률 78%"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 5 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">05</div>
+        <h3>Meeting Intelligence Agent<span class="agent-role">PM 역할: 프로젝트 작업 관리 · 의사소통</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#1 #2</span>
+          <span class="tag tag-domain">Project Work</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 회의 종료 후 (회의록/대화 로그 입력) · 액션 아이템 기한 도래 시</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>회의 대화 로그</li>
+              <li>이전 회의 미결 액션 아이템</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>결정사항 / 액션아이템(Owner, Due, DoD)</li>
+              <li>이전 대비 변경점 감지</li>
+              <li>모순/충돌 탐지</li>
+              <li>미이행 액션 알림</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> 11:00 Issue Meeting 대화 로그</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"📋 결정: REQ-017 베타 비노출. 액션: ①SDK 2.4 캘린더 반영(오지후, D+1) ②스키마 v3 배포(김다온, 18:00). ⚠️ 충돌 감지: PM '비노출' 결정 vs PO 마케팅 요구 수용 의사 — 명확한 합의 문서화 필요"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 6 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">06</div>
+        <h3>Quality Prediction Agent<span class="agent-role">PM 역할: 품질 관리 (Delivery)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#3 품질</span>
+          <span class="tag tag-domain">Delivery</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: CI/CD 빌드 완료 · 기능/변경 머지 시 · 게이트 사전 점검</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>CI/CD 빌드 결과 이력</li>
+              <li>성능 메트릭 (p95, 오류율)</li>
+              <li>코드 변경 범위</li>
+              <li>테스트 케이스 + 커버리지</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>빌드 실패/충돌 예측</li>
+              <li>성능 회귀 경고</li>
+              <li>테스트 우선순위 추천</li>
+              <li>게이트 통과 예측</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> 소셜 로그인 코드 머지 + CI 78%</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"⚠️ 로그인 + SDK 2.4 동시 변경으로 빌드 충돌 예상. 우선 실행: OAuth 토큰(5건), RTM 재연결(3건), 캐시(4건). 12건으로 핵심 리스크 82% 커버"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 7 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">07</div>
+        <h3>Stakeholder Expectation Manager<span class="agent-role">PM 역할: 이해관계자 참여 관리</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#2 이해관계자</span>
+          <span class="tag tag-domain">Stakeholders</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 새 이해관계자 요구 수신 · 범위/일정 변경 결정 · 주간 보고 시점</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>이해관계자 레지스터</li>
+              <li>프로젝트 상태 (일정/범위/품질)</li>
+              <li>최근 의사결정 이력</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>이해관계자별 기대-현실 갭 리포트</li>
+              <li>커뮤니케이션 전략 제안</li>
+              <li>맞춤형 보고서 초안 (역할별)</li>
+              <li>갈등 예측 경고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> 현재 상태 + 이해관계자 매트릭스</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"📊 이현수 전무 — 기대: 11/15 론칭 확정 / 현실: G4 미달 위험. 마케팅실장 — 기대: 소셜 로그인 포함 / 현실: 비노출 결정. 금주 내 스폰서 브리핑 + 마케팅 대안 제시 필요"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 8 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">08</div>
+        <h3>Governance Gate Checker<span class="agent-role">PM 역할: 게이트 관리 (Gate Review)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#1 #3</span>
+          <span class="tag tag-domain">Delivery</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 게이트 D-14, D-7, D-3 자동 점검 · PM 수동 요청</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>게이트별 통과 기준</li>
+              <li>현재 메트릭</li>
+              <li>리스크 레지스터 상태</li>
+              <li>산출물 완성도</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>체크리스트 충족/미충족 현황</li>
+              <li>미충족 해소 계획 (Owner/Due/Action)</li>
+              <li>통과 확률 예측</li>
+              <li>Go/No-Go 권고</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> G4 LRR 기준 + 현재 상태</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"G4: ❌ p95≤300ms(현재 410ms) ❌ 오류율≤0.2%(현재 0.35%) ❌ High 리스크 2건 잔존 ✅ 운영 체크리스트 완료. 통과 확률: 20%. 캐시 V2 안정화 3일 + SDK 연동 5일 + Geo-IP 7일 필요"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 9 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">09</div>
+        <h3>Vendor SLA Monitor<span class="agent-role">PM 역할: 조달/벤더 관리 (Procurement)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#4 벤더</span>
+          <span class="tag tag-domain">Uncertainty</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 벤더 커뮤니케이션 수신 · 납기 기한 접근 · 벤더 정책 변경</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>벤더 계약/SLA</li>
+              <li>벤더 커뮤니케이션 이력</li>
+              <li>프로젝트 내 벤더 의존 항목</li>
+              <li>과거 벤더 성과 이력</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>정책 변경의 프로젝트 영향 분석</li>
+              <li>SLA 이탈 조기 경보</li>
+              <li>납기 지연 확률 예측</li>
+              <li>대응 옵션 (Fallback/대안 벤더)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> Diego Mora 메일 (SDK 2.4 + Geo-IP + EU 프라이버시)</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"3개 변경: ①SDK 2.4→RTM 영향, 테스트 5일 필요 ②Geo-IP→실제 12일(과거 이력), 10/06까지 요청 필수 ③EU 프라이버시→RTM 불안정 가능. 종합 HIGH. 벤더매니저 즉시 미팅 권고"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 10 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">10</div>
+        <h3>Team Workload & Capacity Agent<span class="agent-role">PM 역할: 팀 관리 (Team Performance)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">#5 팀 사기</span>
+          <span class="tag tag-domain">Team</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 스프린트 플래닝 · 업무/변경 추가 · 블로커 보고 시</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>스프린트 백로그 + 담당자</li>
+              <li>팀원별 현재 업무량</li>
+              <li>역량 프로필</li>
+              <li>추가 업무량</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>팀원별 부하 시각화</li>
+              <li>과부하 시 재배분 제안</li>
+              <li>추가 업무 수용 시 영향 경고</li>
+              <li>지속가능 속도 기반 용량 제안</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> 소셜 로그인 추가 + 현재 백로그</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"⚠️ 강민재(FE) 20SP/12SP = 167% 과부하. 문해인(QA) +40 케이스 = 3일 초과. 권고: 하위 3건 Defer / 소셜 로그인 다음 스프린트 이동 / 외부 QA 투입"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 11 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">11</div>
+        <h3>Root Cause Diagnosis Agent<span class="agent-role">PM 역할: 이슈 분석 & 의사결정 지원</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">전체</span>
+          <span class="tag tag-domain">모든 Domain</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: PM이 "원인 분석" 요청 · 동일 이슈 반복 발생 시 자동</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>이슈/문제 상황 설명</li>
+              <li>프로젝트 이력 (회의록, 변경 이력)</li>
+              <li>PMBOK 8판 프레임워크</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>증상 vs 근본 원인 구분</li>
+              <li>5 Whys 분석 자동 생성</li>
+              <li>Performance Domain 매핑</li>
+              <li>단기 조치 + 장기 예방안</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> "CI 빌드 성공률이 78%로 떨어졌다"</div>
+          <div class="example-arrow">→ Agent 분석 결과:</div>
+          <div class="example-output">"증상: CI 78%. 직접 원인: SDK 2.4 후 테스트 미갱신 + 캐시 정책 미등록 CR. 근본 원인: 변경 통제 미작동(Stewardship 부재). Domain: Project Work. 단기: 테스트 갱신 2일. 장기: CCB 활성화"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent 12 -->
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-num">12</div>
+        <h3>PM Daily Briefing Agent<span class="agent-role">PM 역할: 통합 관리 (Integration Management)</span></h3>
+        <div class="agent-tags">
+          <span class="tag tag-problem">전체 통합</span>
+          <span class="tag tag-domain">Integration</span>
+        </div>
+      </div>
+      <div class="agent-card-body">
+        <div class="trigger-line">🔔 트리거: 매일 업무 시작 시 자동 · PM "현황 브리핑" 요청 시</div>
+        <div class="io-grid">
+          <div class="io-box input">
+            <div class="io-box-label">Input</div>
+            <ul>
+              <li>전일 대비 변경 항목</li>
+              <li>오늘 일정 (회의, 기한 도래)</li>
+              <li>미해결 액션 아이템</li>
+              <li>모든 Agent의 경고/권고 종합</li>
+            </ul>
+          </div>
+          <div class="io-box output">
+            <div class="io-box-label">Output</div>
+            <ul>
+              <li>한 페이지 대시보드 브리핑</li>
+              <li>오늘 집중 Top 3 이슈</li>
+              <li>의사결정 필요 항목</li>
+              <li>권장 대응 순서</li>
+            </ul>
+          </div>
+        </div>
+        <div class="example-block">
+          <div class="example-label">시나리오 예시</div>
+          <div class="example-input"><strong>Input:</strong> 전일 변경사항 + 오늘 일정 + Agent 경고 종합</div>
+          <div class="example-arrow">→ Agent 출력:</div>
+          <div class="example-output">"🌅 오늘 집중: ①Geo-IP 요청 마감 D-14(미처리 시 CRITICAL) ②소셜 로그인 건 스폰서 브리핑(어제 PO 독단 반영 감지) ③CI 78%→테스트 케이스 확정 필요. 회의: 09:30 Daily, 11:00 Issue, 14:00 Vendor Call"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="section">
+    <h2 class="section-title">종합 비교</h2>
+    <div class="comparison-wrap">
+      <table>
+        <thead>
+          <tr><th>Agent</th><th>타격 문제</th><th>Input 난이도</th><th>Output 가치</th><th>POC 구현성</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>① Change Impact</td><td>#1 거버넌스</td><td>중</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+          <tr><td>② Escalation</td><td>#2 이해관계자</td><td>하</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+          <tr><td>③ Risk Radar</td><td>#4 벤더/리스크</td><td>중</td><td class="stars">★★★</td><td class="stars">★★</td></tr>
+          <tr><td>④ Dependency Tracker</td><td>#1 #3</td><td>중</td><td class="stars">★★</td><td class="stars">★★★</td></tr>
+          <tr><td>⑤ Meeting Intelligence</td><td>#1 #2</td><td>하</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+          <tr><td>⑥ Quality Prediction</td><td>#3 품질</td><td>높</td><td class="stars">★★</td><td class="stars">★★</td></tr>
+          <tr><td>⑦ Expectation Manager</td><td>#2 이해관계자</td><td>중</td><td class="stars">★★</td><td class="stars">★★</td></tr>
+          <tr><td>⑧ Gate Checker</td><td>#1 #3</td><td>중</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+          <tr><td>⑨ Vendor SLA Monitor</td><td>#4 벤더</td><td>중</td><td class="stars">★★</td><td class="stars">★★</td></tr>
+          <tr><td>⑩ Workload & Capacity</td><td>#5 팀</td><td>중</td><td class="stars">★★</td><td class="stars">★★</td></tr>
+          <tr><td>⑪ Root Cause Diagnosis</td><td>전체</td><td>하</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+          <tr><td>⑫ Daily Briefing</td><td>전체 통합</td><td>하</td><td class="stars">★★★</td><td class="stars">★★★</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Flow -->
+  <section class="section">
+    <h2 class="section-title">데모 시나리오 — Agent 연쇄 반응 흐름</h2>
+    <div class="flow-section">
+      <h3>"소셜 로그인 투입 사건"이 발생했을 때, Agent가 있었다면?</h3>
+      <div class="flow-diagram">
+<pre>
+  PO가 소셜 로그인 투입 요청
+          │
+          ▼
+  <span class="highlight">⑤ Meeting Intelligence</span>
+  "PO 요청 감지 — PM 이전 합의('비노출')와 충돌"
+          │
+          ▼
+  <span class="highlight">① Change Impact Analyzer</span>
+  "영향도 HIGH — QA +40건, CRB 미완료, G3 위험"
+          │
+          ▼
+  <span class="highlight">④ Dependency Tracker</span>
+  "크리티컬 패스 재계산 — G3 3일 지연 예상"
+          │
+          ▼
+  <span class="highlight">⑩ Workload & Capacity</span>
+  "FE 167% 과부하, QA 3일 초과"
+          │
+          ▼
+  <span class="highlight">② Escalation Agent</span>
+  "스폰서 + 마케팅실장에 사전 브리핑 필요"
+          │
+          ▼
+  <span class="highlight">⑧ Gate Checker</span>
+  "G3 통과 확률 35%로 하락"
+          │
+          ▼
+  <span class="highlight">⑫ Daily Briefing</span>
+  종합 상황 + PM 권장 액션 제시
+</pre>
+      </div>
+      <div style="background:var(--accent-light); padding:16px; border-radius:8px; margin-top:16px; font-size:14px; color:var(--text); border:1px solid var(--accent);">
+        <strong style="color:var(--accent-dark);">결론:</strong> 개별 Agent가 순차적으로 반응하며, PM에게 완전한 의사결정 컨텍스트를 제공합니다. PM은 "몰랐다"가 아닌 "모든 정보를 바탕으로 결정한다"의 위치에 서게 됩니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- Discussion -->
+  <div class="discussion-box">
+    <h3>💬 팀 리뷰 토의 포인트</h3>
+    <ol>
+      <li><strong>범위:</strong> 12개 중 POC로 구현할 Agent를 몇 개로 할 것인가? (권장: 핵심 3~5개)</li>
+      <li><strong>우선순위:</strong> "근본 원인 타격"과 "데모 임팩트" 중 어느 기준을 더 중시할 것인가?</li>
+      <li><strong>데모 방식:</strong> 연쇄 반응 시나리오(한 사건 → 여러 Agent 순차 반응) vs 개별 Agent 독립 시연?</li>
+      <li><strong>기술 구현:</strong> LLM API 호출 기반 실제 동작 vs 시나리오 기반 시뮬레이션?</li>
+      <li><strong>발표 전략:</strong> "이 Agent가 있었으면 예방되었을 것" vs "지금이라도 투입하면 해결 가능"?</li>
+    </ol>
+  </div>
+
+</div>

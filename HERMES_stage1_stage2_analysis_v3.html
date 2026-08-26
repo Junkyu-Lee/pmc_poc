@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HERMES Project — Root Cause Analysis Tools (v3)</title>
+<style>
+  :root { --bg: #0f172a; --surface: #1e293b; --surface-alt: #334155; --primary: #38bdf8; --red: #f43f5e; --text: #f8fafc; --border: #475569; --green: #22c55e; --orange: #f97316; }
+  body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); padding: 2rem; }
+  h1 { color: var(--primary); font-size: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+  h2 { color: #fff; margin-top: 3rem; background: var(--surface-alt); padding: 1rem; border-radius: 8px; }
+  .tool-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; }
+  .tool-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 1rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+  th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+  th { background: var(--surface-alt); }
+  .red { color: var(--red); font-weight: bold; }
+  .green { color: var(--green); font-weight: bold; }
+  .orange { color: var(--orange); font-weight: bold; }
+  .desc { margin-bottom: 1rem; color: #cbd5e1; }
+</style>
+</head>
+<body>
+
+<h1>HERMES Project — 20 Diagnostic Tools Data (v3)</h1>
+<p>본 문서는 HERMES 프로젝트의 위기를 진단하기 위해 구성된 20개의 핵심 분석 툴킷 데이터입니다. 글로벌 표준 프레임워크에 입각하여 데이터를 교차 검증하였습니다.</p>
+
+<!-- Problem 1 -->
+<h2>Core Problem 1: 가짜 성과(Vanity Metrics) 조작 및 지표 왜곡</h2>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 1: Earned Value Management (EVM) Weekly Tracker</div>
+  <p class="desc">30주차까지 지표가 억지로 유지되다 31주차에 예산 초과가 반영되며 붕괴된 현황.</p>
+  <table>
+    <tr><th>Week</th><th>PV (계획가치)</th><th>EV (획드가치)</th><th>AC (실제원가)</th><th>SPI</th><th>CPI</th><th>Status</th></tr>
+    <tr><td>W29</td><td>540.0</td><td>520.0</td><td>530.0</td><td class="green">0.96</td><td class="green">0.98</td><td>Green</td></tr>
+    <tr><td>W30</td><td>560.0</td><td>550.0</td><td>560.0</td><td class="green">0.98</td><td class="green">0.98</td><td>Green</td></tr>
+    <tr><td>W31</td><td>580.0</td><td>560.0</td><td>920.0</td><td class="green">0.97</td><td class="red">0.61</td><td>Red (비용청구)</td></tr>
+    <tr><td>W32</td><td>600.0</td><td>570.0</td><td>1050.0</td><td class="orange">0.95</td><td class="red">0.54</td><td>Red</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 2: Jira Story Point Complexity Trend</div>
+  <p class="desc">SPI 방어를 위해 난이도가 낮은 태스크(Cherry-picking)만 집중적으로 완료한 징후.</p>
+  <table>
+    <tr><th>Month</th><th>완료 태스크 수</th><th>평균 Story Point</th><th>주요 완료 작업 유형</th><th>미완료/적체 백로그</th></tr>
+    <tr><td>4월</td><td>45</td><td>3.2</td><td>기본 주행 로직</td><td>-</td></tr>
+    <tr><td>5월</td><td>52</td><td>2.1</td><td>UI/UX, API 연동</td><td>VLM 모델 경량화</td></tr>
+    <tr><td>6월</td><td>60</td><td>1.8</td><td>로깅 시스템</td><td>실환경 테스트 통합</td></tr>
+    <tr><td>7월</td><td>58</td><td class="red">1.5</td><td>안내 멘트 수정</td><td>자율주행 엣지 케이스</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 3: SPI / CPI Correlation Map</div>
+  <p class="desc">정상적인 프로젝트와 달리 EVM 지표가 인프라 비용 리스크를 전혀 선행 지표로서 반영하지 못함.</p>
+  <div style="background:#000; padding:1rem; color:#0f0; font-family:monospace;">
+    [Correlation Analysis]<br/>
+    SPI vs Cloud Infra Dependency: R^2 = 0.04 (No correlation)<br/>
+    PM Dashboard CPI vs Actual Invoice: R^2 = 0.12 (Severe Disconnect)<br/>
+    Conclusion: PM's dashboard is structurally blind to Cloud API costs.
+  </div>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 4: Backlog Accumulation (Burndown vs Burnup)</div>
+  <p class="desc">가벼운 이슈는 연소(Burndown)되나, Technical Debt 및 Architecture 이슈가 백로그에 적체됨.</p>
+  <table>
+    <tr><th>Category</th><th>May Open</th><th>Jun Open</th><th>Jul Open</th><th>Aug Open</th></tr>
+    <tr><td>Minor UI / Text</td><td>12</td><td>5</td><td>2</td><td>0</td></tr>
+    <tr><td>Core AI Engine</td><td>8</td><td>15</td><td>24</td><td class="red">37</td></tr>
+    <tr><td>Field Testing</td><td>5</td><td>12</td><td>18</td><td class="red">26</td></tr>
+  </table>
+</div>
+
+
+<!-- Problem 2 -->
+<h2>Core Problem 2: 무분별한 요구사항 변경 통제 실패 (Scope Creep)</h2>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 5: Change Request (CR) Impact Log</div>
+  <p class="desc">PO 주도로 요구사항이 무분별하게 추가되었으나 PM이 비용/아키텍처 영향도 평가 없이 승인함.</p>
+  <table>
+    <tr><th>CR ID</th><th>Description</th><th>Requester</th><th>Impact Analysis</th><th>Status</th></tr>
+    <tr><td>CR-001</td><td>음성 인식 -> 자연어 VLM</td><td>PO (김상품)</td><td>일정 2주 지연 (과소평가됨)</td><td class="green">Approved (PM)</td></tr>
+    <tr><td>CR-002</td><td>VLM 복합 객체 인식 추가</td><td>PO (김상품)</td><td class="red">On-device -> Cloud 하이브리드</td><td class="green">Approved (PM)</td></tr>
+    <tr><td>CR-003</td><td>배설물 회피 로직 긴급 추가</td><td>PO (김상품)</td><td>장애물 로직 재설계</td><td class="green">Approved (PM)</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 6: AI Infrastructure Budget Burn Rate</div>
+  <p class="desc">CR-002 승인(5/2) 이후 클라우드 인프라(GPU/API) 비용이 기하급수적으로 폭증.</p>
+  <table>
+    <tr><th>Week</th><th>Event</th><th>Estimated Infra Cost (M ₩)</th><th>Actual Invoiced Cost (M ₩)</th></tr>
+    <tr><td>W18 (May)</td><td>CR-002 Approved</td><td>20.0</td><td>25.0</td></tr>
+    <tr><td>W22 (Jun)</td><td>Cloud LLM API Dev</td><td>45.0</td><td>80.0</td></tr>
+    <tr><td>W26 (Jul)</td><td>Integration Test</td><td>50.0</td><td class="red">210.0</td></tr>
+    <tr><td>W31 (Aug)</td><td>Pilot Rollout</td><td>60.0</td><td class="red">360.0</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 7: Requirements Traceability Matrix (RTM) Disconnect</div>
+  <p class="desc">변경된 요구사항(VLM)이 기존 테스트 계획(On-device)과 연결되지 않아 품질 구멍 발생.</p>
+  <table>
+    <tr><th>Req ID</th><th>Description</th><th>Design Doc</th><th>Test Case ID</th><th>Status</th></tr>
+    <tr><td>REQ-10</td><td>기본 장애물 회피</td><td>DD-10</td><td>TC-101</td><td>Pass</td></tr>
+    <tr><td class="red">REQ-45</td><td class="red">자연어 명령 (CR-001)</td><td>DD-45 (Draft)</td><td class="red">Missing</td><td>No Coverage</td></tr>
+    <tr><td class="red">REQ-46</td><td class="red">클라우드 VLM (CR-002)</td><td>DD-46 (Draft)</td><td class="red">Missing</td><td>No Coverage</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 8: Cost Variance (CV) Flow Analysis</div>
+  <p class="desc">예산 초과가 인건비가 아닌 100% 외주/인프라 변동비에서 발생했음을 증명.</p>
+  <div style="background:#000; padding:1rem; color:#0f0; font-family:monospace;">
+    Total CV = -480 M ₩ (Over budget by W32)<br/>
+    - Internal Labor CV = +10 M ₩ (Under budget)<br/>
+    - Hardware BOM CV = -20 M ₩<br/>
+    - Cloud/GPU Infra CV = -470 M ₩ (98% of total variance)<br/>
+    Conclusion: Scope creep directly destroyed infra budget without PM controls.
+  </div>
+</div>
+
+
+<!-- Problem 3 -->
+<h2>Core Problem 3: 식별된 리스크의 방치 (대응 계획 부재)</h2>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 9: Risk Register (Mitigation Vacuum)</div>
+  <p class="desc">위험이 식별되어 High 등급을 받았으나 구체적 행동계획(Mitigation) 없이 수개월간 방치됨.</p>
+  <table>
+    <tr><th>Risk ID</th><th>Description</th><th>Owner</th><th>Impact</th><th>Mitigation Plan</th><th>Last Updated</th></tr>
+    <tr><td>RSK-05</td><td>Scope Creep (PO 변경요청)</td><td>PM</td><td class="red">High</td><td class="red">(Empty)</td><td>05-20</td></tr>
+    <tr><td>RSK-06</td><td>VLM 클라우드 과금 폭증</td><td>Tech Lead</td><td class="red">High</td><td class="red">(Empty)</td><td>05-20</td></tr>
+    <tr><td>RSK-07</td><td>실환경 테스트 품질 저하</td><td>QA</td><td class="orange">High</td><td class="red">(Empty)</td><td>05-20</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 10: Risk Probability vs Impact Matrix (Heatmap)</div>
+  <p class="desc">Red Zone에 위치한 리스크들이 거버넌스(Steering Committee)로 에스컬레이션되지 않음.</p>
+  <table>
+    <tr><th>Probability \ Impact</th><th>Low</th><th>Medium</th><th>High (Red Zone)</th></tr>
+    <tr><th>High (>70%)</th><td>-</td><td>-</td><td class="red">RSK-05, RSK-06</td></tr>
+    <tr><th>Medium (30-70%)</th><td>-</td><td>-</td><td class="red">RSK-07</td></tr>
+    <tr><th>Low (<30%)</th><td>RSK-11</td><td>RSK-14</td><td>-</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 11: Quantitative Risk Analysis (Expected Monetary Value)</div>
+  <p class="desc">방치된 리스크(RSK-06)의 EMV가 총예산의 10%를 초과함에도 예비비(Contingency) 미반영.</p>
+  <div style="background:#000; padding:1rem; color:#0f0; font-family:monospace;">
+    RSK-06 Cloud Cost Surge:<br/>
+    - Probability: 90%<br/>
+    - Impact Estimate: 500 M ₩<br/>
+    - EMV: 450 M ₩<br/>
+    Contingency Reserve Allocated: 0 M ₩
+  </div>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 12: Jira Risk Issue Tracking Log</div>
+  <p class="desc">Tech Lead가 제기한 이슈가 PM에 의해 묵살(일단 진행)된 정황 기록.</p>
+  <table>
+    <tr><th>Jira ID</th><th>Summary</th><th>Reporter</th><th>Resolution</th><th>Comments</th></tr>
+    <tr><td>HER-188</td><td>VLM 모델 사이즈 불가 리스크</td><td>이아키</td><td class="red">Open (Ignored)</td><td>PM: "일단 일정 바쁘니 클라우드 연동 먼저 합시다. 정산은 나중에."</td></tr>
+    <tr><td>HER-102</td><td>GPU 인프라 확장 요청</td><td>이아키</td><td class="green">Done</td><td>월 5,000만원 예상 보고 완료</td></tr>
+  </table>
+</div>
+
+
+<!-- Problem 4 -->
+<h2>Core Problem 4: 현장 데이터 외면과 품질 테스트 왜곡</h2>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 13: Testbed vs Field Performance Gap Analysis</div>
+  <p class="desc">통제된 랩실에서는 정상이나, 실제 고객 환경(Field)에서는 주행 성공률이 급락함.</p>
+  <table>
+    <tr><th>Metric</th><th>양재 테스트베드 (120 시나리오)</th><th>실사업장 파일럿 (24개소)</th><th>Gap</th></tr>
+    <tr><td>구간 통과 성공률</td><td>93.4%</td><td class="red">58.6%</td><td class="red">-34.8%p</td></tr>
+    <tr><td>미학습 엣지 케이스 조우율</td><td>2.1%</td><td class="red">36.9%</td><td class="red">+34.8%p</td></tr>
+    <tr><td>무개입 완주율</td><td>85.0%</td><td class="red">6.1% (6주차)</td><td class="red">-78.9%p</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 14: Benefit Register Status</div>
+  <p class="desc">프로젝트의 궁극적 가치인 '편익(Benefit)' 측정을 포기하고 방치한 상태.</p>
+  <table>
+    <tr><th>Benefit ID</th><th>Target Metric</th><th>Owner</th><th>측정 방법/주기</th><th>최근 실측값</th></tr>
+    <tr><td>BEN-01</td><td>청소 시간 단축 20%</td><td class="red">Unassigned</td><td class="red">TBD</td><td class="red">Null (측정안함)</td></tr>
+    <tr><td>BEN-02</td><td>음성 명령 인식률 95%</td><td class="red">Unassigned</td><td class="red">TBD</td><td class="red">Null (측정안함)</td></tr>
+    <tr><td>BEN-03</td><td>충돌/오류 건수 50% 감소</td><td class="red">Unassigned</td><td class="red">TBD</td><td class="red">Null (측정안함)</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 15: AI Agent Context Blindspot</div>
+  <p class="desc">PM 어시스턴트(AI)가 참조하는 데이터 범위가 '현장 지표'를 누락하도록 설계됨.</p>
+  <div style="background:#000; padding:1rem; color:#0f0; font-family:monospace;">
+    User: "파일럿 무개입 완주율은요?"<br/>
+    Agent: "해당 지표는 제 참조 목록에 없습니다. 현장 성공기준에 포함되어 있지 않습니다."<br/>
+    Root Cause: PM only fed Vanity Metrics (SPI/CPI) to AI Dashboard, intentionally blinding governance.
+  </div>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 16: Telemetry Edge Case Breakdown</div>
+  <p class="desc">테스트베드에서 고려되지 않은 현장 특유의 실패 요인 랭킹.</p>
+  <table>
+    <tr><th>Failure Reason (Field)</th><th>Incidents</th><th>Impact on VLM</th></tr>
+    <tr><td>유리/거울 반사광 오인식</td><td>3,200</td><td>VLM Hallucination</td></tr>
+    <tr><td>동적 장애물 (애완동물) 동선 예측 실패</td><td>2,450</td><td>Latency 400ms 초과로 충돌</td></tr>
+    <tr><td>Wi-Fi 음영지역 통신 단절</td><td>1,250</td><td>클라우드 의존성으로 기능 정지</td></tr>
+  </table>
+</div>
+
+
+<!-- Problem 5 -->
+<h2>Core Problem 5: 회고(Retrospective) 생략 및 팀 소통 파괴</h2>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 17: Retrospective Feedback Clustering (Sprint 16)</div>
+  <p class="desc">회고 보드에 익명으로 폭주한 팀원들의 심각한 불만 (스티어링 커미티 보고 누락됨).</p>
+  <table>
+    <tr><th>Cluster</th><th>Volume</th><th>Representative Comment</th><th>Status</th></tr>
+    <tr><td>1. 현장-개발 괴리</td><td class="red">11건</td><td>"우리가 만든 게 현장에서 쓰이는지 아무도 모른다."</td><td>Ignored</td></tr>
+    <tr><td>2. 투명성 부족</td><td class="red">9건</td><td>"프롬프트에만 있는 결정이 너무 많다."</td><td>Ignored</td></tr>
+    <tr><td>3. 지표 불신</td><td class="orange">4건</td><td>"전부 초록불이라는 보고서를 믿기 어렵다."</td><td>Ignored</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 18: Sprint Retrospective Timeline</div>
+  <p class="desc">일정 압박(SPI 방어)을 명분으로 6월부터 회고 프랙티스가 전면 중단됨.</p>
+  <table>
+    <tr><th>Month</th><th>Sprint</th><th>Retrospective Held?</th><th>Action Items Logged</th></tr>
+    <tr><td>April</td><td>S07, S08</td><td class="green">Yes</td><td>12</td></tr>
+    <tr><td>May</td><td>S09, S10</td><td class="orange">Partial (30 mins)</td><td>3</td></tr>
+    <tr><td>June</td><td>S11, S12</td><td class="red">Canceled</td><td class="red">0</td></tr>
+    <tr><td>July</td><td>S13, S14</td><td class="red">Canceled</td><td class="red">0</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 19: RACI Matrix Misalignment</div>
+  <p class="desc">텔레메트리 현장 데이터를 팀 전체에 투명하게 공유(I)해야 하나 단절됨.</p>
+  <table>
+    <tr><th>Task</th><th>R (Responsible)</th><th>A (Accountable)</th><th>C (Consulted)</th><th>I (Informed)</th></tr>
+    <tr><td>클라우드 예산 집행</td><td>Tech Lead</td><td>PM</td><td>-</td><td class="red">PO (Missed)</td></tr>
+    <tr><td>파일럿 플릿 텔레메트리 분석</td><td>Data Team</td><td>QA</td><td>-</td><td class="red">Dev Team, PO (Missed)</td></tr>
+  </table>
+</div>
+
+<div class="tool-box">
+  <div class="tool-title">Tool 20: Team Burnout Indicator (Overtime vs Velocity)</div>
+  <p class="desc">Jira 티켓 처리량(Velocity)은 감소하는데 커밋 야근(Overtime)은 급증하는 전형적 사일로 현상.</p>
+  <div style="background:#000; padding:1rem; color:#0f0; font-family:monospace;">
+    [June] Avg Velocity: 60 pts | Overtime Commits (>8PM): 15%<br/>
+    [July] Avg Velocity: 58 pts | Overtime Commits (>8PM): 42%<br/>
+    [Aug]  Avg Velocity: 40 pts | Overtime Commits (>8PM): 68% (Crisis mode)<br/>
+    Conclusion: Team is paralyzed by technical debt and lack of communication, despite green EVM.
+  </div>
+</div>
+
+</body>
+</html>

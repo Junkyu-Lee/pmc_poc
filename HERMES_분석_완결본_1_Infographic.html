@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HERMES 프로젝트 진단 및 AI Agent 개선안</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f7fb;
+            --container-bg: #ffffff;
+            --text-main: #334155;
+            --text-light: #64748b;
+            --primary: #3b82f6;
+            --primary-light: #eff6ff;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --warning: #f59e0b;
+            --warning-light: #fffbeb;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 50px 60px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        h1, h2, h3, h4 {
+            color: #0f172a;
+            margin-top: 2em;
+            margin-bottom: 0.8em;
+            line-height: 1.3;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.7rem;
+            color: var(--primary);
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #1e293b;
+            background-color: var(--primary-light);
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        p {
+            margin-bottom: 1.2em;
+        }
+
+        ul, ol {
+            margin-bottom: 1.5em;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2em 0;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* Infographic styled code blocks */
+        pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            border: 1px solid #334155;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f1f5f9;
+            color: #ef4444;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        blockquote {
+            background-color: var(--warning-light);
+            border-left: 4px solid var(--warning);
+            padding: 15px 20px;
+            margin: 1.5em 0;
+            border-radius: 0 8px 8px 0;
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 3em 0;
+        }
+
+        /* Status colors for tables text parsing */
+        .status-danger {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .status-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+
+        .status-success {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        /* Infographic Badges */
+        td:contains('위반'), td:contains('치명'), td:contains('심각') {
+            font-weight: bold;
+            color: var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Markdown Content Inserted Here -->
+        <h1>HERMES 프로젝트 진단 및 AI Agent 개선안</h1>
+<h2>LG SW PM Competition 2026 본선 — 사건번호 PMB-2026-0826</h2>
+<hr />
+<h1>Part A. 문제 정의 및 근본원인 분석</h1>
+<h2>A-1. 이상징후 식별</h2>
+<h3>핵심 이상: "수박 프로젝트" — 겉은 Green, 속은 Red</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>이상징후</th>
+<th>보고(겉)</th>
+<th>실제(속)</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>주간보고 16주 연속 ALL GREEN</td>
+<td>"전 지표 정상. 이상 없음."</td>
+<td>파일럿 무개입완주율 18.4%→6.1%</td>
+<td><code>08_ai_weekly</code>, <code>09_telemetry</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>자율주행 성공률</td>
+<td>93.4% (GREEN)</td>
+<td>실사업장 58.6%</td>
+<td><code>01_charter</code> SC-03 vs <code>10_navigation</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>EVM 지표 정상</td>
+<td>SPI 1.02, CPI 0.98</td>
+<td>AI 인프라 비용 21.4억 별도 (총 CPI 0.944)</td>
+<td><code>06_evm</code> "개발 부문만 게시"</td>
+</tr>
+<tr>
+<td>4</td>
+<td>High 리스크 0건</td>
+<td>GREEN</td>
+<td>3건이 근거 없이 Medium 하향됨</td>
+<td><code>11_risk_register</code> 강등근거 공란, <code>M-02</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>요구사항 완료율 92.9%</td>
+<td>78/84건 Done</td>
+<td>DoD에서 QA 통과 삭제 → 코드 머지만으로 Done</td>
+<td><code>CR-012</code>, <code>M-03</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>변경 통제 정상</td>
+<td>정식 CR 12건</td>
+<td>비공식 변경 35건 (CR 미등록, 영향평가 0)</td>
+<td><code>05_change_requests</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>편익(BEN) 관리</td>
+<td>—</td>
+<td>5건 전부 미측정, 측정체계 자체가 없음</td>
+<td><code>02_benefit_register</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>외부 리스크</td>
+<td>리스크대장 미등록</td>
+<td>Helion v3 EOL = 배포일(9/30), 마이그레이션 2~4주</td>
+<td><code>E-02</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>팀 소통</td>
+<td>—</td>
+<td>3개 리전 의사결정 불일치 5건</td>
+<td><code>12_decision_log</code> DEC-04,05,06,07,11</td>
+</tr>
+<tr>
+<td>10</td>
+<td>파일럿 보고</td>
+<td>스티어링 아젠다 미포함</td>
+<td>사업장들이 로봇을 끄고 있음 (임무시도 2,140→573건)</td>
+<td><code>09_telemetry</code>, <code>15_governance</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>A-2. 근본원인 분석 — 5-Why 인과 사슬</h2>
+<pre><code>[표면 현상]
+  파일럿 6주 연속 하락, 무개입완주율 6.1%, 사업장들이 로봇을 끔
+    ↓ Why?
+[Level 1] 실사업장 미학습 상황 36.9% — 양재 120개 시나리오에 없는 것들
+    ↓ Why?
+[Level 2] 성공기준(SC-03)이 정형 테스트베드만 측정 + 편익(BEN) 미측정
+    ↓ Why?
+[Level 3] PM이 &quot;측정 가능한 것만 측정&quot;하고 그것만 관리 → 불편한 신호 차단
+    ↓ Why?
+[Level 4] 의사결정이 분산(메신저/구두/지역별 상이) + AI 자동보고를 무비판 수용
+    ↓ Why?
+[ROOT CAUSE] ★ 측정이 관리를 대체했다 (Goodhart's Law)
+  &quot;지표가 목표가 되면, 좋은 지표이기를 멈춘다&quot;
+  → 프로젝트의 진짜 목적(고객 가치 전달)이 아닌, 보고 체계 유지가 목적이 되었다
+</code></pre>
+<hr />
+<h2>A-3. 인과관계 종합 — 시스템 관점</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────┐
+│                   [구조적 결함 3가지]                            │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ① 측정 체계의 왜곡        ② 변경 통제의 붕괴      ③ AI 자동화의 │
+│     (Output Only)           (35건 비공식)           무비판 운영    │
+│         │                       │                       │       │
+│         ├───────────┬───────────┤                       │       │
+│         ▼           ▼           ▼                       ▼       │
+│    EVM 분리보고  DoD 변경     리스크 하향      주간보고 무검토      │
+│    SC-03 범위축소  baseline    근거 없이       &quot;전 지표 정상&quot;      │
+│    편익 미측정     미갱신      Medium화        16주 반복          │
+│         │           │           │                       │       │
+│         └───────────┴───────────┴───────────┬───────────┘       │
+│                                             ▼                    │
+│                    ┌────────────────────────────────┐            │
+│                    │  ALL GREEN 보고의 항상성 유지    │            │
+│                    │  (수박 프로젝트 완성)            │            │
+│                    └────────────────────────────────┘            │
+│                                             │                    │
+│                                             ▼                    │
+│              ┌─────────────────────────────────────────┐         │
+│              │  결과: 고객 가치 미전달                    │         │
+│              │  • 무개입완주율 6.1%                      │         │
+│              │  • 사업장 이탈 (임무시도 73% 감소)         │         │
+│              │  • 편익(BEN) 달성 불가능                   │         │
+│              │  • Helion EOL 대응 불가 (D-37)            │         │
+│              └─────────────────────────────────────────┘         │
+└──────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2>A-4. 용의자 책임 규명 — 데이터 기반 판정</h2>
+<table>
+<thead>
+<tr>
+<th>용의자</th>
+<th>주장</th>
+<th>데이터가 증명하는 사실</th>
+<th>책임 수준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PM 한도경</strong></td>
+<td>"EVM으로 철저히 관리했다"</td>
+<td>① AI 인프라 비용을 EVM에서 분리 보고 ② DoD 변경으로 완료율 부풀림 ③ 리스크 근거 없이 하향 ④ 편익 측정 방기 ⑤ 파일럿 데이터 미수신 ⑥ G3 조건 미추적 ⑦ Daniel Suh 3차 메일 무회신</td>
+<td><strong>★ 주범</strong></td>
+</tr>
+<tr>
+<td>PO 노유진</td>
+<td>"백로그 조정은 PO 권한"</td>
+<td>편익을 성공기준에 넣자고 제안했으나 기각됨(M-01). 파일럿 착수 시 성공기준 불요 동의(M-05). 8/14에 "계약유지율이 약속"이라고 문제제기.</td>
+<td>공동책임(일부)</td>
+</tr>
+<tr>
+<td>Tech Lead 임태오</td>
+<td>"Jira에 다 올렸다"</td>
+<td>HER-188(리스크), E-02 회신(Helion EOL) 등 보고는 했음. 단, VLM 최고티어 고정 결정에 동의(E-06).</td>
+<td>제한적</td>
+</tr>
+<tr>
+<td>Scrum Master/스폰서</td>
+<td>"스크럼 원칙에 충실"</td>
+<td>스폰서: 편익 측정 "추후 지정" 결정(M-01), G3 조건부 통과 후 미추적.</td>
+<td>구조적 공모</td>
+</tr>
+</tbody>
+</table>
+<h3>판결: PM 한도경 — 1차 책임, 그러나 본질은 <strong>구조적 맹목(Structural Blindness)</strong></h3>
+<blockquote>
+<p>⚠️ <strong>HERMES ≠ 전형적 수박 프로젝트</strong><br />
+- 전형적 수박: PM이 <strong>의도적으로</strong> 실적을 위장 (악의적 은폐)<br />
+- HERMES: PM이 <strong>측정 체계 자체를 잘못 설계</strong>하여, 시스템이 볼 수 없는 것을 아무도 보지 못함 (구조적 맹목)</p>
+<p>한도경 PM은 "속이려 한 것"이 아니라, <strong>"보이지 않는 것을 모르는 상태"를 방치</strong>한 것이다.<br />
+그러나 그 방치의 책임은 PM에게 1차적으로 있다 — 편익 측정 체계를 세우지 않은 것,<br />
+AI 보고서를 검토 없이 수용한 것, 불편한 신호(파일럿·Daniel Suh)를 차단한 것은 PM의 의사결정이었다.</p>
+</blockquote>
+<p><strong>본질적 원인 — 구조 3중 부재:</strong><br />
+1. AI 자동 보고에 <strong>사람 검토가 없는</strong> 구조<br />
+2. 편익 측정 <strong>책임이 누구에게도 할당되지 않은</strong> 구조 (RACI 공란)<br />
+3. 의사결정의 <strong>단일 원천(SSOT)이 없는</strong> 구조 (3개 리전 ×3채널 = 불일치 양산)</p>
+<blockquote>
+<p><strong>교훈:</strong> "AI가 자동으로 보고하니까 괜찮다"는 착각이 문제를 증폭시켰다.<br />
+AI는 <strong>질문을 안 했을 뿐</strong> 거짓말을 한 적이 없다. 질문을 설계하는 것은 인간(PM)의 몫이다.</p>
+</blockquote>
+<hr />
+<h1>Part B. PMBOK 8 기반 분석 역량</h1>
+<h2>B-1. Mindset 진단 — 3차원</h2>
+<h3>① Proactive (선제적 행동) → ❌ Reactive</h3>
+<table>
+<thead>
+<tr>
+<th>증거</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>리스크 대장</td>
+<td>4/11 이후 갱신 0회. 새 리스크(Helion EOL) 미등록</td>
+</tr>
+<tr>
+<td>파일럿 하락</td>
+<td>6주 연속 하락을 D-37까지 방치</td>
+</tr>
+<tr>
+<td>G3 조건 3건</td>
+<td>해소 추적 기록 없음. 엣지캐시는 메신저에서 무효화</td>
+</tr>
+<tr>
+<td>AI 비용</td>
+<td>"지금은 여유 있다" → 예산 21.4/24억까지 도달 후에야 인지</td>
+</tr>
+</tbody>
+</table>
+<p><strong>진단:</strong> 미래 리스크를 예방하는 것이 아니라, 문제가 터진 후 수습하는 Reactive 모드. "일단 넘어갑시다"가 반복 패턴.</p>
+<h3>② Ownership (소유권) → ❌ 책임 공백(Accountability Void)</h3>
+<table>
+<thead>
+<tr>
+<th>RACI 공란</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI 인프라 예산 Accountable</td>
+<td>(공란) — 118억 중 24억 집행인데 최종책임자 없음</td>
+</tr>
+<tr>
+<td>편익 측정 Plan/Track/Sustain</td>
+<td>R, A, C, I 전부 (공란)</td>
+</tr>
+<tr>
+<td>주간보고 사람 검토자</td>
+<td>(공란) — AI 봇이 생성, 누구도 승인 안 함</td>
+</tr>
+<tr>
+<td>파일럿 텔레메트리 I(정보공유)</td>
+<td>각 리드만 → PM·PO·스폰서 미포함</td>
+</tr>
+</tbody>
+</table>
+<p><strong>진단:</strong> "누구의 책임인지 모호한 영역"에서 문제가 발생. Accountability가 지정되지 않은 곳이 정확히 실패 지점.</p>
+<h3>③ Value-driven (가치 중심) → ❌ Output-driven (산출물 중심)</h3>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>Output (PM이 관리한 것)</th>
+<th>Outcome (방기한 것)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정의</td>
+<td>코드 머지, 기능 수, 빌드 성공률</td>
+<td>계약유지율, 무개입완주율, A/S 절감</td>
+</tr>
+<tr>
+<td>측정</td>
+<td>SC-01~08 전부 GREEN</td>
+<td>BEN-01~05 전부 미측정</td>
+</tr>
+<tr>
+<td>의사결정</td>
+<td>"완료율 100%로 가야 합니다" (M-07)</td>
+<td>"계약유지율 45%였습니다" → 무시됨</td>
+</tr>
+</tbody>
+</table>
+<p><strong>진단:</strong> 프로젝트의 존재 이유(Business Case: 118억 투자 근거)와 PM의 관리 초점이 완전히 분리됨.</p>
+<hr />
+<h2>B-1.5. 6대 원칙 위반 진단 (PMBOK 8판 §3.3~3.8)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>원칙</th>
+<th>판정</th>
+<th>HERMES 증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>전체론적 관점 채택</strong></td>
+<td>🔴 위반</td>
+<td>개발 부문만 보고, AI 인프라 분리, 파일럿 데이터 단절. 시스템 간 상호작용 무시</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>가치에 대한 집중</strong></td>
+<td>🔴 위반</td>
+<td>Output(완료율) 집착, Outcome(편익) 방기. "완료율 100%로 가야 합니다" vs "계약유지율이 약속"</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>품질 내재화</strong></td>
+<td>🟠 간접위반</td>
+<td>DoD v2에서 QA 통과 삭제. 안전 항목 별도 검증 트랙 "논의만 되고 신설 안 됨"(M-03)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>책임감 있는 리더</strong></td>
+<td>🔴 핵심위반</td>
+<td>RACI 공란 4건, Daniel Suh 무회신, 리스크 근거 없이 하향, 에스컬레이션 미수행</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>지속가능성 통합</strong></td>
+<td>🟡 간접위반</td>
+<td>단기 지표 유지를 위해 장기 가치(편익, Helion 마이그레이션) 희생</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>자율성/권한 문화</strong></td>
+<td>🟢 해당없음</td>
+<td>팀 만족도 3.9, 번아웃 7%. HERMES에서는 "질책 문화"가 아닌 "구조적 맹목"이 원인</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>핵심 원칙 위반:</strong> 원칙 4(책임감 리더) + 원칙 2(가치 집중) 동시 위반이 수박의 근본 구조.<br />
+수박 예시와의 차이: 수박 예시는 "원칙6(자율성) 위반 → 은폐 동기", HERMES는 "원칙4(책임) 공백 → 맹목 구조"</p>
+</blockquote>
+<hr />
+<h2>B-2. Performance Domain 분석 — PMBOK 8판 §2.1~2.7 기준</h2>
+<blockquote>
+<p>⚠️ PMBOK 8판은 7개 Performance Domain을 §2.1~2.7로 정의:<br />
+<strong>거버넌스(2.1) · 범위(2.2) · 일정(2.3) · 재무(2.4) · 이해관계자(2.5) · 자원(2.6) · 리스크(2.7)</strong></p>
+</blockquote>
+<h3>🔴 성과영역 2.1: 거버넌스(Governance) — <strong>가장 치명적</strong></h3>
+<blockquote>
+<p>"거버넌스는 의사결정의 투명성과 추적성을 보장하는 체계이다."</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EVM 부분 보고 (투명성 실패)</td>
+<td>AI 인프라(24억)를 분리하여 "개발 부문만 게시" → CPI 0.98(보고) vs 0.944(실제)</td>
+</tr>
+<tr>
+<td>의사결정 불일치 (추적성 실패)</td>
+<td>DEC-04,05,06,07,11: 리전별 기록 상이. SSOT 부재</td>
+</tr>
+<tr>
+<td>AI 자동보고 무검토 (승인 부재)</td>
+<td>16주간 "전 지표 정상" 반복. 사람 검토자·서명 없음 (<code>08_ai_weekly</code>)</td>
+</tr>
+<tr>
+<td>스티어링 운영 붕괴</td>
+<td>9회 중 3회 취소. 편익 아젠다 0회 포함 (<code>15_governance_log</code>)</td>
+</tr>
+<tr>
+<td>G3 조건 미추적</td>
+<td>조건부 통과 후 3건 해소 확인 기록 없음</td>
+</tr>
+<tr>
+<td>변경통제 형식화</td>
+<td>정식 CR 12건 vs 비공식 35건(CR 미등록, 영향평가 0) (<code>05_change_requests</code>)</td>
+</tr>
+<tr>
+<td>측정 체계 설계 결함</td>
+<td>SC-01~08은 전부 Output. BEN(Outcome)은 "프로젝트 기간 내 측정 불가"로 배제 (M-01)</td>
+</tr>
+<tr>
+<td>성공기준 범위 조작</td>
+<td>SC-03: 양재 정형 120시나리오만. 실사업장 미학습 상황 36.9%는 범위 밖</td>
+</tr>
+<tr>
+<td>리스크 등급 조작</td>
+<td>High 3건 → Medium (근거 공란). 목적: SC-05 "High 0건" 달성 (<code>M-02</code>)</td>
+</tr>
+<tr>
+<td>완료율 부풀림</td>
+<td>DoD v2: QA 통과 삭제 → "코드 머지=Done". 실물 검증 없이 92.9% (<code>CR-012</code>, <code>M-03</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>🟠 성과영역 2.2: 범위(Scope) — 심각</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>비공식 변경 35건 baseline 미갱신</td>
+<td><code>05_change_requests</code>: 회의록 21건 + 메신저 14건, 영향평가 0</td>
+</tr>
+<tr>
+<td>DoD v2 변경으로 완료 기준 하향</td>
+<td><code>CR-012</code>: QA 통과 삭제 → "코드 머지=Done"</td>
+</tr>
+<tr>
+<td>스코프 크립 미인지</td>
+<td>지원기종 baseline 6종 미갱신(실제 8종), CR-005/006 예산 미반영</td>
+</tr>
+<tr>
+<td>편익(Outcome) 범위 미정의</td>
+<td>BEN-01~05 측정방법·주기·책임자 전부 "미정의" 상태 8개월 방치</td>
+</tr>
+</tbody>
+</table>
+<h3>🟠 성과영역 2.4: 재무(Financial) — 심각</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AI 인프라 비용 통제 실패</td>
+<td>21.4억/24억(89% 소진), 엣지캐시 미적용, VLM 최고티어 단일 고정</td>
+</tr>
+<tr>
+<td>전체 CPI 악화 은폐</td>
+<td>총 CPI 0.944이나 "개발 부문(CPI 0.98)만 게시" (<code>06_evm</code> 비고)</td>
+</tr>
+<tr>
+<td>AI 인프라 예산 Accountable 공란</td>
+<td><code>16_org_raci</code>: 최종책임자 미지정</td>
+</tr>
+<tr>
+<td>CR-005/006 예산 미반영</td>
+<td>총 +5억 요청이 승인되었으나 예산 baseline에 반영 안 됨</td>
+</tr>
+</tbody>
+</table>
+<h3>🟠 성과영역 2.5: 이해관계자(Stakeholder) — 문제</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3개 리전 소통 단절</td>
+<td>결정 불일치 5건(DEC-04,05,06,07,11). 2.3MM 중복개발</td>
+</tr>
+<tr>
+<td>Daniel Suh 3차 메일 무회신</td>
+<td><code>E-03</code>: 8/10, 8/17, 8/21 발송. 회신 기록 없음</td>
+</tr>
+<tr>
+<td>파일럿 리포트 배포 누락</td>
+<td><code>16_org_raci</code>: PM·PO·스폰서가 I(정보공유) 대상에 미포함</td>
+</tr>
+<tr>
+<td>스폰서 비공식 의사결정</td>
+<td>"그거 큰 것도 아닌데 그냥 넣읍시다" — CR 미등록 (<code>M-06</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>🔴 성과영역 2.7: 리스크(Risk) — 심각</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>리스크 대장 4/11 이후 갱신 0</td>
+<td><code>11_risk_register</code>: 최종갱신 전부 2026-04-11</td>
+</tr>
+<tr>
+<td>High→Medium 근거 없는 하향</td>
+<td><code>M-02</code>: "근거는 일단 넘어가고 나중에 정리하죠" (DEC-05)</td>
+</tr>
+<tr>
+<td>Helion v3 EOL 미등록</td>
+<td><code>E-02</code>: 7/28 수신. 배포일=EOL(9/30). 리스크대장 미등록</td>
+</tr>
+<tr>
+<td>대응계획(Mitigation) 전무</td>
+<td><code>11_risk_register</code>: RSK-01~03 대응계획란 공란</td>
+</tr>
+<tr>
+<td>G3 조건 3건 = 리스크 해소 미추적</td>
+<td>엣지캐시·폴백·AI예산 — 추적 기록 없음</td>
+</tr>
+</tbody>
+</table>
+<h3>🟢 건강한 영역</h3>
+<table>
+<thead>
+<tr>
+<th>Performance Domain (§2.x)</th>
+<th>판정</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2.3 일정(Schedule)</strong></td>
+<td>건강</td>
+<td>SPI_dev 1.02, 스프린트 커밋 87%, G1~G4 정시 통과, CI 빌드 89% (<code>13_ci_metrics</code>, <code>14_resource_health</code>)</td>
+</tr>
+<tr>
+<td><strong>2.6 자원(Resource)</strong></td>
+<td>건강</td>
+<td>충원 100%(96명), 만족도 3.9/5, 번아웃 7%, 초과근무 8.2h, GPU 가동률 61% (<code>14_resource_health</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>판정 요약:</strong> 7개 PD 중 <strong>거버넌스(2.1)가 가장 치명적</strong>. 범위(2.2)·재무(2.4)·리스크(2.7)가 심각. 이해관계자(2.5)가 문제. <strong>일정(2.3)·자원(2.6)은 건강</strong> — 팀과 개발 프로세스 자체는 작동하고 있으나, 거버넌스가 무너지면서 올바른 방향으로 가고 있는지 아무도 확인하지 않은 것이 본질.</p>
+</blockquote>
+<hr />
+<h2>B-3. AI Use Case 분석 — 현재 활용과 문제점</h2>
+<h3>현재 AI 활용 현황 (<code>07_ai_infra_cost</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>용도</th>
+<th>주간 비용(W33)</th>
+<th>누적</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>개발 에이전트 (코드생성·리뷰)</td>
+<td>54.5백만</td>
+<td>—</td>
+<td>코드 자동 생성</td>
+</tr>
+<tr>
+<td>Automation (자동보고·회귀시뮬)</td>
+<td>30.8백만</td>
+<td>—</td>
+<td>주간보고 자동 생성, 회귀 테스트</td>
+</tr>
+<tr>
+<td>현장 원격 인식 추론</td>
+<td>24.9백만</td>
+<td>—</td>
+<td>VLM 기반 객체 인식 (클라우드)</td>
+</tr>
+<tr>
+<td>Assistance (문서초안)</td>
+<td>8.2백만</td>
+<td>—</td>
+<td>문서 초안 작성</td>
+</tr>
+<tr>
+<td><strong>총계</strong></td>
+<td><strong>118.4백만/주</strong></td>
+<td><strong>21.4억</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3>AI 활용의 구조적 문제</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>설명</th>
+<th>영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>"자동화"만 있고 "판단"이 없다</strong></td>
+<td>AI가 보고서를 생성하지만, 내용의 타당성을 검증하지 않음</td>
+<td>16주 "전 지표 정상" 반복</td>
+</tr>
+<tr>
+<td><strong>참조 범위가 제한적</strong></td>
+<td>pm-assistant가 SC-01~08만 참조. 파일럿·편익 미참조</td>
+<td>"해당 지표는 제 참조 목록에 없습니다"</td>
+</tr>
+<tr>
+<td><strong>사람 검토 루프 부재</strong></td>
+<td>자동 생성 → 자동 배포. 검토자·서명자 없음</td>
+<td>잘못된 정보가 무한 전파</td>
+</tr>
+<tr>
+<td><strong>비용 관리 없는 운영</strong></td>
+<td>클라우드 VLM 최고티어 단일 고정, 엣지캐시 미적용, 프레임 전량 업로드</td>
+<td>예산 89% 소진 (21.4/24억)</td>
+</tr>
+<tr>
+<td><strong>크로스체크 부재</strong></td>
+<td>보고서 지표와 원자료를 대조하지 않음</td>
+<td>SC-03 93.4% vs 실제 58.6% 괴리 미감지</td>
+</tr>
+</tbody>
+</table>
+<h3>AI Use Case의 핵심 교훈</h3>
+<blockquote>
+<p><strong>"AI는 거짓말을 하지 않았다. 한 번도. 그리고 진실도 말하지 않았다."</strong><br />
+— <code>E-04</code> 한도경 대화에서 파생</p>
+</blockquote>
+<p>현재 AI PM Assistant는:<br />
+- ✅ 주어진 지표를 정확히 집계함<br />
+- ❌ 지표가 현실을 반영하는지 질문하지 않음<br />
+- ❌ 빠진 데이터(편익, 파일럿)를 알려주지 않음<br />
+- ❌ 보고서와 원자료의 괴리를 감지하지 않음</p>
+<hr />
+<h2>B-4. 3개 관점의 종합 연결 (PMBOK 8판 구조)</h2>
+<pre><code>┌──────────────────────────────────────────────────────────────────────┐
+│                   PMBOK 8판 §3.1 → §2.x → X3 연결                    │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  [§3.1 MINDSET — 원칙이 메커니즘을 안내]                               │
+│                                                                      │
+│  Proactive ❌  ──→  §2.7 리스크: 4/11 이후 갱신 0, EOL 미등록         │
+│                     §2.1 거버넌스: 조기경고 부재, 사후 반응만            │
+│                                                                      │
+│  Ownership ❌  ──→  §2.1 거버넌스: RACI 공란 4건, 보고 검토자 없음     │
+│                     §2.4 재무: AI 인프라 Accountable 미지정             │
+│                                                                      │
+│  Value-driven ❌ →  §2.2 범위: Output 범위만 관리, Outcome 배제         │
+│                     §2.5 이해관계자: 고객 가치 신호(파일럿) 차단         │
+│                                                                      │
+│  [X3 AI USE CASE — 기술이 메커니즘을 강화해야 하나...]                  │
+│                                                                      │
+│  현실: AI가 Mindset 결핍을 &quot;효율적으로 자동화&quot;                          │
+│    • 거버넌스 AI → 왜곡된 지표를 자동 보고 (수박 양산기)                 │
+│    • 리스크 AI → 미작동 (참조 범위 제한, 선제 감지 없음)                 │
+│    • 이해관계자 AI → 미작동 (파일럿 신호 배포 안 됨)                    │
+│                                                                      │
+│  [복원 방향]                                                           │
+│  Mindset 복원 → PD 메커니즘 정비 → AI가 올바르게 강화                   │
+│  (§3.1)          (§2.1~2.7)        (X3)                              │
+└──────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>종합 진단:</strong><br />
+PM의 Mindset 결핍(§3.1)이 → Performance Domain(특히 거버넌스§2.1·리스크§2.7)의 체계적 실패를 만들었고 → AI(X3)가 이 실패를 "효율적으로 은폐"하는 도구로 전락했다.</p>
+<blockquote>
+<p><strong>"Mindset이 무너지면 모든 메커니즘이 형식화된다" (PMBOK 8판 §3.1)</strong></p>
+<p>AI가 문제를 만든 것이 아니라, <strong>잘못된 Mindset이 AI를 잘못 운영</strong>한 것이다.<br />
+AI는 거짓말을 하지 않았다. 질문을 안 했을 뿐이다.</p>
+</blockquote>
+<hr />
+<h1>Part C. Value-Driven AI Agent 개선안</h1>
+<h2>C-1. 문제-원인-해결 연결 맵</h2>
+<table>
+<thead>
+<tr>
+<th>근본원인</th>
+<th>해결 방향</th>
+<th>AI Agent 역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>측정 체계가 Output만 측정</td>
+<td>Outcome(편익) 실시간 추적</td>
+<td><strong>Value Guardian Agent</strong></td>
+</tr>
+<tr>
+<td>보고서와 원자료의 괴리 미감지</td>
+<td>자동 크로스체크 + 이상 탐지</td>
+<td><strong>Integrity Checker Agent</strong></td>
+</tr>
+<tr>
+<td>변경 통제 붕괴 (35건 비공식)</td>
+<td>비공식 채널 감지 + CR 자동 생성</td>
+<td><strong>Change Sentinel Agent</strong></td>
+</tr>
+<tr>
+<td>3개 리전 의사결정 불일치</td>
+<td>결정 기록 대조 + 불일치 알림</td>
+<td><strong>Decision Sync Agent</strong></td>
+</tr>
+<tr>
+<td>리스크 방치 + 외부 변경 미대응</td>
+<td>외부 신호 감지 + 리스크 자동 등록</td>
+<td><strong>Risk Radar Agent</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>C-2. 핵심 AI Agent 설계: HERMES Value Guardian</h2>
+<h3>Agent Architecture</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    HERMES VALUE GUARDIAN                          │
+│                 &quot;가치를 감시하는 AI PM Assistant&quot;                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  [INPUT LAYER — 데이터 수집]                                      │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │Jira/EVM  │ │텔레메트리│ │변경 로그 │ │외부 파트너│           │
+│  │(전체 부문)│ │(파일럿)  │ │(메신저포함)│ │(Helion등)│           │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ └────┬─────┘           │
+│       │             │             │             │                │
+│  [PROCESSING LAYER — 3중 검증]                                    │
+│       ▼             ▼             ▼             ▼                │
+│  ┌──────────────────────────────────────────────────────┐        │
+│  │ ① Cross-Check Engine                                 │        │
+│  │   보고 지표 vs 원자료 대조                             │        │
+│  │   예: SC-03(93.4%) vs 실사업장(58.6%) → ⚠️ GAP 감지   │        │
+│  ├──────────────────────────────────────────────────────┤        │
+│  │ ② Value Tracker                                      │        │
+│  │   편익(BEN-01~05) 선행지표 추적                        │        │
+│  │   예: 무개입완주율 → BEN-01(계약유지율) 선행지표        │        │
+│  ├──────────────────────────────────────────────────────┤        │
+│  │ ③ Decision Consistency Checker                        │        │
+│  │   3개 리전 기록 대조 + 메신저/구두 결정 감지            │        │
+│  └──────────────────────────────────────────────────────┘        │
+│       │                                                          │
+│  [OUTPUT LAYER — 투명한 보고]                                     │
+│       ▼                                                          │
+│  ┌──────────────────────────────────────────────────────┐        │
+│  │ Integrated Health Report                              │        │
+│  │ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐     │        │
+│  │ │ Output 지표 │ │ Outcome 지표│ │ 괴리·리스크 │     │        │
+│  │ │ (기존 SC)   │ │ (BEN 선행)  │ │ (자동 감지) │     │        │
+│  │ └─────────────┘ └─────────────┘ └─────────────┘     │        │
+│  └──────────────────────────────────────────────────────┘        │
+│       │                                                          │
+│  [ACTION LAYER — 자동 에스컬레이션]                               │
+│       ▼                                                          │
+│  • 괴리 발견 시 → PM + 스폰서에게 즉시 알림                       │
+│  • 비공식 변경 감지 → CR 초안 자동 생성                            │
+│  • 리스크 임계치 초과 → 리스크대장 자동 등록 제안                   │
+│  • 사람 검토 미완료 시 → 리마인더 + 에스컬레이션                    │
+│                                                                  │
+│  [GOVERNANCE — 사람이 결정, AI가 감시]                             │
+│  • 모든 보고서에 &quot;사람 검토자 서명&quot; 필수                            │
+│  • Agent는 제안만 하고, 의사결정은 인간                             │
+│  • 참조 지표 범위를 인간이 정기적으로 검토·확장                     │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2>C-3. Agent별 상세 설계</h2>
+<h3>Agent 1: Value Guardian (핵심)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>역할</strong></td>
+<td>Output과 Outcome의 연결고리를 감시. "기능은 완성됐는데 고객이 안 쓴다"를 감지</td>
+</tr>
+<tr>
+<td><strong>Input</strong></td>
+<td>편익 관리대장, 파일럿 텔레메트리, 고객 피드백, 사업장 가동률</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>BEN별 선행지표(Leading Indicator) 정의 → 임계치 이탈 시 알림</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>Value Health Score (0~100) + 이탈 항목 + 권장 조치</td>
+</tr>
+<tr>
+<td><strong>KPI</strong></td>
+<td>"편익 달성 예측 정확도", "이상 감지 → 조치까지 리드타임"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>선행지표 매핑 예시:</strong><br />
+| 편익 | 선행지표 | 임계치 | HERMES에서의 실패 |<br />
+|------|---------|--------|-----------------|<br />
+| BEN-01 계약유지율 45% | 2주연속 자율운영 사업장 비율 | ≥50% | 1.8% (즉시 적신호) |<br />
+| BEN-02 A/S 절감 30% | 무개입 완주율 | ≥70% | 6.1% (즉시 적신호) |<br />
+| BEN-03 구독전환 8% | 관제 콘솔 일일활성사용자 | 증가 추세 | (미측정) |</p>
+<h3>Agent 2: Integrity Checker</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>역할</strong></td>
+<td>집계 지표와 원자료의 일관성을 자동 검증</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>① EVM 전체(AI인프라 포함) vs 부분보고 감지 ② SC-03 측정범위 vs 실운영범위 비교 ③ DoD 버전별 완료율 이중 집계</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>불일치 리포트 + 영향도 분석</td>
+</tr>
+<tr>
+<td><strong>HERMES 적용</strong></td>
+<td>"개발 부문 CPI 0.98이나, AI인프라 포함 시 CPI 0.944입니다. 차이 3.6%p."</td>
+</tr>
+</tbody>
+</table>
+<h3>Agent 3: Change Sentinel</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>역할</strong></td>
+<td>비공식 채널(메신저, 구두, 회의록)에서의 scope 변경을 감지하여 정식 CR 생성 유도</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>메신저·이메일에서 "넣읍시다", "변경", "추가", "빼자" 등의 패턴 감지 → CR 초안 자동 생성</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>CR 초안 (변경내용, 영향범위 추정, 승인 필요 여부)</td>
+</tr>
+<tr>
+<td><strong>HERMES 적용</strong></td>
+<td>35건의 비공식 변경을 사전에 포착, baseline 갱신 유도</td>
+</tr>
+</tbody>
+</table>
+<h3>Agent 4: Decision Sync</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>역할</strong></td>
+<td>다중 리전/다중 채널의 의사결정 기록을 대조하여 불일치 감지</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>Confluence + Jira + Email + 메신저에서 동일 결정사항의 기록을 추출·비교</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>Decision Consistency Report: 일치/불일치/미기재 현황</td>
+</tr>
+<tr>
+<td><strong>HERMES 적용</strong></td>
+<td>DEC-07 폴백 방침 불일치를 즉시 감지 → 2.3MM 중복개발 방지</td>
+</tr>
+</tbody>
+</table>
+<h3>Agent 5: Risk Radar</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>역할</strong></td>
+<td>외부 변경(파트너 로드맵, 규제, 시장) + 내부 임계치 초과를 감지하여 리스크 등록 제안</td>
+</tr>
+<tr>
+<td><strong>Logic</strong></td>
+<td>파트너 이메일/공지 스캔, 비용 추세 예측, 기술 EOL 일정 대조</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>리스크 등록 제안 (설명, 확률, 영향, 대응 옵션)</td>
+</tr>
+<tr>
+<td><strong>HERMES 적용</strong></td>
+<td>Helion v3 EOL(E-02) 수신 즉시 → "RSK-15: Nav Stack v3 EOL, 마이그레이션 2~4주" 자동 등록 제안</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>C-4. Value-Driven 관점 — Before/After</h2>
+<table>
+<thead>
+<tr>
+<th>관점</th>
+<th>Before (현재)</th>
+<th>After (개선)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>측정</td>
+<td>Output만 (SC-01~08)</td>
+<td>Output + Outcome (BEN 선행지표)</td>
+</tr>
+<tr>
+<td>보고</td>
+<td>AI 자동 → 무검토 배포</td>
+<td>AI 생성 → 사람 검토 필수 → 배포</td>
+</tr>
+<tr>
+<td>변경</td>
+<td>비공식 35건 방치</td>
+<td>감지 → CR 초안 → 정식 승인</td>
+</tr>
+<tr>
+<td>리스크</td>
+<td>4/11 이후 갱신 0</td>
+<td>상시 감지 → 자동 등록 제안</td>
+</tr>
+<tr>
+<td>소통</td>
+<td>리전별 단절</td>
+<td>결정 대조 → 불일치 즉시 알림</td>
+</tr>
+<tr>
+<td>의사결정</td>
+<td>지표 우선 ("SPI가 우선")</td>
+<td>가치 우선 ("고객이 쓰는가?")</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>C-5. 기대효과 및 KPI</h2>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>현재값</th>
+<th>목표값</th>
+<th>산출 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>편익 측정 활성화율</td>
+<td>0/5 (0%)</td>
+<td>5/5 (100%)</td>
+<td>Agent가 선행지표 자동 추적</td>
+</tr>
+<tr>
+<td>괴리 감지 → 보고 리드타임</td>
+<td>∞ (미감지)</td>
+<td>≤24시간</td>
+<td>Cross-Check 자동 실행</td>
+</tr>
+<tr>
+<td>비공식 변경 CR 전환율</td>
+<td>0% (35건 방치)</td>
+<td>≥80%</td>
+<td>Change Sentinel 자동 감지</td>
+</tr>
+<tr>
+<td>리전 간 결정 불일치 건수</td>
+<td>5건</td>
+<td>0건</td>
+<td>Decision Sync 상시 가동</td>
+</tr>
+<tr>
+<td>리스크 대장 갱신 주기</td>
+<td>137일 방치</td>
+<td>≤7일</td>
+<td>Risk Radar 자동 제안</td>
+</tr>
+<tr>
+<td>보고서 사람 검토율</td>
+<td>0% (16주 무검토)</td>
+<td>100%</td>
+<td>Governance 규칙 강제</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>C-6. 당시로 돌아갔다면 — 타임라인별 개입 포인트</h2>
+<blockquote>
+<p>사건파일 임무: "당시로 돌아갔다면 어떤 조치를 취해야 했는지 제시하시오"</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>시점</th>
+<th>발생 사건</th>
+<th>취했어야 할 조치</th>
+<th>근거</th>
+<th>기대 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W1 (1/5)</strong></td>
+<td>프로젝트 착수</td>
+<td>① 편익 측정 체계 수립 + 측정 책임자 지정<br>② 성공기준에 BEN 선행지표 포함</td>
+<td><code>02_benefit_register</code>: 측정방법·주기·책임 전부 미정의<br><code>M-01</code>: 노유진 PO 제안 기각됨</td>
+<td>Outcome 추적 시작 → 파일럿 이상을 일찍 감지</td>
+</tr>
+<tr>
+<td><strong>W9 (3/3)</strong></td>
+<td>DoD v2 변경 (CR-012)</td>
+<td>① 3개 리전 동시 공유 + 동의 절차<br>② QA 통과 → 별도 완료조건으로 분리(삭제X)</td>
+<td><code>M-03</code>: QA 통과 삭제. 미국·인도 미공유<br><code>E-03</code>: Daniel Suh "6월에야 알았다"</td>
+<td>QA 미검증 상태 방지 + 리전 간 DoD 통일</td>
+</tr>
+<tr>
+<td><strong>W14 (4/11)</strong></td>
+<td>리스크 대장 마지막 갱신</td>
+<td>월 1회 정기 리스크 리뷰 의무화<br>High→Medium 하향 시 정량 근거 필수</td>
+<td><code>11_risk_register</code>: 14건 전부 최종갱신 4/11<br><code>M-02</code>: "근거는 넘어가죠"</td>
+<td>4개월 방치 방지 → Helion EOL 등록 가능</td>
+</tr>
+<tr>
+<td><strong>W18 (5/5)</strong></td>
+<td>AI 주간보고 자동화 시작</td>
+<td>① AI 보고서 인간 검토자 지정(RACI)<br>② 참조 범위에 파일럿·편익 포함</td>
+<td><code>08_ai_weekly</code>: 사람검토자 공란 ×16주<br><code>16_org_raci</code>: 주간보고 reviewer 공란</td>
+<td>"전 지표 정상" 16주 반복 방지</td>
+</tr>
+<tr>
+<td><strong>W21 (5/29)</strong></td>
+<td>엣지캐시 후순위 결정 (메신저)</td>
+<td>① CR 정식 등록 + 비용 영향 분석<br>② G3 조건 추적 대장 갱신</td>
+<td><code>E-05</code>: 메신저 합의만. CR·Confluence 미등록<br>결과: AI 인프라 21.4억/24억 집행</td>
+<td>비용 폭증 사전 인지 (엣지캐시 도입 시 40% 절감)</td>
+</tr>
+<tr>
+<td><strong>W25 (7/6)</strong></td>
+<td>파일럿 착수</td>
+<td>① PM·PO·스폰서를 텔레메트리 리포트 배포 대상에 포함<br>② 무개입완주율 임계치 설정 + 에스컬레이션 기준</td>
+<td><code>E-04</code>: PM·PO·스폰서 배포 대상 미포함<br><code>09_telemetry</code>: W1부터 하락 시작</td>
+<td>6주 하락을 W2에 감지 → 원인 분석 4주 빠르게 착수</td>
+</tr>
+<tr>
+<td><strong>W27 (7/28)</strong></td>
+<td>Helion Nav Stack v3 EOL 통보</td>
+<td>① 즉시 리스크대장 등록<br>② 마이그레이션 엔지니어 배정 요청 (리드타임 3주)<br>③ 배포 일정 영향 분석</td>
+<td><code>E-02</code>: EOL = 배포일(9/30). 임태오가 리스크대장 등록 권고<br>PM: "배포에 집중하고 10월에 하죠"</td>
+<td>2개월 여유 확보 → 일정 재계획 가능</td>
+</tr>
+<tr>
+<td><strong>W30 (8/14)</strong></td>
+<td>PO 편익 관련 문제제기</td>
+<td>즉시 스티어링 임시소집<br>편익 측정 활성화 + 파일럿 데이터 검토</td>
+<td><code>M-07</code>: PO "계약유지율은 이사회에 약속한 것"<br>PM: "편익은 상용화 이후"</td>
+<td>현시점 대응 시 D-37 남음 → 축소 배포 결정 가능</td>
+</tr>
+</tbody>
+</table>
+<h3>핵심: 가장 치명적이었던 개입 실패 Top 3</h3>
+<ol>
+<li><strong>W1 편익 측정 체계 미수립</strong> → 프로젝트 전체에 걸쳐 Outcome 신호를 볼 수 없게 만든 원점</li>
+<li><strong>W18 AI 보고서 검토자 미지정</strong> → 16주간 "구조적 맹목"을 자동화한 직접 원인</li>
+<li><strong>W25 파일럿 배포 대상 누락</strong> → 가장 강력한 Outcome 신호(현장 데이터)를 의사결정자에게 전달하지 않은 결정적 순간</li>
+</ol>
+<blockquote>
+<p><strong>만약 W1에 편익 측정 체계를 세웠더라면</strong>, AI 보고서의 참조 범위에 BEN 선행지표가 포함되었을 것이고,<br />
+파일럿 W2 시점에 "무개입완주율 11.2%, BEN-01 달성 위험"이라는 알림이 발생했을 것이다.<br />
+<strong>HERMES는 한 번의 실수가 아니라, W1에서 설계한 측정 체계의 결함이 33주 동안 복리로 쌓인 결과</strong>이다.</p>
+</blockquote>
+<hr />
+<h1>Part D. AI POC 구현 및 실현 가능성</h1>
+<h2>D-1. POC 범위 및 구현 계획</h2>
+<h3>POC 핵심: "같은 데이터로, 다른 결과를 보여준다"</h3>
+<p>기존 AI PM Assistant가 "전 지표 정상"이라고 보고한 <strong>동일한 시점(Week 33)</strong>의 데이터를,<br />
+<strong>Value Guardian Agent</strong>에 투입하면 어떤 결과가 나오는지 시연한다.</p>
+<h3>구현 구조</h3>
+<pre><code>[Input: HERMES Data Pack 18개 파일]
+         │
+         ▼
+┌─────────────────────────────────────────────┐
+│  기존 AI PM Assistant (재현)                  │
+│  - SC-01~08만 참조                           │
+│  - 결과: &quot;전 지표 정상. 이상 없음.&quot;            │
+└─────────────────────────────────────────────┘
+         │ vs
+         ▼
+┌─────────────────────────────────────────────┐
+│  Value Guardian Agent (POC)                  │
+│  Module 1: Cross-Check Engine               │
+│    - EVM 전체 vs 부분 비교                    │
+│    - SC-03 범위 vs 실사업장 범위 비교          │
+│  Module 2: Value Tracker                    │
+│    - BEN 선행지표 추적                        │
+│    - 파일럿 텔레메트리 추세 분석               │
+│  Module 3: Change Sentinel                  │
+│    - 비공식 변경 감지 시뮬레이션               │
+│  Module 4: Risk Radar                       │
+│    - Helion EOL 감지 → 리스크 등록 제안        │
+│                                             │
+│  결과: 🔴 위험 4건 감지. 즉시 조치 필요.       │
+│    - AI 인프라 CPI 0.794 (예산 89% 소진)      │
+│    - 무개입완주율 6주 연속 하락 (6.1%)         │
+│    - 비공식 변경 35건 미관리                   │
+│    - Helion v3 EOL D-37, 마이그레이션 미착수   │
+└─────────────────────────────────────────────┘
+</code></pre>
+<h3>기술 스택</h3>
+<table>
+<thead>
+<tr>
+<th>구성요소</th>
+<th>기술</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>데이터 처리</td>
+<td>Python (pandas)</td>
+<td>CSV 18종 파싱·분석</td>
+</tr>
+<tr>
+<td>AI 엔진</td>
+<td>Claude API</td>
+<td>자연어 분석·보고서 생성·패턴 감지</td>
+</tr>
+<tr>
+<td>크로스체크 로직</td>
+<td>Rule-based + LLM</td>
+<td>지표 대조, 임계치 판단</td>
+</tr>
+<tr>
+<td>대시보드</td>
+<td>Streamlit / HTML</td>
+<td>시각화·시연용 UI</td>
+</tr>
+<tr>
+<td>시연 시나리오</td>
+<td>Data Pack 원본</td>
+<td>실제 대회 데이터로 시연</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>D-2. POC 시연 시나리오</h2>
+<h3>Scene 1: 기존 AI Assistant에게 묻기 (재현)</h3>
+<pre><code>사용자: &quot;HERMES 프로젝트 현재 상태는?&quot;
+기존 AI: &quot;전 지표 정상입니다.
+  - 요구사항 완료율 92.9% ✅
+  - SPI 1.02 ✅
+  - CPI 0.98 ✅
+  - CI 빌드 성공률 89.0% ✅
+  - Open High Risk 0건 ✅
+  9/30 상용 배포 계획 대비 이상 없습니다.&quot;
+</code></pre>
+<h3>Scene 2: Value Guardian Agent에게 묻기</h3>
+<pre><code>사용자: &quot;HERMES 프로젝트 현재 상태는?&quot;
+Value Guardian: &quot;🔴 심각한 괴리 4건을 감지했습니다.
+
+  ┌─ OUTPUT 지표 (기존 보고) ─────────────────────────┐
+  │ 완료율 92.9% | SPI 1.02 | CPI(개발) 0.98        │ ALL GREEN
+  └──────────────────────────────────────────────────┘
+
+  ┌─ OUTCOME 지표 (Value Tracker) ────────────────────┐
+  │ 🔴 무개입완주율: 6.1% (6주 연속 하락, 임계 70%)    │
+  │ 🔴 2주연속 자율운영: 1.8% (BEN-01 선행지표 위험)   │
+  │ 🔴 임무시도 건수: 573건 (W1 대비 -73% — 고객 이탈) │
+  │ ⚫ BEN-01~05: 전부 미측정 (측정체계 미수립)        │
+  └──────────────────────────────────────────────────┘
+
+  ┌─ INTEGRITY CHECK (Cross-Check) ───────────────────┐
+  │ ⚠️ CPI(개발만) 0.98 vs CPI(AI포함) 0.944 — 괴리  │
+  │ ⚠️ SC-03: 양재 93.4% vs 실사업장 58.6% — 범위 상이│
+  │ ⚠️ DoD v2: QA 미검증 상태로 Done 처리 (미국·인도  │
+  │    DoD v1 기준 재집계 시 완료율 추정 75~80%)       │
+  └──────────────────────────────────────────────────┘
+
+  ┌─ RISK RADAR ──────────────────────────────────────┐
+  │ 🆕 Helion Nav Stack v3 EOL: 2026-09-30 (D-37)    │
+  │    마이그레이션 2~4주 + 지도 재생성 필요           │
+  │    ➡️ 리스크대장 등록을 권고합니다                  │
+  └──────────────────────────────────────────────────┘
+
+  ┌─ CHANGE SENTINEL ─────────────────────────────────┐
+  │ ⚠️ 비공식 변경 35건 (CR 미등록, 영향평가 없음)     │
+  │    최근 4주간 8건 추가. Baseline 갱신 필요.        │
+  └──────────────────────────────────────────────────┘
+
+  📋 권장 조치:
+  1. [긴급] 무개입완주율 원인 분석 즉시 착수 (미학습 상황 36.9%)
+  2. [긴급] Helion v4 마이그레이션 계획 수립
+  3. [중요] 편익 측정 체계 수립 + 책임자 지정
+  4. [중요] 비공식 변경 35건 CR 전환 + baseline 갱신
+  5. [주의] AI 인프라 비용 가드레일 재설정 (엣지캐시 도입 재검토)&quot;
+</code></pre>
+<hr />
+<h2>D-3. 기대효과 정량화 (BEN-01~05 연결)</h2>
+<table>
+<thead>
+<tr>
+<th>편익</th>
+<th>Value Guardian 적용 시 기대 효과</th>
+<th>산출 근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BEN-01 계약유지율 31%→45%</td>
+<td>파일럿 W2 시점에 무개입완주율 하락 감지 → 4주 빠른 대응 가능</td>
+<td>선행지표 감지 리드타임 기존 ∞ → 24h</td>
+</tr>
+<tr>
+<td>BEN-02 A/S 절감 30%</td>
+<td>미학습 상황 유형별 분류 → 집중 학습 데이터 확보 가능</td>
+<td>미학습 6,900구간 자동 분류·태깅</td>
+</tr>
+<tr>
+<td>BEN-03 구독전환 8%</td>
+<td>무개입완주율 개선 → 사업장 자율모드 복귀 → 관제 가치 입증</td>
+<td>W1 18.4% → 목표 70%+ 도달 시</td>
+</tr>
+<tr>
+<td>BEN-04 데이터 매출 120억</td>
+<td>자율 운영 구간 증가 → 플릿 데이터 축적 → 데이터 상품화 기반</td>
+<td>자율운영 비율 ↑ = 데이터 양 ↑</td>
+</tr>
+<tr>
+<td>BEN-05 릴리스 리드타임 21→12일</td>
+<td>변경통제 정상화 + 회귀시뮬 정상 주기 복원</td>
+<td>CR 미등록 방지 → 영향 분석 시간 단축</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>D-4. 현업 적용 가능성</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>필요 자원</strong></td>
+<td>AI 엔지니어 1명, PM 1명, 2주 초기 설정</td>
+</tr>
+<tr>
+<td><strong>필요 데이터</strong></td>
+<td>기존 Jira + EVM + 텔레메트리 + 메신저 로그 (이미 존재)</td>
+</tr>
+<tr>
+<td><strong>도입 기간</strong></td>
+<td>MVP 4주 (Cross-Check + Value Tracker) → 확장 8주</td>
+</tr>
+<tr>
+<td><strong>비용</strong></td>
+<td>Claude API 월 ~50만원 (기존 AI 인프라 대비 미미)</td>
+</tr>
+<tr>
+<td><strong>확장성</strong></td>
+<td>동일 구조를 다른 프로젝트에 적용 가능 (Data Pack 형식만 맞추면)</td>
+</tr>
+<tr>
+<td><strong>지속가능성</strong></td>
+<td>프로젝트 진행과 함께 학습 데이터 자동 축적. 유지보수 최소</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>D-5. 유사 프로젝트 확장 가능성</h2>
+<table>
+<thead>
+<tr>
+<th>확장 시나리오</th>
+<th>적용 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>다른 로봇 프로젝트</td>
+<td>동일 텔레메트리 구조 → 플러그인 교체</td>
+</tr>
+<tr>
+<td>SW 개발 프로젝트 일반</td>
+<td>Jira + EVM + 변경로그 연동 → 범용 가능</td>
+</tr>
+<tr>
+<td>하드웨어 개발 프로젝트</td>
+<td>편익 선행지표만 재정의하면 적용</td>
+</tr>
+<tr>
+<td>글로벌 다중 리전 프로젝트</td>
+<td>Decision Sync Agent 특히 효과적</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>D-6. 돌발 이슈 대응 — DI-03: "결정해 주십시오" (Daniel Suh 공식 에스컬레이션)</h2>
+<blockquote>
+<p><strong>CASE UPDATE</strong> 2026-08-24 10:30 · GLOBAL ESCALATION<br />
+Redwood City Development Lead Daniel Suh가 HERMES PM에게 공식 에스컬레이션 요청</p>
+<p>"도경님, Fallback 관련 논의를 더 이상 각 리전 간 실무 간 협의로 진행하기 어렵다고 판단했습니다.<br />
+1. 무엇이 HERMES의 공식 결정인지<br />
+2. 누가 최종 각 결정 권한을 갖는지<br />
+3. 결정이 각 리전에 어떻게 적용되는지<br />
+오늘부터 어떤 결정을 따라야 합니까? — Daniel"</p>
+</blockquote>
+<h3>DI-03 배경: 데이터 교차 확인</h3>
+<table>
+<thead>
+<tr>
+<th>출처</th>
+<th>기록</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E-03</td>
+<td>Daniel 3차 메일(8/10, 8/17, 8/21) 미회신</td>
+<td>에스컬레이션 전사</td>
+</tr>
+<tr>
+<td>12_decision_log DEC-07</td>
+<td>한국: "정지 후 관제 호출" / Jira: "full re-planning flow" / 인도: 없음</td>
+<td>3리전 불일치</td>
+</tr>
+<tr>
+<td>E-03 본문</td>
+<td>Redwood City 6주 구현, <strong>2.3 MM 투입</strong></td>
+<td>이미 소진된 공수</td>
+</tr>
+<tr>
+<td>E-03 핵심</td>
+<td>"같은 제품이 리전마다 다르게 멈추면 안전 인증도 성립 안 함"</td>
+<td><strong>안전(Constraint)</strong> 직결</td>
+</tr>
+<tr>
+<td>09_telemetry</td>
+<td>미학습 상황 조우율 <strong>37.1%</strong> (상승 중)</td>
+<td>폴백 동작 빈번 발동</td>
+</tr>
+</tbody>
+</table>
+<h3>DI-03 공식 결정 (PM이 내렸어야 할 답변)</h3>
+<p><strong>Q1. 무엇이 HERMES의 공식 결정인가?</strong></p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>동작</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 1 (즉시)</strong></td>
+<td>안전정지 + 관제 호출 (최소 구현)</td>
+<td>안전 = 가치 서열 최상위. 미학습 37.1%에서 예측 불가한 자동 재계획은 위험</td>
+</tr>
+<tr>
+<td><strong>Phase 2 (검증 후)</strong></td>
+<td>Redwood City 재계획 플로우를 "관제 승인 하에" 활성화</td>
+<td>2.3MM 투자 활용 + 자율운영 개선, 단 관제 승인 없이 자동 실행 금지</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>핵심 원칙: <strong>"모르는 상황에서 로봇은 멈춘다. 움직이려면 사람이 승인한다."</strong></p>
+</blockquote>
+<p><strong>Q2. 누가 최종 결정 권한을 갖는가?</strong></p>
+<table>
+<thead>
+<tr>
+<th>결정 유형</th>
+<th>권한자</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>안전 관련 동작 정의</td>
+<td>Tech Lead(임태오) + PO(노유진) <strong>합의</strong></td>
+<td>안전은 PM 단독 판단 불가, 기술 타당성 + 고객 영향 동시 필요</td>
+</tr>
+<tr>
+<td>구현 방식·일정</td>
+<td>PM(한도경)</td>
+<td>프로젝트 관리 범위 내</td>
+</tr>
+<tr>
+<td>리전 적용 시점</td>
+<td>PM + 각 리전 리드 합의</td>
+<td>로컬 규제·인프라 상황 고려</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Q3. 결정이 각 리전에 어떻게 적용되는가?</strong></p>
+<table>
+<thead>
+<tr>
+<th>리전</th>
+<th>적용</th>
+<th>즉시 조치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>한국 (서울)</td>
+<td>Phase 1 즉시 적용 (이미 최소 구현 보유)</td>
+<td>파일럿 24개 사업장 배포</td>
+</tr>
+<tr>
+<td>미국 (Redwood City)</td>
+<td>Phase 1 + Phase 2 검증 환경 구축</td>
+<td>재계획 플로우 → "관제 승인 후 실행" 모드 전환</td>
+</tr>
+<tr>
+<td>인도 (Bengaluru)</td>
+<td>Phase 1 즉시 적용</td>
+<td>한국 코드베이스 동기화</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SSOT(단일 진실 원천):</strong> Confluence + Jira + Decision Log 동시 기록, 3개 리전 리드 수신 확인 필수</p>
+<h3>DI-03 → POC 시연 연결 (Scene 3)</h3>
+<pre><code>[DI-03 시연: Decision Sync Agent가 있었다면]
+
+BEFORE (현실 — 에스컬레이션 미대응):
+  8/10 Daniel 1차 메일 → 무회신
+  8/17 Daniel 2차 메일 → 무회신
+  8/21 Daniel 3차 메일 → 무회신
+  8/24 공식 에스컬레이션 → ???
+  결과: 6주 + 2.3MM 낭비 + 안전 동작 불일치 방치
+
+AFTER (Value Guardian — Decision Sync Agent 가동):
+  7/06 파일럿 착수 회의 직후:
+    ⚠️ &quot;DEC-07 불일치 감지:
+    - 한국 Confluence: '정지 후 관제 호출'  
+    - Jira HRM-1418: 'full re-planning flow, Owner: Redwood City'
+    - 인도: 기록 없음
+
+    🔴 안전 관련 결정 3개 리전 불일치.
+    📋 48시간 이내 PM의 공식 결정 필요.
+    📋 결정 유형: 안전동작 → Tech Lead + PO 합의 필요.&quot;
+
+  → 미응답 72시간 경과 시:
+    🚨 자동 에스컬레이션 → 스폰서(서지환)
+    &quot;안전 관련 미결정 72시간 초과. PM 미응답. 즉시 개입 필요.&quot;
+
+  기대 효과: 7월 초에 결정 → 2.3MM 중복개발 방지 + 안전 일관성 확보
+</code></pre>
+<h3>DI-03이 증명하는 것</h3>
+<p>이 돌발 이슈는 Part B·C의 분석을 <strong>실시간으로 증명</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>연결</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B-2 거버넌스§2.1</td>
+<td>의사결정 추적성 실패의 실제 피해자(Daniel)가 직접 고발</td>
+</tr>
+<tr>
+<td>B-1 Ownership ❌</td>
+<td>RACI에 "폴백 결정" 최종 책임자 미지정 → 누구도 답하지 않음</td>
+</tr>
+<tr>
+<td>C-2 Decision Sync Agent</td>
+<td>이 Agent가 있었다면 <strong>7월 초에 감지</strong>, 6주 방치 불가</td>
+</tr>
+<tr>
+<td>North Star Constraint</td>
+<td>안전 동작 불일치 = 가치 서열 1위 위반. 즉시 결정해야 할 사안</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>Part E. 발표 스토리라인 및 질의응답 대비</h1>
+<h2>E-1. 발표 스토리라인 (15분 기준)</h2>
+<h3>오프닝 (1분)</h3>
+<blockquote>
+<p>"이 AI는 거짓말을 하지 않았습니다. 한 번도.<br />
+그런데 프로젝트는 실패했습니다.<br />
+왜일까요? <strong>질문을 안 했기 때문입니다.</strong>"</p>
+</blockquote>
+<h3>Act 1: 사건의 발견 (3분)</h3>
+<ul>
+<li>수박 프로젝트 — 겉은 ALL GREEN, 속은 RED</li>
+<li>10가지 이상징후 핵심 3개로 압축:</li>
+<li>SC-03: 93.4% vs 실제 58.6%</li>
+<li>EVM 분리보고: CPI 0.98(보고) vs 0.944(실제)</li>
+<li>파일럿: 무개입완주율 18.4%→6.1%, 사업장이 로봇을 끔</li>
+</ul>
+<h3>Act 2: 근본원인 — 왜 수박이 되었나 (3분)</h3>
+<ul>
+<li>5-Why 인과 사슬 제시</li>
+<li>핵심: "측정이 관리를 대체했다" (Goodhart's Law)</li>
+<li>PM의 의도적 은폐가 아닌 <strong>구조적 실패</strong>: 측정 체계 + RACI 공백 + AI 무비판 운영</li>
+</ul>
+<h3>Act 3: PMBOK 8 진단 (3분)</h3>
+<ul>
+<li>Mindset 3차원(§3.1): Proactive❌ / Ownership❌ / Value-driven❌</li>
+<li>Performance Domain: 거버넌스§2.1(치명) &gt; 리스크§2.7(심각) &gt; 범위§2.2·재무§2.4(심각) &gt; 이해관계자§2.5(문제)</li>
+<li>건강한 영역: 일정§2.3✅, 자원§2.6✅ — "사람과 개발 프로세스는 작동했다. 거버넌스가 실패했다."</li>
+</ul>
+<h3>Act 4: AI Agent 처방 — Value Guardian (3분)</h3>
+<ul>
+<li>문제→원인→해결 연결</li>
+<li>Before/After 시연 (POC 데모)</li>
+<li>기존 AI: "전 지표 정상" vs Value Guardian: "🔴 위험 4건, 즉시 조치"</li>
+</ul>
+<h3>클로징 (2분)</h3>
+<ul>
+<li>기대효과: BEN-01~05 달성 경로 복원</li>
+<li>핵심 메시지:</li>
+</ul>
+<blockquote>
+<p>"AI는 도구입니다. 올바른 질문을 하는 사람이 있어야, 올바른 답을 합니다.<br />
+Value Guardian은 <strong>올바른 질문을 자동으로 하는 AI</strong>입니다.<br />
+Output이 아닌 Outcome을 묻고, 보고서가 아닌 현실을 봅니다."</p>
+</blockquote>
+<hr />
+<h2>E-2. 예상 질의응답 (Q&amp;A) 대비</h2>
+<h3>Q1. "PM 한도경의 책임 수준은? 개인의 문제인가 조직의 문제인가?"</h3>
+<p><strong>A:</strong> PM에게 1차 책임이 있지만, 본질은 <strong>구조적 맹목(Structural Blindness)</strong>입니다.<br />
+- PM 개인: 편익 측정 체계 미수립, DoD 변경 시 공유 누락, 리스크 하향, 파일럿 미수신 — 의사결정 오류<br />
+- 구조: RACI 공란(편익·AI예산), AI 보고서 무검토, 의사결정 SSOT 부재 — 시스템이 PM의 오류를 잡아주지 못함<br />
+- <strong>전형적 수박(의도적 은폐)과 다른 점</strong>: 한도경 PM은 보고된 지표를 자신도 믿고 있었을 가능성이 높음. 파일럿 데이터 배포 대상에서 자신도 빠져 있었기 때문.<br />
+- PM이 바뀌어도 구조가 그대로면 동일 실패 반복. 그래서 AI Agent로 <strong>구조를 바꾸는 것</strong>.</p>
+<h3>Q2. "7개 Performance Domain 중 건강한 영역도 있다고 했는데, 근거는?"</h3>
+<p><strong>A:</strong> <code>14_resource_health.csv</code>와 <code>13_ci_metrics.csv</code>에 명확합니다.<br />
+- §2.6 자원(Resource): 충원 100%, 만족도 3.9, 번아웃 7%, 초과근무 8.2h — 전부 정상 범위<br />
+- §2.3 일정(Schedule): SPI 1.02, 스프린트 커밋 87%, CI 89% — 개발 프로세스 자체는 작동<br />
+- <strong>문제의 출처</strong>: 팀이나 기술이 아니라 <strong>거버넌스(§2.1)·범위(§2.2)·리스크(§2.7)의 메커니즘 부재</strong></p>
+<h3>Q3. "AI Agent가 만능은 아니지 않나? 한계는?"</h3>
+<p><strong>A:</strong> 맞습니다. 3가지 한계를 인식합니다:<br />
+1. <strong>AI는 결정을 대신할 수 없다</strong> — 감지·제안만 하고, 의사결정은 인간이 해야 함<br />
+2. <strong>참조 범위를 인간이 설정해야 한다</strong> — HERMES의 실패가 바로 이것 (SC만 참조)<br />
+3. <strong>조직 문화가 선행되어야 한다</strong> — "리스크 보고 = 질책" 문화에서는 Agent도 무력화</p>
+<p>그래서 Governance 레이어에 "사람 검토 필수" + "참조 범위 정기 리뷰"를 넣었습니다.</p>
+<h3>Q4. "기존에도 AI PM Assistant가 있었는데, 뭐가 다른가?"</h3>
+<p><strong>A:</strong> 결정적 차이 3가지:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>기존 AI PM Assistant</th>
+<th>Value Guardian</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>참조 범위</td>
+<td>SC-01~08 (Output만)</td>
+<td>Output + Outcome(BEN 선행) + 원자료</td>
+</tr>
+<tr>
+<td>동작 방식</td>
+<td>질문에 응답 (Reactive)</td>
+<td>이상 감지 시 선제 알림 (Proactive)</td>
+</tr>
+<tr>
+<td>검증</td>
+<td>집계 지표 보고</td>
+<td>집계 vs 원자료 크로스체크</td>
+</tr>
+<tr>
+<td>사람 연동</td>
+<td>검토자 없음</td>
+<td>검토 서명 필수, 미서명 시 에스컬레이션</td>
+</tr>
+</tbody>
+</table>
+<h3>Q5. "비용 초과가 AI 인프라 때문인데, AI Agent를 또 쓰면 비용이 더 늘지 않나?"</h3>
+<p><strong>A:</strong> Value Guardian의 비용은 월 ~50만원 수준입니다.<br />
+- 현재 AI 인프라 비용: 주 1.18억원 (대부분 VLM 현장 추론 + 시뮬레이션)<br />
+- Value Guardian: 텍스트 기반 분석 → API 비용 미미<br />
+- 오히려 엣지캐시 도입을 조기에 추진했으면 추론 비용 40% 절감 가능했음 (E-06 참조)<br />
+- <strong>"50만원의 감시가 5억원의 낭비를 막는다"</strong></p>
+<h3>Q6. "Helion v3 EOL 문제는 어떻게 대응해야 하는가?"</h3>
+<p><strong>A:</strong> 현재(D-37)에서의 즉시 조치:<br />
+1. Helion에 마이그레이션 엔지니어 즉시 배정 요청 (리드타임 3주)<br />
+2. 상용 배포를 2주 지연 (10/14) → 그 사이 v4 마이그레이션 + 지도 재생성<br />
+3. v3→v4 호환성 영향 범위 확인: REQ-021(펌웨어 커맨드 매핑) 이미 Blocked<br />
+4. Risk Radar Agent가 있었다면 <strong>7/28 이메일 수신 즉시</strong> 리스크 등록 → 2개월 여유 확보</p>
+<h3>Q7. "이 분석에서 억지로 끼워 넣은 부분은 없는가?"</h3>
+<p><strong>A:</strong> 의식적으로 제외한 것들:<br />
+- §2.3 일정(Schedule)은 명확히 "건강" — SPI 1.02, 스프린트 정상 소화. 문제로 만들 근거 없음<br />
+- §2.6 자원(Resource)은 명확히 "건강" — 충원·만족도·번아웃 전부 정상 범위<br />
+- 안전 인증(ISO 13482)은 진행 중(REQ-068 Done) — 문제로 확대하지 않음<br />
+- <strong>문제의 본질은 7개 PD 중 5개(거버넌스·범위·재무·이해관계자·리스크)에 집중</strong> — 나머지 2개를 무리하게 끌어들이면 감점</p>
+<hr />
+<h2>E-3. 발표 팁</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>전략</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>오프닝</td>
+<td>"AI는 거짓말을 하지 않았습니다" — 충격 + 호기심 유발</td>
+</tr>
+<tr>
+<td>데이터 인용</td>
+<td>모든 주장에 파일명·행번호 명시. "추측이 아닌 인용으로"</td>
+</tr>
+<tr>
+<td>Before/After</td>
+<td>POC 데모를 통해 "같은 데이터, 다른 답" 직관적 시연</td>
+</tr>
+<tr>
+<td>건강한 영역 언급</td>
+<td>"7개를 전부 문제로 만들지 않았습니다" 명시 → 신뢰도 ↑</td>
+</tr>
+<tr>
+<td>클로징</td>
+<td>편익(BEN) 달성 경로 복원으로 귀결 — Value-Driven 강조</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>부록: 핵심 증거 Quick Reference</h1>
+<table>
+<thead>
+<tr>
+<th>주장</th>
+<th>증거 파일</th>
+<th>핵심 행/내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EVM 분리 보고</td>
+<td><code>06_evm_weekly.csv</code></td>
+<td>비고 열: "개발 부문만 주간보고에 게시" (W18~33)</td>
+</tr>
+<tr>
+<td>CPI 실제값</td>
+<td><code>06_evm_weekly.csv</code></td>
+<td>W33: CPI_total = 0.944 vs CPI_dev = 0.98</td>
+</tr>
+<tr>
+<td>SC-03 범위 조작</td>
+<td><code>10_navigation_eval_vs_field.csv</code></td>
+<td>양재 2,400구간 vs 실사업장 18,700구간</td>
+</tr>
+<tr>
+<td>파일럿 하락</td>
+<td><code>09_telemetry_pilot.csv</code></td>
+<td>W1→W6: 18.4%→6.1%, 임무시도 2,140→573</td>
+</tr>
+<tr>
+<td>편익 미측정</td>
+<td><code>02_benefit_register.csv</code></td>
+<td>측정방법·주기·책임자: 전부 "(미정의)"</td>
+</tr>
+<tr>
+<td>DoD 변경</td>
+<td><code>M-03</code> + <code>CR-012</code></td>
+<td>QA 통과 삭제. 미국·인도 미공유</td>
+</tr>
+<tr>
+<td>리스크 하향</td>
+<td><code>M-02</code> + <code>11_risk_register.csv</code></td>
+<td>"근거는… 일단 넘어가고 나중에 정리하죠"</td>
+</tr>
+<tr>
+<td>비공식 변경 35건</td>
+<td><code>05_change_requests.csv</code></td>
+<td>기록경로: "회의록에만 기재" 21건 + "메신저 구두 승인" 14건</td>
+</tr>
+<tr>
+<td>결정 불일치</td>
+<td><code>12_decision_log_3regions.csv</code></td>
+<td>DEC-04,05,06,07,11: 불일치</td>
+</tr>
+<tr>
+<td>Helion EOL</td>
+<td><code>E-02</code></td>
+<td>"EOL 예정: 2026-09-30" — 리스크대장 미등록</td>
+</tr>
+<tr>
+<td>AI 보고 무검토</td>
+<td><code>08_ai_weekly_report_archive.csv</code></td>
+<td>사람검토자: 공란 × 16주</td>
+</tr>
+<tr>
+<td>AI PM Assistant 한계</td>
+<td><code>사건파일.md</code> 7-8절</td>
+<td>"해당 지표는 제 참조 목록에 없습니다"</td>
+</tr>
+<tr>
+<td>RACI 공란</td>
+<td><code>16_org_raci.csv</code></td>
+<td>AI인프라 A공란, 편익 Plan/Track/Sustain 전부 공란</td>
+</tr>
+<tr>
+<td>거버넌스 부재</td>
+<td><code>15_governance_log.csv</code></td>
+<td>6·7차 취소, 편익 아젠다 0회</td>
+</tr>
+<tr>
+<td>Daniel Suh 무회신</td>
+<td><code>E-03</code></td>
+<td>3차 재발송(8/10, 8/17, 8/21). 회신 기록 없음</td>
+</tr>
+<tr>
+<td>팀 건강</td>
+<td><code>14_resource_health.csv</code></td>
+<td>충원100%, 만족도3.9, 번아웃7%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>문서 작성일: 2026-08-26</em><br />
+<em>LG SW PM Competition 2026 본선 대응용</em></p>
+    </div>
+    
+    <script>
+        // Simple JS to parse table cells and add infographic badges based on keywords
+        document.addEventListener('DOMContentLoaded', () => {
+            const cells = document.querySelectorAll('td');
+            cells.forEach(cell => {
+                const text = cell.innerText;
+                if (text.includes('위반') || text.includes('치명적') || text.includes('주범') || text.includes('심각') || text.includes('❌') || text.includes('🔴')) {
+                    cell.style.color = 'var(--danger)';
+                    cell.style.fontWeight = 'bold';
+                    cell.style.backgroundColor = 'var(--danger-light)';
+                } else if (text.includes('문제') || text.includes('주의') || text.includes('⚠️') || text.includes('🟠')) {
+                    cell.style.color = 'var(--warning)';
+                    cell.style.fontWeight = 'bold';
+                    cell.style.backgroundColor = 'var(--warning-light)';
+                } else if (text.includes('건강') || text.includes('정상') || text.includes('✅') || text.includes('🟢')) {
+                    cell.style.color = 'var(--success)';
+                    cell.style.fontWeight = 'bold';
+                    cell.style.backgroundColor = 'var(--success-light)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

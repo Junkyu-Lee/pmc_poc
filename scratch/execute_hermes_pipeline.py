@@ -1,0 +1,101 @@
+import os
+import bs4
+
+def generate_htmls():
+    v4_template = r"d:\workspaces\PMC_POC\stage1_stage2_analysis_v4.html"
+    poc_ppt = r"d:\workspaces\PMC_POC\output\poc_ppt.html"
+    
+    out_v3 = r"d:\workspaces\PMC_POC\output\HERMES_stage1_stage2_analysis_v3.html"
+    out_v4 = r"d:\workspaces\PMC_POC\output\HERMES_stage1_stage2_analysis_v4.html"
+    out_v5 = r"d:\workspaces\PMC_POC\output\HERMES_stage1_stage2_analysis_v5.html"
+    
+    os.makedirs(os.path.dirname(out_v3), exist_ok=True)
+
+    # --- 1. Read v4 template ---
+    with open(v4_template, "r", encoding="utf-8") as f:
+        soup = bs4.BeautifulSoup(f.read(), 'html.parser')
+
+    # --- 2. Create V3 Data (20 Tools) ---
+    v3_content = [
+        "<!DOCTYPE html><html lang='ko'><head><meta charset='utf-8'/><style>",
+        soup.find('style').string if soup.find('style') else "",
+        "</style></head><body><div class='container'>",
+        "<h1>HERMES 프로젝트 - 상세 도구 데이터 (v3)</h1>",
+        "<p>20 글로벌 표준 프레임워크 기반 진단 및 분석 도구 결괏값</p>"
+    ]
+    
+    tools = [
+        "KPI Gap Analysis", "RTM", "RACI", "Risk Matrix", "Symptom Mapping",
+        "Impact-Urgency Matrix", "EVM", "Variance Analysis", "5 Whys", "Fishbone",
+        "Mindset Mapping", "Performance Domain Mapping", "Stakeholder Matrix", "Feedback Loop",
+        "Causal Map", "Quant Risk", "Control Chart", "Burndown", "Pareto", "Trend Analysis"
+    ]
+    
+    for i, tool in enumerate(tools, 1):
+        v3_content.append(f"<div class='slide-card'><h2 class='slide-title'>Tool {i}: {tool}</h2>")
+        v3_content.append(f"<div class='card'><p>HERMES 프로젝트 진행 간 {tool} 기법을 활용한 진단 및 모의 지표 도출 상세 결과.</p></div></div>")
+        
+    v3_content.append("</div></body></html>")
+    
+    with open(out_v3, "w", encoding="utf-8") as f:
+        f.write("\n".join(v3_content))
+
+    # --- 3. Modify V4 template for HERMES ---
+    title = soup.find('title')
+    if title: title.string = "HERMES 종합 진단 리포트 (v4)"
+    
+    header_title = soup.find('h1')
+    if header_title: header_title.string = "📊 HERMES 프로젝트 사후 분석 및 진단"
+    
+    summaries = {
+        "SLIDE 01": "요약: [Stage 1] 이상징후 식별 및 [Stage 2] Performance Domain 간 연쇄 파급효과 시뮬레이션을 통해 시스템 관점의 5대 핵심 근본 원인을 도출합니다.",
+        "SLIDE 02": "프로젝트 현황: 84건의 요구사항과 CI 통과율 등 Output 기준 지표는 100% 만족되었으나, AI 인프라 예산의 맹점, 편익 지표 부재 등의 문제 징후를 명확하게 포착했습니다.",
+        "SLIDE 04": "파급효과 분석: 양재 테스트베드와 현장 로그 간의 격차, AI 에이전트 용도별 배분 불균형이 [Delivery Domain]과 [Planning Domain] 전반에 미치는 영향을 추적 분석했습니다.",
+        "SLIDE 05": "우선순위: 표면적 증상이 아닌 근본 원인을 파악하고, Proactive 마인드셋에 입각하여 치명상을 방어하기 위한 Top 5 해결 과제를 식별합니다.",
+        "SLIDE 11": "결론: Proactive, Ownership, Value-driven 3대 마인드셋을 적용하여, 실현 가능한 아키텍처 개선안 및 거버넌스 체계 복구를 제시합니다."
+    }
+
+    for slide in soup.find_all('div', class_='slide-card'):
+        num_span = slide.find('span', class_='slide-num')
+        if num_span:
+            slide_id = num_span.text.strip()
+            summary = slide.find('div', class_='slide-summary')
+            if summary and slide_id in summaries:
+                summary.string = summaries[slide_id]
+
+    with open(out_v4, "w", encoding="utf-8") as f:
+        f.write(str(soup))
+        
+    # --- 4. Generate V5 (V4 + POC) ---
+    with open(poc_ppt, "r", encoding="utf-8") as f:
+        poc_soup = bs4.BeautifulSoup(f.read(), 'html.parser')
+        
+    v4_body = soup.find('body')
+    v4_container = v4_body.find('div', class_='container')
+    
+    poc_container = poc_soup.find('div', class_='container')
+    if poc_container:
+        separator = poc_soup.new_tag("div")
+        separator['style'] = "margin: 4rem 0; border-top: 4px dashed #38bdf8; text-align: center; padding-top: 2rem;"
+        h1 = poc_soup.new_tag("h1")
+        h1['style'] = "color: #38bdf8; font-size: 2.5rem;"
+        h1.string = "🚀 Stage 3 & 4: Agentic POC Integration 🚀"
+        separator.append(h1)
+        v4_container.append(separator)
+        
+        for element in poc_container.find_all('div', class_='slide-card', recursive=False):
+            v4_container.append(element)
+            
+    v5_title = soup.find('title')
+    if v5_title: v5_title.string = "HERMES 통합 보고서 (v5)"
+            
+    with open(out_v5, "w", encoding="utf-8") as f:
+        f.write(str(soup))
+
+    print(f"Generated V3 at {out_v3}")
+    print(f"Generated V4 at {out_v4}")
+    print(f"Generated V5 at {out_v5}")
+
+if __name__ == "__main__":
+    generate_htmls()
+
